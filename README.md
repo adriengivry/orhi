@@ -1,3 +1,13 @@
+<p align="center">
+	<a href="https://github.com/adriengivry/orhi"><img alt="size" src="https://img.shields.io/badge/Create%20CMake%20Project-0068C7"/></a>
+	<a href="https://github.com/adriengivry/orhi"><img alt="size" src="https://img.shields.io/badge/Create%20premake5%20Project-009F24"/></a>
+	<br>
+	<a href="https://github.com/adriengivry/orhi"><img alt="size" src="https://img.shields.io/github/repo-size/adriengivry/orhi"/></a>
+	<a href="https://github.com/adriengivry/orhi/blob/main/LICENSE"><img alt="license" src="https://img.shields.io/github/license/adriengivry/orhi?color=green"/></a>
+	<br>
+	<a href="https://github.com/adriengivry/orhi/releases"><img alt="release" src="https://img.shields.io/github/v/tag/adriengivry/orhi"/></a>
+</p>
+
 # OpenRHI
 
 **OpenRHI** — *orhi* — is a simple, permissive (MIT license), cross-platform **Render Hardware Interface** written in C++20.
@@ -35,6 +45,12 @@ Target platforms are:
 - 📃 **Documented:** fully documented source code.
 - 💻 **Cross-platform:** supports Windows, MacOS, and Linux.
 - ⚙️ **Modern** leveraging the power of C++20.
+
+## Template Projects
+
+Skip the setup and start building your project in less than 5 minutes using one of these templates:
+- [Premake5 Template Project](https://github.com/adriengivry/orhi-premake5-template)
+- [CMake Template Project](https://github.com/adriengivry/orhi-cmake-template)
 
 ## Multi-Backend Philosophy
 **OpenRHI** is designed to compile with as many graphics APIs as you want, all bundled into the final application.
