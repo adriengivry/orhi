@@ -7,6 +7,13 @@ Write hardware-agnostic code once, and ship it to multiple platforms using diffe
 ## Supported Graphics APIs
 The primary target for **OpenRHI** is **desktop platforms**, but its [API](include/orhi/api/) is designed to be flexible enough to support any backend your product may require.
 
+Target platforms are:
+- Windows 🪟
+- Linux 🐧
+- MacOS 🍎
+
+### Implementation Status
+
 | API | Target Platforms | Status | Next Steps |
 |-|-|-|-|
 | Mock (Headless) | 🪟🐧🍎 | ✅ Production Ready | - |
