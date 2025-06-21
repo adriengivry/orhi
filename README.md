@@ -5,7 +5,7 @@
 	<a href="https://github.com/adriengivry/orhi"><img alt="size" src="https://img.shields.io/github/repo-size/adriengivry/orhi"/></a>
 	<a href="https://github.com/adriengivry/orhi/blob/main/LICENSE"><img alt="license" src="https://img.shields.io/github/license/adriengivry/orhi?color=green"/></a>
 	<br>
-	<a href="https://github.com/adriengivry/orhi/tags"><img alt="release" src="https://img.shields.io/github/v/tag/adriengivry/orhi"/></a>
+	<a href="https://github.com/adriengivry/orhi/releases"><img alt="release" src="https://img.shields.io/github/v/release/adriengivry/orhi"/></a>
 </p>
 
 # OpenRHI
