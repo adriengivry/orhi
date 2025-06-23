@@ -28,6 +28,7 @@ group "examples"
 	include "1-triangle"
 	include "2-cube"
 	include "3-framebuffer"
+	include "4-geometry"
 group ""
 
 group "examples/deps"

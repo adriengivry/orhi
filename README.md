@@ -1,11 +1,11 @@
 <p align="center">
-	<a href="https://github.com/adriengivry/orhi-cmake-template"><img alt="cmake template" src="https://img.shields.io/badge/Create%20CMake%20Project-0068C7"/></a>
-	<a href="https://github.com/adriengivry/orhi-premake5-template"><img alt="premake5 template" src="https://img.shields.io/badge/Create%20premake5%20Project-009F24"/></a>
-	<br>
-	<a href="https://github.com/adriengivry/orhi"><img alt="size" src="https://img.shields.io/github/repo-size/adriengivry/orhi"/></a>
-	<a href="https://github.com/adriengivry/orhi/blob/main/LICENSE"><img alt="license" src="https://img.shields.io/github/license/adriengivry/orhi?color=green"/></a>
-	<br>
-	<a href="https://github.com/adriengivry/orhi/releases"><img alt="release" src="https://img.shields.io/github/v/release/adriengivry/orhi"/></a>
+    <a href="https://github.com/adriengivry/orhi-cmake-template"><img alt="cmake template" src="https://img.shields.io/badge/Create%20CMake%20Project-0068C7"/></a>
+    <a href="https://github.com/adriengivry/orhi-premake5-template"><img alt="premake5 template" src="https://img.shields.io/badge/Create%20premake5%20Project-009F24"/></a>
+    <br>
+    <a href="https://github.com/adriengivry/orhi"><img alt="size" src="https://img.shields.io/github/repo-size/adriengivry/orhi"/></a>
+    <a href="https://github.com/adriengivry/orhi/blob/main/LICENSE"><img alt="license" src="https://img.shields.io/github/license/adriengivry/orhi?color=green"/></a>
+    <br>
+    <a href="https://github.com/adriengivry/orhi/releases"><img alt="release" src="https://img.shields.io/github/v/release/adriengivry/orhi"/></a>
 </p>
 
 # OpenRHI
@@ -27,7 +27,7 @@ Target platforms are:
 | API | Target Platforms | Status | Next Steps |
 |-|-|-|-|
 | Mock (Headless) | 🪟🐧🍎 | ✅ Production Ready | - |
-| OpenGL 4.5 | 🪟🐧 | ✅ Production Ready | Compute & geometry shaders |
+| OpenGL 4.5 | 🪟🐧 | ✅ Production Ready | Compute & tessellation shaders |
 | Vulkan | 🪟🐧 | 📅 Planned | - |
 | DirectX | 🪟 | ❓ TBD | - |
 | Metal | 🍎 | ❓ TBD | - |
@@ -60,16 +60,16 @@ If you need to bundle more than one graphics API into your project, you can achi
 **Premake5:**
 ```powershell
 premake5
-	[action]
-	--compile-opengl
-	--compile-mock
+    [action]
+    --compile-opengl
+    --compile-mock
 ```
 
 **CMake:**
 ```powershell
 cmake
-	-DORHI_COMPILE_OPENGL=ON 
-	-DORHI_COMPILE_MOCK=ON
+    -DORHI_COMPILE_OPENGL=ON 
+    -DORHI_COMPILE_MOCK=ON
 ```
 
 ### Using Graphics APIs Explicitely
@@ -85,15 +85,15 @@ Compiled backends are always available through their respective headers, and obj
 
 int main()
 {
-	// Create OpenGL objects
-	orhi::impl::gl::Backend glBackend;
-	orhi::impl::gl::Framebuffer glFramebuffer;
+    // Create OpenGL objects
+    orhi::impl::gl::Backend glBackend;
+    orhi::impl::gl::Framebuffer glFramebuffer;
 
-	// Create Mock objects
-	orhi::impl::mock::Backend mockBackend;
-	orhi::impl::mock::ShaderProgram mockShader;
+    // Create Mock objects
+    orhi::impl::mock::Backend mockBackend;
+    orhi::impl::mock::ShaderProgram mockShader;
 
-	return 0;
+    return 0;
 }
 ```
 
@@ -130,16 +130,16 @@ Once a graphics API is selected, it can be included using agnostic headers:
 
 int main()
 {
-	// Create objects using the default graphics API.
-	// i.e. if OpenGL is selected, orhi::Backend will resolve to orhi::impl::gl::Backend
-	orhi::Backend backend; 
-	orhi::Framebuffer framebuffer;
-	orhi::ShaderProgram shader;
+    // Create objects using the default graphics API.
+    // i.e. if OpenGL is selected, orhi::Backend will resolve to orhi::impl::gl::Backend
+    orhi::Backend backend; 
+    orhi::Framebuffer framebuffer;
+    orhi::ShaderProgram shader;
 
-	// And also create graphics API-specific objects
-	orhi::impl::mock::Backend backend;
+    // And also create graphics API-specific objects
+    orhi::impl::mock::Backend backend;
 
-	return 0;
+    return 0;
 }
 ```
 
@@ -180,28 +180,28 @@ ib.Upload(indices);
 
 orhi::VertexArray va;
 va.SetLayout(
-	std::to_array<orhi::data::VertexAttribute>({
-		{ orhi::types::EDataType::FLOAT, 3 }, // Position
-		{ orhi::types::EDataType::FLOAT, 2 }, // UV
-		{ orhi::types::EDataType::FLOAT, 3 }  // Normals
-	}), vb, ib
+    std::to_array<orhi::data::VertexAttribute>({
+        { orhi::types::EDataType::FLOAT, 3 }, // Position
+        { orhi::types::EDataType::FLOAT, 2 }, // UV
+        { orhi::types::EDataType::FLOAT, 3 }  // Normals
+    }), vb, ib
 );
 ```
 ### Creating Framebuffer
 ```cpp
 // Texture creation (framebuffer color attachment)
 std::shared_ptr<orhi::Texture> colorBuffer = std::make_shared<orhi::Texture>(
-	orhi::types::ETextureType::TEXTURE_2D
+    orhi::types::ETextureType::TEXTURE_2D
 );
 colorBuffer->Allocate(orhi::data::TextureDesc{
-	.width = 800,
-	.height = 600,
-	.internalFormat = orhi::types::EInternalFormat::RGBA32F,
-	.useMipMaps = false,
-	.mutableDesc = orhi::data::MutableTextureDesc{
-		.format = orhi::types::EFormat::RGBA,
-		.type = orhi::types::EPixelDataType::FLOAT
-	}
+    .width = 800,
+    .height = 600,
+    .internalFormat = orhi::types::EInternalFormat::RGBA32F,
+    .useMipMaps = false,
+    .mutableDesc = orhi::data::MutableTextureDesc{
+        .format = orhi::types::EFormat::RGBA,
+        .type = orhi::types::EPixelDataType::FLOAT
+    }
 });
 
 // Renderbuffer creation (framebuffer depth attachment)
@@ -248,10 +248,10 @@ cd orhi/examples/
 > ℹ️ If premake hasn't been added to PATH, use the path to downloaded executable instead
 ```powershell
 premake5				
-	[action*]
-	--compile-opengl	# compile OpenGL backend 
-	--compile-mock		# compile Mock backend
-	--gfxapi=opengl		# sets OpenGL as the default graphics API
+    [action*]
+    --compile-opengl	# compile OpenGL backend 
+    --compile-mock		# compile Mock backend
+    --gfxapi=opengl		# sets OpenGL as the default graphics API
 ```
 **for a full list of available actions, check-out: [Premake5/Using-Premake](https://premake.github.io/docs/Using-Premake/).*
 
@@ -270,24 +270,24 @@ git submodule add https://github.com/adriengivry/orhi
 In your workspace's `premake5.lua` file, add:
 ```lua
 workspace "your-workspace-name"
-	-- Your settings
-	include "path/to/orhi"
+    -- Your settings
+    include "path/to/orhi"
 
-	-- Default graphics API (⚠️ define only one)
-	defines { "ORHI_SELECT_OPENGL", "ORHI_COMPILE_OPENGL" }
-	-- or
-	defines { "ORHI_SELECT_MOCK", "ORHI_COMPILE_MOCK" }
+    -- Default graphics API (⚠️ define only one)
+    defines { "ORHI_SELECT_OPENGL", "ORHI_COMPILE_OPENGL" }
+    -- or
+    defines { "ORHI_SELECT_MOCK", "ORHI_COMPILE_MOCK" }
 ```
 Then in your project's `premake5.lua`, add:
 ```lua
 project "your-project-name"
-	includedirs {
-		"path/to/orhi/include/folder",
-	}
+    includedirs {
+        "path/to/orhi/include/folder",
+    }
 
-	links {
-		"orhi"
-	}
+    links {
+        "orhi"
+    }
 ```
 
 ### Option 2: CMake
@@ -303,8 +303,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/path/to/orhi)
 
 # Link against the orhi library.
 target_link_libraries(${PROJECT_NAME} 
-	PRIVATE 
-	orhi
+    PRIVATE 
+    orhi
 )
 ```
 

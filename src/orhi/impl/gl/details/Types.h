@@ -409,7 +409,7 @@ struct orhi::utils::MappingFor<orhi::types::EInternalFormat, GLenum>
 		EnumValuePair<EnumType::COMPRESSED_SRGB_ALPHA_BPTC_UNORM, GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM>,
 		EnumValuePair<EnumType::COMPRESSED_RGB_BPTC_SIGNED_FLOAT, GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT>,
 		EnumValuePair<EnumType::COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT, GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT>
-	> ;
+	>;
 };
 
 template <>
@@ -418,7 +418,8 @@ struct orhi::utils::MappingFor<orhi::types::EShaderType, GLenum>
 	using EnumType = orhi::types::EShaderType;
 	using type = std::tuple<
 		EnumValuePair<EnumType::VERTEX, GL_VERTEX_SHADER>,
-		EnumValuePair<EnumType::FRAGMENT, GL_FRAGMENT_SHADER>
+		EnumValuePair<EnumType::FRAGMENT, GL_FRAGMENT_SHADER>,
+		EnumValuePair<EnumType::GEOMETRY, GL_GEOMETRY_SHADER>
 	>;
 };
 
