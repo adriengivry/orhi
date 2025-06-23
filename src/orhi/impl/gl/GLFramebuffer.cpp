@@ -46,15 +46,15 @@ namespace orhi
 		ORHI_ASSERT(p_toAttach != nullptr, "Cannot attach a null texture");
 
 		const auto attachmentIndex = details::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
-		constexpr uint32_t kMipMapLevel = 0;
+		constexpr uint32_t k_mipMapLevel = 0;
 
 		if (p_layer.has_value())
 		{
-			glNamedFramebufferTextureLayer(m_context.id, attachmentIndex, p_toAttach->GetID(), kMipMapLevel, p_layer.value());
+			glNamedFramebufferTextureLayer(m_context.id, attachmentIndex, p_toAttach->GetID(), k_mipMapLevel, p_layer.value());
 		}
 		else
 		{
-			glNamedFramebufferTexture(m_context.id, attachmentIndex, p_toAttach->GetID(), kMipMapLevel);
+			glNamedFramebufferTexture(m_context.id, attachmentIndex, p_toAttach->GetID(), k_mipMapLevel);
 		}
 
 		m_context.attachments[attachmentIndex] = p_toAttach;

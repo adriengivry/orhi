@@ -313,6 +313,8 @@ All contributions to **OpenRHI** are welcomed — whether it's reporting bugs, s
 
 Feel free to open issues or submit pull requests (PRs) for review. Every bit of help makes a difference!
 
+For more information on contributing, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+
 *By contributing, you agree that your contributions will be licensed under the [MIT License](LICENSE).*
 
 
