@@ -247,11 +247,6 @@ namespace orhi
 	}
 
 	template<>
-	void Backend::OnFrameCompleted()
-	{
-	}
-
-	template<>
 	void Backend::Clear(bool p_colorBuffer, bool p_depthBuffer, bool p_stencilBuffer)
 	{
 		GLbitfield clearMask = 0;
