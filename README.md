@@ -24,14 +24,14 @@ Target platforms are:
 
 ### Implementation Status
 
-| API | Target Platforms | Status | Next Steps |
-|-|-|-|-|
-| Mock (Headless) | 🪟🐧🍎 | ✅ Production Ready | - |
-| OpenGL 4.5 | 🪟🐧 | ✅ Production Ready | Tessellation shaders |
-| Vulkan | 🪟🐧 | 📅 Planned | - |
-| DirectX | 🪟 | ❓ TBD | - |
-| Metal | 🍎 | ❓ TBD | - |
-| Software | 🪟🐧🍎 | ❓ TBD | - |
+| API | Target Platforms | Status |
+|-|-|-|
+| Mock (Headless) | 🪟🐧🍎 | ✅ Production Ready |
+| OpenGL 4.5 | 🪟🐧 | ✅ Production Ready |
+| Vulkan | 🪟🐧 | 📅 Planned |
+| DirectX | 🪟 | ❓ TBD |
+| Metal | 🍎 | ❓ TBD |
+| Software | 🪟🐧🍎 | ❓ TBD |
 
 > ⚠️ **OpenRHI** [API](include/orhi/api/) is expected to undergo significant changes as support for additional graphics backends is added, in order to accommodate the requirements and design philosophies of each backend.
 

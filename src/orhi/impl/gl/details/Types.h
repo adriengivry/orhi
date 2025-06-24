@@ -407,7 +407,9 @@ struct orhi::utils::MappingFor<orhi::types::EShaderType, GLenum>
 		EnumValuePair<EnumType::VERTEX, GL_VERTEX_SHADER>,
 		EnumValuePair<EnumType::FRAGMENT, GL_FRAGMENT_SHADER>,
 		EnumValuePair<EnumType::GEOMETRY, GL_GEOMETRY_SHADER>,
-		EnumValuePair<EnumType::COMPUTE, GL_COMPUTE_SHADER>
+		EnumValuePair<EnumType::COMPUTE, GL_COMPUTE_SHADER>,
+		EnumValuePair<EnumType::TESSELLATION_CONTROL, GL_TESS_CONTROL_SHADER>,
+		EnumValuePair<EnumType::TESSELLATION_EVALUATION, GL_TESS_EVALUATION_SHADER>
 	>;
 };
 

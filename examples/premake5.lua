@@ -30,6 +30,7 @@ group "examples"
 	include "3-framebuffer"
 	include "4-geometry"
 	include "5-compute"
+	include "6-tessellation"
 group ""
 
 group "examples/deps"
