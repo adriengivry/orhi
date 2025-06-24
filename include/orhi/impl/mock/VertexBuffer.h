@@ -12,5 +12,5 @@
 namespace orhi::impl::mock
 {
 	struct VertexBufferContext {};
-	using VertexBuffer = api::TVertexBuffer<types::EGraphicsBackend::NONE, VertexBufferContext, BufferContext>;
+	using VertexBuffer = api::TVertexBuffer<types::EGraphicsBackend::MOCK, VertexBufferContext, BufferContext>;
 }

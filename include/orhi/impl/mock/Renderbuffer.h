@@ -18,5 +18,5 @@ namespace orhi::impl::mock
 		bool allocated = false;
 	};
 
-	using Renderbuffer = api::TRenderbuffer<types::EGraphicsBackend::NONE, RenderbufferContext>;
+	using Renderbuffer = api::TRenderbuffer<types::EGraphicsBackend::MOCK, RenderbufferContext>;
 }

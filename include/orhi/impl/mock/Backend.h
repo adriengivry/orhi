@@ -11,5 +11,5 @@
 namespace orhi::impl::mock
 {
 	struct BackendContext {};
-	using Backend = api::TBackend<types::EGraphicsBackend::NONE, BackendContext>;
+	using Backend = api::TBackend<types::EGraphicsBackend::MOCK, BackendContext>;
 }

@@ -12,5 +12,5 @@
 namespace orhi::impl::mock
 {
 	struct ShaderStorageBufferContext {};
-	using ShaderStorageBuffer = api::TShaderStorageBuffer<types::EGraphicsBackend::NONE, ShaderStorageBufferContext, BufferContext>;
+	using ShaderStorageBuffer = api::TShaderStorageBuffer<types::EGraphicsBackend::MOCK, ShaderStorageBufferContext, BufferContext>;
 }

@@ -12,5 +12,5 @@
 namespace orhi::impl::mock
 {
 	struct UniformBufferContext {};
-	using UniformBuffer = api::TUniformBuffer<types::EGraphicsBackend::NONE, UniformBufferContext, BufferContext>;
+	using UniformBuffer = api::TUniformBuffer<types::EGraphicsBackend::MOCK, UniformBufferContext, BufferContext>;
 }

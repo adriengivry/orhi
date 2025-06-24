@@ -18,5 +18,5 @@ namespace orhi::impl::mock
 		std::string debugName = "";
 	};
 
-	using Texture = api::TTexture<types::EGraphicsBackend::NONE, TextureContext, TextureHandleContext>;
+	using Texture = api::TTexture<types::EGraphicsBackend::MOCK, TextureContext, TextureHandleContext>;
 }

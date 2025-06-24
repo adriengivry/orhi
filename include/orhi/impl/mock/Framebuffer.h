@@ -25,14 +25,14 @@ namespace orhi::impl::mock
 	};
 
 	using FramebufferContext = TFramebufferContext<
-		types::EGraphicsBackend::NONE,
+		types::EGraphicsBackend::MOCK,
 		TextureContext,
 		TextureHandleContext,
 		RenderbufferContext
 	>;
 
 	using Framebuffer = api::TFramebuffer<
-		types::EGraphicsBackend::NONE,
+		types::EGraphicsBackend::MOCK,
 		FramebufferContext,
 		TextureContext,
 		TextureHandleContext,

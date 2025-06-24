@@ -16,5 +16,5 @@ namespace orhi::impl::mock
 		types::EBufferType type = types::EBufferType::UNKNOWN;
 	};
 
-	using Buffer = api::TBuffer<types::EGraphicsBackend::NONE, BufferContext>;
+	using Buffer = api::TBuffer<types::EGraphicsBackend::MOCK, BufferContext>;
 }

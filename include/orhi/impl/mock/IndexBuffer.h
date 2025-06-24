@@ -12,5 +12,5 @@
 namespace orhi::impl::mock
 {
 	struct IndexBufferContext {};
-	using IndexBuffer = api::TIndexBuffer<types::EGraphicsBackend::NONE, IndexBufferContext, BufferContext>;
+	using IndexBuffer = api::TIndexBuffer<types::EGraphicsBackend::MOCK, IndexBufferContext, BufferContext>;
 }

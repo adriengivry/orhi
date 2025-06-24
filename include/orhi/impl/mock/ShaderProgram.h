@@ -12,5 +12,5 @@
 namespace orhi::impl::mock
 {
 	struct ShaderProgramContext {};
-	using ShaderProgram = api::TShaderProgram<types::EGraphicsBackend::NONE, ShaderProgramContext, ShaderStageContext>;
+	using ShaderProgram = api::TShaderProgram<types::EGraphicsBackend::MOCK, ShaderProgramContext, ShaderStageContext>;
 }

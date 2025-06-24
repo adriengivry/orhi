@@ -18,7 +18,7 @@ namespace orhi::impl::mock
 	};
 
 	using VertexArray = api::TVertexArray<
-		types::EGraphicsBackend::NONE,
+		types::EGraphicsBackend::MOCK,
 		VertexArrayContext,
 		VertexBufferContext,
 		IndexBufferContext,

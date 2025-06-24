@@ -15,5 +15,5 @@ namespace orhi::impl::mock
 		const types::ETextureType type;
 	};
 
-	using TextureHandle = api::TTextureHandle<types::EGraphicsBackend::NONE, TextureHandleContext>;
+	using TextureHandle = api::TTextureHandle<types::EGraphicsBackend::MOCK, TextureHandleContext>;
 }
