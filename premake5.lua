@@ -14,6 +14,11 @@ project "orhi"
 	}
 
 	newoption {
+		trigger = "compile-vulkan",
+		description = "Compile Vulkan backend",
+	}
+
+	newoption {
 		trigger = "compile-mock",
 		description = "Compile Mock backend",
 	}
@@ -21,6 +26,11 @@ project "orhi"
 	if _OPTIONS["compile-opengl"] then
 		print("+ OpenGL backend selected for compilation")
 		defines { "ORHI_COMPILE_OPENGL" }
+	end
+
+	if _OPTIONS["compile-vulkan"] then
+		print("+ Vulkan backend selected for compilation")
+		defines { "ORHI_COMPILE_VULKAN" }
 	end
 
 	if _OPTIONS["compile-mock"] then

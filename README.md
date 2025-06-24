@@ -28,7 +28,7 @@ Target platforms are:
 |-|-|-|
 | Mock (Headless) | 🪟🐧🍎 | ✅ Production Ready |
 | OpenGL 4.5 | 🪟🐧 | ✅ Production Ready |
-| Vulkan | 🪟🐧 | 📅 Planned |
+| Vulkan | 🪟🐧 | ⏳ In Progress |
 | DirectX | 🪟 | ❓ TBD |
 | Metal | 🍎 | ❓ TBD |
 | Software | 🪟🐧🍎 | ❓ TBD |
@@ -62,6 +62,7 @@ If you need to bundle more than one graphics API into your project, you can achi
 premake5
     [action]
     --compile-opengl
+    --compile-vulkan
     --compile-mock
 ```
 
@@ -69,6 +70,7 @@ premake5
 ```powershell
 cmake
     -DORHI_COMPILE_OPENGL=ON 
+    -DORHI_COMPILE_VULKAN=ON 
     -DORHI_COMPILE_MOCK=ON
 ```
 
@@ -100,17 +102,22 @@ int main()
 ### Selecting Default Graphics API
 A default graphics API can be selected by defining one of the following defines to your project:
 - `ORHI_SELECT_OPENGL` (also requires `ORHI_COMPILE_OPENGL` to be defined)
+- `ORHI_SELECT_VULKAN` (also requires `ORHI_COMPILE_VULKAN` to be defined)
 - `ORHI_SELECT_MOCK` (also requires `ORHI_COMPILE_MOCK` to be defined)
 
 **Premake5:**
 ```lua
 defines { "ORHI_SELECT_OPENGL", "ORHI_COMPILE_OPENGL" }
 -- or
+defines { "ORHI_SELECT_VULKAN", "ORHI_COMPILE_VULKAN" }
+-- or
 defines { "ORHI_SELECT_MOCK", "ORHI_COMPILE_MOCK" }
 ```
 **CMake:**
 ```cmake
 add_compile_definitions(ORHI_SELECT_OPENGL ORHI_COMPILE_OPENGL)
+# or
+add_compile_definitions(ORHI_SELECT_VULKAN ORHI_COMPILE_VULKAN)
 # or
 add_compile_definitions(ORHI_SELECT_MOCK ORHI_COMPILE_MOCK)
 ```
@@ -230,6 +237,7 @@ cd .\orhi\
 ```
 > ℹ️ You can edit `gen_examples.bat` to modify the options used to generate the projects, such as:
 > - `--compile-opengl` compile OpenGL backend 
+> - `--compile-vulkan` compile Vulkan backend 
 > - `--compile-mock` compile Mock backend
 > - `--gfxapi=opengl` set OpenGL as the default graphics API
 
@@ -250,6 +258,7 @@ cd orhi/examples/
 premake5				
     [action*]
     --compile-opengl	# compile OpenGL backend 
+    --compile-vulkan	# compile Vulkan backend 
     --compile-mock		# compile Mock backend
     --gfxapi=opengl		# sets OpenGL as the default graphics API
 ```
@@ -276,6 +285,8 @@ workspace "your-workspace-name"
     -- Default graphics API (⚠️ define only one)
     defines { "ORHI_SELECT_OPENGL", "ORHI_COMPILE_OPENGL" }
     -- or
+    defines { "ORHI_SELECT_VULKAN, "ORHI_COMPILE_VULKAN" }
+    -- or
     defines { "ORHI_SELECT_MOCK", "ORHI_COMPILE_MOCK" }
 ```
 Then in your project's `premake5.lua`, add:
@@ -295,6 +306,8 @@ In your project's `CMakeLists.txt` file:
 ```cmake
 # Default graphics API (⚠️ define only one)
 add_compile_definitions(ORHI_SELECT_OPENGL ORHI_COMPILE_OPENGL)
+# or
+add_compile_definitions(ORHI_SELECT_VULKAN ORHI_COMPILE_VULKAN)
 # or
 add_compile_definitions(ORHI_SELECT_MOCK ORHI_COMPILE_MOCK)
 
