@@ -6,6 +6,7 @@
 
 #if defined(ORHI_COMPILE_MOCK)
 
+#include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/mock/Backend.h>
 
@@ -39,6 +40,19 @@ namespace orhi
 
 	template<>
 	void Backend::DrawArraysInstanced(types::EPrimitiveMode p_primitiveMode, uint32_t p_vertexCount, uint32_t p_instances)
+	{}
+
+	template<>
+	void Backend::DispatchCompute(uint32_t p_x, uint32_t p_y, uint32_t p_z) const
+	{
+		ORHI_ASSERT(
+			p_x > 0 && p_y > 0 && p_z > 0,
+			"Dispatch work group count cannot be zero"
+		);
+	}
+
+	template<>
+	void Backend::MemoryBarrier(types::EMemoryBarrierFlags p_barriers) const
 	{}
 
 	template<>

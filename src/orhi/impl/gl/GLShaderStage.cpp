@@ -19,7 +19,7 @@ namespace orhi
 {
 	template<>
 	ShaderStage::TShaderStage(types::EShaderType p_type) : m_context{
-		.id = static_cast<uint32_t>(glCreateShader(details::EnumToValue<GLenum>(p_type))),
+		.id = static_cast<uint32_t>(glCreateShader(utils::EnumToValue<GLenum>(p_type))),
 		.type = p_type,
 	}
 	{
@@ -69,6 +69,12 @@ namespace orhi
 	uint32_t ShaderStage::GetID() const
 	{
 		return m_context.id;
+	}
+
+	template<>
+	types::EShaderType ShaderStage::GetType() const
+	{
+		return m_context.type;
 	}
 }
 

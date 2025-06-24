@@ -29,7 +29,7 @@ namespace orhi
 		ORHI_ASSERT(p_toAttach != nullptr, "Cannot attach a null renderbuffer");
 		ORHI_ASSERT(!p_layer.has_value(), "Renderbuffer cannot use layers");
 
-		const auto attachmentIndex = details::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
+		const auto attachmentIndex = utils::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
 		glNamedFramebufferRenderbuffer(m_context.id, attachmentIndex, GL_RENDERBUFFER, p_toAttach->GetID());
 		m_context.attachments[attachmentIndex] = p_toAttach;
 	}
@@ -45,7 +45,7 @@ namespace orhi
 	{
 		ORHI_ASSERT(p_toAttach != nullptr, "Cannot attach a null texture");
 
-		const auto attachmentIndex = details::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
+		const auto attachmentIndex = utils::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
 		constexpr uint32_t k_mipMapLevel = 0;
 
 		if (p_layer.has_value())
@@ -111,7 +111,7 @@ namespace orhi
 		uint32_t p_index
 	) const
 	{
-		const auto attachmentIndex = details::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
+		const auto attachmentIndex = utils::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
 
 		if (m_context.attachments.contains(attachmentIndex))
 		{
@@ -133,7 +133,7 @@ namespace orhi
 		uint32_t p_index
 	) const
 	{
-		const auto attachmentIndex = details::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
+		const auto attachmentIndex = utils::EnumToValue<GLenum>(p_attachment) + static_cast<GLenum>(p_index);
 
 		if (m_context.attachments.contains(attachmentIndex))
 		{
@@ -263,8 +263,8 @@ namespace orhi
 			p_x, p_y,
 			p_width,
 			p_height,
-			details::EnumToValue<GLenum>(p_format),
-			details::EnumToValue<GLenum>(p_type),
+			utils::EnumToValue<GLenum>(p_format),
+			utils::EnumToValue<GLenum>(p_type),
 			p_data
 		);
 		Unbind();

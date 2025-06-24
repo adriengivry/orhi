@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include <orhi/impl/gl/details/glad/glad.h>
+#if defined(ORHI_COMPILE_OPENGL)
 
+#include <orhi/impl/gl/details/glad/glad.h>
 #include <orhi/types/EAccessSpecifier.h>
 #include <orhi/types/EBlendingEquation.h>
 #include <orhi/types/EBlendingFactor.h>
@@ -18,6 +19,7 @@
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EFramebufferAttachment.h>
 #include <orhi/types/EInternalFormat.h>
+#include <orhi/types/EMemoryBarrierFlags.h>
 #include <orhi/types/EOperation.h>
 #include <orhi/types/EPrimitiveMode.h>
 #include <orhi/types/ERasterizationMode.h>
@@ -30,21 +32,6 @@
 #include <orhi/types/EPixelDataFormat.h>
 #include <orhi/types/EPixelDataType.h>
 #include <orhi/utils/EnumMapper.h>
-
-namespace orhi::impl::gl::details
-{
-	template <typename ValueType, typename EnumType>
-	constexpr ValueType EnumToValue(EnumType enumValue)
-	{
-		return orhi::utils::ToValueImpl<EnumType, ValueType>(enumValue);
-	}
-
-	template <typename EnumType, typename ValueType>
-	constexpr EnumType ValueToEnum(ValueType value)
-	{
-		return orhi::utils::FromValueImpl<EnumType, ValueType>(value);
-	}
-}
 
 template <>
 struct orhi::utils::MappingFor<orhi::types::EComparaisonAlgorithm, GLenum>
@@ -419,7 +406,8 @@ struct orhi::utils::MappingFor<orhi::types::EShaderType, GLenum>
 	using type = std::tuple<
 		EnumValuePair<EnumType::VERTEX, GL_VERTEX_SHADER>,
 		EnumValuePair<EnumType::FRAGMENT, GL_FRAGMENT_SHADER>,
-		EnumValuePair<EnumType::GEOMETRY, GL_GEOMETRY_SHADER>
+		EnumValuePair<EnumType::GEOMETRY, GL_GEOMETRY_SHADER>,
+		EnumValuePair<EnumType::COMPUTE, GL_COMPUTE_SHADER>
 	>;
 };
 
@@ -456,3 +444,29 @@ struct orhi::utils::MappingFor<orhi::types::ETextureType, GLenum>
 		EnumValuePair<EnumType::TEXTURE_CUBE, GL_TEXTURE_CUBE_MAP>
 	>;
 };
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EMemoryBarrierFlags, GLbitfield>
+{
+	using EnumType = orhi::types::EMemoryBarrierFlags;
+	using type = std::tuple<
+		EnumValuePair<EnumType::VERTEX_ATTRIB_ARRAY, GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT>,
+		EnumValuePair<EnumType::ELEMENT_ARRAY, GL_ELEMENT_ARRAY_BARRIER_BIT>,
+		EnumValuePair<EnumType::UNIFORM, GL_UNIFORM_BARRIER_BIT>,
+		EnumValuePair<EnumType::TEXTURE_FETCH, GL_TEXTURE_FETCH_BARRIER_BIT>,
+		EnumValuePair<EnumType::SHADER_IMAGE_ACCESS, GL_SHADER_IMAGE_ACCESS_BARRIER_BIT>,
+		EnumValuePair<EnumType::COMMAND, GL_COMMAND_BARRIER_BIT>,
+		EnumValuePair<EnumType::PIXEL_BUFFER, GL_PIXEL_BUFFER_BARRIER_BIT>,
+		EnumValuePair<EnumType::TEXTURE_UPDATE, GL_TEXTURE_UPDATE_BARRIER_BIT>,
+		EnumValuePair<EnumType::BUFFER_UPDATE, GL_BUFFER_UPDATE_BARRIER_BIT>,
+		EnumValuePair<EnumType::CLIENT_MAPPED_BUFFER, GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT>,
+		EnumValuePair<EnumType::FRAMEBUFFER, GL_FRAMEBUFFER_BARRIER_BIT>,
+		EnumValuePair<EnumType::TRANSFORM_FEEDBACK, GL_TRANSFORM_FEEDBACK_BARRIER_BIT>,
+		EnumValuePair<EnumType::ATOMIC_COUNTER, GL_ATOMIC_COUNTER_BARRIER_BIT>,
+		EnumValuePair<EnumType::SHADER_STORAGE, GL_SHADER_STORAGE_BARRIER_BIT>,
+		EnumValuePair<EnumType::QUERY_BUFFER, GL_QUERY_BUFFER_BARRIER_BIT>,
+		EnumValuePair<EnumType::ALL, GL_ALL_BARRIER_BITS>
+	>;
+};
+
+#endif // #if defined(ORHI_COMPILE_OPENGL)

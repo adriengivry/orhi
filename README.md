@@ -27,7 +27,7 @@ Target platforms are:
 | API | Target Platforms | Status | Next Steps |
 |-|-|-|-|
 | Mock (Headless) | 🪟🐧🍎 | ✅ Production Ready | - |
-| OpenGL 4.5 | 🪟🐧 | ✅ Production Ready | Compute & tessellation shaders |
+| OpenGL 4.5 | 🪟🐧 | ✅ Production Ready | Tessellation shaders |
 | Vulkan | 🪟🐧 | 📅 Planned | - |
 | DirectX | 🪟 | ❓ TBD | - |
 | Metal | 🍎 | ❓ TBD | - |

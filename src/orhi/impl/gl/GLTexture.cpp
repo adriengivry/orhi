@@ -68,12 +68,12 @@ namespace orhi
 			glTexImage2D(
 				m_context.type,
 				0,
-				details::EnumToValue<GLenum>(desc.internalFormat),
+				utils::EnumToValue<GLenum>(desc.internalFormat),
 				desc.width,
 				desc.height,
 				0,
-				details::EnumToValue<GLenum>(mutableDesc.format),
-				details::EnumToValue<GLenum>(mutableDesc.type),
+				utils::EnumToValue<GLenum>(mutableDesc.format),
+				utils::EnumToValue<GLenum>(mutableDesc.type),
 				mutableDesc.data
 			);
 			Unbind();
@@ -85,7 +85,7 @@ namespace orhi
 			glTextureStorage2D(
 				m_context.id,
 				desc.useMipMaps ? CalculateMipMapLevels(desc.width, desc.height) : 1,
-				details::EnumToValue<GLenum>(desc.internalFormat),
+				utils::EnumToValue<GLenum>(desc.internalFormat),
 				desc.width,
 				desc.height
 			);
@@ -94,10 +94,10 @@ namespace orhi
 		// Once the texture is allocated, we don't need to set the parameters again
 		if (!m_textureContext.allocated)
 		{
-			glTextureParameteri(m_context.id, GL_TEXTURE_WRAP_S, details::EnumToValue<GLenum>(p_desc.horizontalWrap));
-			glTextureParameteri(m_context.id, GL_TEXTURE_WRAP_T, details::EnumToValue<GLenum>(p_desc.verticalWrap));
-			glTextureParameteri(m_context.id, GL_TEXTURE_MIN_FILTER, details::EnumToValue<GLenum>(p_desc.minFilter));
-			glTextureParameteri(m_context.id, GL_TEXTURE_MAG_FILTER, details::EnumToValue<GLenum>(p_desc.magFilter));
+			glTextureParameteri(m_context.id, GL_TEXTURE_WRAP_S, utils::EnumToValue<GLenum>(p_desc.horizontalWrap));
+			glTextureParameteri(m_context.id, GL_TEXTURE_WRAP_T, utils::EnumToValue<GLenum>(p_desc.verticalWrap));
+			glTextureParameteri(m_context.id, GL_TEXTURE_MIN_FILTER, utils::EnumToValue<GLenum>(p_desc.minFilter));
+			glTextureParameteri(m_context.id, GL_TEXTURE_MAG_FILTER, utils::EnumToValue<GLenum>(p_desc.magFilter));
 		}
 
 		m_textureContext.allocated = true;
@@ -142,8 +142,8 @@ namespace orhi
 						m_textureContext.desc.width,
 						m_textureContext.desc.height,
 						i,
-						details::EnumToValue<GLenum>(p_format),
-						details::EnumToValue<GLenum>(p_type),
+						utils::EnumToValue<GLenum>(p_format),
+						utils::EnumToValue<GLenum>(p_type),
 						p_data
 					);
 				}
@@ -157,8 +157,8 @@ namespace orhi
 					0,
 					m_textureContext.desc.width,
 					m_textureContext.desc.height,
-					details::EnumToValue<GLenum>(p_format),
-					details::EnumToValue<GLenum>(p_type),
+					utils::EnumToValue<GLenum>(p_format),
+					utils::EnumToValue<GLenum>(p_type),
 					p_data
 				);
 			}

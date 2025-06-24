@@ -52,7 +52,7 @@ namespace orhi
 		m_context.height = p_height;
 		m_context.format = p_format;
 
-		glNamedRenderbufferStorage(m_context.id, details::EnumToValue<GLenum>(m_context.format), m_context.width, m_context.height);
+		glNamedRenderbufferStorage(m_context.id, utils::EnumToValue<GLenum>(m_context.format), m_context.width, m_context.height);
 
 		m_context.allocated = true;
 	}

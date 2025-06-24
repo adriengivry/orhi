@@ -10,6 +10,10 @@
 
 namespace orhi::impl::mock
 {
-	struct ShaderStageContext {};
+	struct ShaderStageContext
+	{
+		types::EShaderType type;
+	};
+
 	using ShaderStage = api::TShaderStage<types::EGraphicsBackend::MOCK, ShaderStageContext>;
 }

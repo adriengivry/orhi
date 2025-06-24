@@ -48,6 +48,11 @@ namespace orhi::api
 		*/
 		uint32_t GetID() const;
 
+		/**
+		* Returns the type of shader stage.
+		*/
+		types::EShaderType GetType() const;
+
 	private:
 		Context m_context;
 	};

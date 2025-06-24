@@ -13,7 +13,9 @@ using namespace orhi::impl::mock;
 namespace orhi
 {
 	template<>
-	ShaderStage::TShaderStage(types::EShaderType p_type)
+	ShaderStage::TShaderStage(types::EShaderType p_type) : m_context{
+		.type = p_type,
+	}
 	{
 	}
 
@@ -39,6 +41,12 @@ namespace orhi
 	uint32_t ShaderStage::GetID() const
 	{
 		return 0;
+	}
+
+	template<>
+	types::EShaderType ShaderStage::GetType() const
+	{
+		return m_context.type;
 	}
 }
 

@@ -180,7 +180,7 @@ void ShaderProgram::SetUniform<type>(const std::string& p_name, const type& valu
 			glGetActiveUniform(m_context.id, i, static_cast<GLsizei>(nameBuffer.size()), &actualLength, &arraySize, &type, nameBuffer.data());
 
 			const auto name = std::string{ nameBuffer.data(), static_cast<size_t>(actualLength) };
-			const auto uniformType = details::ValueToEnum<types::EUniformType>(type);
+			const auto uniformType = utils::ValueToEnum<types::EUniformType>(type);
 
 			// Skip reserved uniforms (e.g. ubo uniforms)
 			if (IsReservedUniform(name))

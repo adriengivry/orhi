@@ -18,6 +18,7 @@ namespace orhi::types
 		NONE,
 		VERTEX,
 		FRAGMENT,
-		GEOMETRY
+		GEOMETRY,
+		COMPUTE
 	};
 }

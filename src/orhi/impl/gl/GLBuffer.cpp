@@ -33,7 +33,7 @@ namespace orhi
 	uint64_t Buffer::Allocate(uint64_t p_size, types::EAccessSpecifier p_usage)
 	{
 		ORHI_ASSERT(IsValid(), "Cannot allocate memory for an invalid buffer");
-		glNamedBufferData(m_buffer.id, p_size, nullptr, details::EnumToValue<GLenum>(p_usage));
+		glNamedBufferData(m_buffer.id, p_size, nullptr, utils::EnumToValue<GLenum>(p_usage));
 		return m_buffer.allocatedBytes = p_size;
 	}
 
@@ -58,11 +58,11 @@ namespace orhi
 
 		if (p_index.has_value())
 		{
-			glBindBufferBase(details::EnumToValue<GLenum>(m_buffer.type), p_index.value(), m_buffer.id);
+			glBindBufferBase(utils::EnumToValue<GLenum>(m_buffer.type), p_index.value(), m_buffer.id);
 		}
 		else
 		{
-			glBindBuffer(details::EnumToValue<GLenum>(m_buffer.type), m_buffer.id);
+			glBindBuffer(utils::EnumToValue<GLenum>(m_buffer.type), m_buffer.id);
 		}
 	}
 
@@ -70,7 +70,7 @@ namespace orhi
 	void Buffer::Unbind() const
 	{
 		ORHI_ASSERT(IsValid(), "Cannot unbind an invalid buffer");
-		glBindBuffer(details::EnumToValue<GLenum>(m_buffer.type), 0);
+		glBindBuffer(utils::EnumToValue<GLenum>(m_buffer.type), 0);
 	}
 
 	template<>

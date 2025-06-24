@@ -91,7 +91,7 @@ namespace orhi
 			glVertexAttribPointer(
 				static_cast<GLuint>(attributeIndex),
 				static_cast<GLint>(attribute.count),
-				details::EnumToValue<GLenum>(attribute.type),
+				utils::EnumToValue<GLenum>(attribute.type),
 				static_cast<GLboolean>(attribute.normalized),
 				static_cast<GLsizei>(totalSize),
 				reinterpret_cast<const GLvoid*>(currentOffset)

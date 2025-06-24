@@ -15,6 +15,7 @@
 #include <orhi/impl/gl/details/glad/glad.h>
 #include <orhi/impl/gl/Backend.h>
 #include <orhi/math/Conversions.h>
+#include <orhi/utils/BitmaskOperators.h>
 
 using namespace orhi::impl::gl;
 
@@ -161,8 +162,9 @@ namespace
 	*/
 	orhi::data::PipelineState RetrieveOpenGLPipelineState()
 	{
-		using namespace orhi::types;
 		using namespace orhi::impl;
+		using namespace orhi::types;
+		using namespace orhi::utils;
 
 		orhi::data::PipelineState pso;
 
@@ -191,26 +193,26 @@ namespace
 		pso.multisample = GetBool(GL_MULTISAMPLE);
 
 		// Stencil
-		pso.stencilFuncOp = details::ValueToEnum<EComparaisonAlgorithm>(static_cast<GLenum>(GetInt(GL_STENCIL_FUNC)));
+		pso.stencilFuncOp = ValueToEnum<EComparaisonAlgorithm>(static_cast<GLenum>(GetInt(GL_STENCIL_FUNC)));
 		pso.stencilFuncRef = GetInt(GL_STENCIL_REF);
 		pso.stencilFuncMask = static_cast<uint32_t>(GetInt(GL_STENCIL_VALUE_MASK));
 
 		pso.stencilWriteMask = static_cast<uint32_t>(GetInt(GL_STENCIL_WRITEMASK));
 
-		pso.stencilOpFail = details::ValueToEnum<EOperation>(static_cast<GLenum>(GetInt(GL_STENCIL_FAIL)));
-		pso.depthOpFail = details::ValueToEnum<EOperation>(static_cast<GLenum>(GetInt(GL_STENCIL_PASS_DEPTH_FAIL)));
-		pso.bothOpFail = details::ValueToEnum<EOperation>(static_cast<GLenum>(GetInt(GL_STENCIL_PASS_DEPTH_PASS)));
+		pso.stencilOpFail = ValueToEnum<EOperation>(static_cast<GLenum>(GetInt(GL_STENCIL_FAIL)));
+		pso.depthOpFail = ValueToEnum<EOperation>(static_cast<GLenum>(GetInt(GL_STENCIL_PASS_DEPTH_FAIL)));
+		pso.bothOpFail = ValueToEnum<EOperation>(static_cast<GLenum>(GetInt(GL_STENCIL_PASS_DEPTH_PASS)));
 
 		// Depth
-		pso.depthFunc = details::ValueToEnum<EComparaisonAlgorithm>(static_cast<GLenum>(GetInt(GL_DEPTH_FUNC)));
+		pso.depthFunc = ValueToEnum<EComparaisonAlgorithm>(static_cast<GLenum>(GetInt(GL_DEPTH_FUNC)));
 
 		// Culling
-		pso.cullFace = details::ValueToEnum<ECullFace>(static_cast<GLenum>(GetInt(GL_CULL_FACE_MODE)));
+		pso.cullFace = ValueToEnum<ECullFace>(static_cast<GLenum>(GetInt(GL_CULL_FACE_MODE)));
 
 		// Blending
-		pso.blendingSrcFactor = details::ValueToEnum<EBlendingFactor>(static_cast<GLenum>(GetInt(GL_BLEND_SRC)));
-		pso.blendingDestFactor = details::ValueToEnum<EBlendingFactor>(static_cast<GLenum>(GetInt(GL_BLEND_DST)));
-		pso.blendingEquation = details::ValueToEnum<EBlendingEquation>(static_cast<GLenum>(GetInt(GL_BLEND_EQUATION)));
+		pso.blendingSrcFactor = ValueToEnum<EBlendingFactor>(static_cast<GLenum>(GetInt(GL_BLEND_SRC)));
+		pso.blendingDestFactor = ValueToEnum<EBlendingFactor>(static_cast<GLenum>(GetInt(GL_BLEND_DST)));
+		pso.blendingEquation = ValueToEnum<EBlendingEquation>(static_cast<GLenum>(GetInt(GL_BLEND_EQUATION)));
 
 		return pso;
 	}
@@ -263,25 +265,44 @@ namespace orhi
 	template<>
 	void Backend::DrawElements(types::EPrimitiveMode p_primitiveMode, uint32_t p_indexCount)
 	{
-		glDrawElements(details::EnumToValue<GLenum>(p_primitiveMode), p_indexCount, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(utils::EnumToValue<GLenum>(p_primitiveMode), p_indexCount, GL_UNSIGNED_INT, nullptr);
 	}
 
 	template<>
 	void Backend::DrawElementsInstanced(types::EPrimitiveMode p_primitiveMode, uint32_t p_indexCount, uint32_t p_instances)
 	{
-		glDrawElementsInstanced(details::EnumToValue<GLenum>(p_primitiveMode), p_indexCount, GL_UNSIGNED_INT, nullptr, p_instances);
+		glDrawElementsInstanced(utils::EnumToValue<GLenum>(p_primitiveMode), p_indexCount, GL_UNSIGNED_INT, nullptr, p_instances);
 	}
 
 	template<>
 	void Backend::DrawArrays(types::EPrimitiveMode p_primitiveMode, uint32_t p_vertexCount)
 	{
-		glDrawArrays(details::EnumToValue<GLenum>(p_primitiveMode), 0, p_vertexCount);
+		glDrawArrays(utils::EnumToValue<GLenum>(p_primitiveMode), 0, p_vertexCount);
 	}
 
 	template<>
 	void Backend::DrawArraysInstanced(types::EPrimitiveMode p_primitiveMode, uint32_t p_vertexCount, uint32_t p_instances)
 	{
-		glDrawArraysInstanced(details::EnumToValue<GLenum>(p_primitiveMode), 0, p_vertexCount, p_instances);
+		glDrawArraysInstanced(utils::EnumToValue<GLenum>(p_primitiveMode), 0, p_vertexCount, p_instances);
+	}
+
+	template<>
+	void Backend::DispatchCompute(uint32_t p_x, uint32_t p_y, uint32_t p_z) const
+	{
+		ORHI_ASSERT(
+			p_x > 0 && p_y > 0 && p_z > 0,
+			"Dispatch work group count cannot be zero"
+		);
+
+		glDispatchCompute(p_x, p_y, p_z);
+	}
+
+	template<>
+	void Backend::MemoryBarrier(types::EMemoryBarrierFlags p_barriers) const
+	{
+		glMemoryBarrier(
+			utils::EnumToValue<GLbitfield>(p_barriers)
+		);
 	}
 
 	template<>
@@ -299,31 +320,31 @@ namespace orhi
 	template<>
 	void Backend::SetRasterizationMode(types::ERasterizationMode p_rasterizationMode)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, details::EnumToValue<GLenum>(p_rasterizationMode));
+		glPolygonMode(GL_FRONT_AND_BACK, utils::EnumToValue<GLenum>(p_rasterizationMode));
 	}
 
 	template<>
 	void Backend::SetCapability(types::ERenderingCapability p_capability, bool p_value)
 	{
-		(p_value ? glEnable : glDisable)(details::EnumToValue<GLenum>(p_capability));
+		(p_value ? glEnable : glDisable)(utils::EnumToValue<GLenum>(p_capability));
 	}
 
 	template<>
 	bool Backend::GetCapability(types::ERenderingCapability p_capability)
 	{
-		return glIsEnabled(details::EnumToValue<GLenum>(p_capability));
+		return glIsEnabled(utils::EnumToValue<GLenum>(p_capability));
 	}
 
 	template<>
 	void Backend::SetStencilAlgorithm(types::EComparaisonAlgorithm p_algorithm, int32_t p_reference, uint32_t p_mask)
 	{
-		glStencilFunc(details::EnumToValue<GLenum>(p_algorithm), p_reference, p_mask);
+		glStencilFunc(utils::EnumToValue<GLenum>(p_algorithm), p_reference, p_mask);
 	}
 
 	template<>
 	void Backend::SetDepthAlgorithm(types::EComparaisonAlgorithm p_algorithm)
 	{
-		glDepthFunc(details::EnumToValue<GLenum>(p_algorithm));
+		glDepthFunc(utils::EnumToValue<GLenum>(p_algorithm));
 	}
 
 	template<>
@@ -336,9 +357,9 @@ namespace orhi
 	void Backend::SetStencilOperations(types::EOperation p_stencilFail, types::EOperation p_depthFail, types::EOperation p_bothPass)
 	{
 		glStencilOp(
-			details::EnumToValue<GLenum>(p_stencilFail),
-			details::EnumToValue<GLenum>(p_depthFail),
-			details::EnumToValue<GLenum>(p_bothPass)
+			utils::EnumToValue<GLenum>(p_stencilFail),
+			utils::EnumToValue<GLenum>(p_depthFail),
+			utils::EnumToValue<GLenum>(p_bothPass)
 		);
 	}
 
@@ -346,21 +367,21 @@ namespace orhi
 	void Backend::SetBlendingFunction(types::EBlendingFactor p_sourceFactor, types::EBlendingFactor p_destinationFactor)
 	{
 		glBlendFunc(
-			details::EnumToValue<GLenum>(p_sourceFactor),
-			details::EnumToValue<GLenum>(p_destinationFactor)
+			utils::EnumToValue<GLenum>(p_sourceFactor),
+			utils::EnumToValue<GLenum>(p_destinationFactor)
 		);
 	}
 
 	template<>
 	void Backend::SetBlendingEquation(types::EBlendingEquation p_equation)
 	{
-		glBlendEquation(details::EnumToValue<GLenum>(p_equation));
+		glBlendEquation(utils::EnumToValue<GLenum>(p_equation));
 	}
 
 	template<>
 	void Backend::SetCullFace(types::ECullFace p_cullFace)
 	{
-		glCullFace(details::EnumToValue<GLenum>(p_cullFace));
+		glCullFace(utils::EnumToValue<GLenum>(p_cullFace));
 	}
 
 	template<>

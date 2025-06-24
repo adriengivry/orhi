@@ -16,7 +16,7 @@ namespace orhi
 {
 	template<>
 	TextureHandle::TTextureHandle(types::ETextureType p_type) : m_context{
-		.type = details::EnumToValue<GLenum>(p_type)
+		.type = utils::EnumToValue<GLenum>(p_type)
 	}
 	{
 	}
@@ -24,7 +24,7 @@ namespace orhi
 	template<>
 	TextureHandle::TTextureHandle(types::ETextureType p_type, uint32_t p_id) : m_context{
 		.id = p_id,
-		.type = details::EnumToValue<GLenum>(p_type)
+		.type = utils::EnumToValue<GLenum>(p_type)
 	}
 	{
 	}
@@ -57,7 +57,7 @@ namespace orhi
 	template<>
 	types::ETextureType TextureHandle::GetType() const
 	{
-		return details::ValueToEnum<types::ETextureType>(m_context.type);
+		return utils::ValueToEnum<types::ETextureType>(m_context.type);
 	}
 }
 

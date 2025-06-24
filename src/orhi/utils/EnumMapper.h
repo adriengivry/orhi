@@ -7,6 +7,8 @@
 #pragma once
 
 #include <tuple>
+#include <type_traits>
+#include <orhi/utils/BitmaskOperators.h>
 
 namespace orhi::utils
 {
@@ -64,6 +66,90 @@ namespace orhi::utils
 			{
 				return FromValueImpl<EnumType, ValueType, Mappings, I + 1>(value);
 			}
+		}
+	}
+
+	// New flag conversion functions
+	template <typename EnumType, typename ValueType, typename Mappings = typename MappingFor<EnumType, ValueType>::type, std::size_t I = 0>
+	constexpr ValueType ToFlagsImpl(EnumType enumFlags)
+	{
+		if constexpr (I == tuple_size_v<Mappings>)
+		{
+			return ValueType{};
+		}
+		else
+		{
+			using CurrentPair = typename std::tuple_element<I, Mappings>::type;
+			ValueType result{};
+
+			// Check if this flag is set in the input
+			if ((enumFlags & CurrentPair::enumValue) == CurrentPair::enumValue)
+			{
+				result = CurrentPair::value;
+			}
+
+			// Recursively check remaining flags
+			if constexpr (I + 1 < tuple_size_v<Mappings>)
+			{
+				result = result | ToFlagsImpl<EnumType, ValueType, Mappings, I + 1>(enumFlags);
+			}
+
+			return result;
+		}
+	}
+
+	template <typename EnumType, typename ValueType, typename Mappings = typename MappingFor<EnumType, ValueType>::type, std::size_t I = 0>
+	constexpr EnumType FromFlagsImpl(ValueType valueFlags)
+	{
+		if constexpr (I == tuple_size_v<Mappings>)
+		{
+			return EnumType{};
+		}
+		else
+		{
+			using CurrentPair = typename std::tuple_element<I, Mappings>::type;
+			EnumType result{};
+
+			// Check if this flag is set in the input
+			if ((valueFlags & CurrentPair::value) == CurrentPair::value)
+			{
+				result = CurrentPair::enumValue;
+			}
+
+			// Recursively check remaining flags
+			if constexpr (I + 1 < tuple_size_v<Mappings>)
+			{
+				result = result | FromFlagsImpl<EnumType, ValueType, Mappings, I + 1>(valueFlags);
+			}
+
+			return result;
+		}
+	}
+
+	// Public interface functions
+	template <typename ValueType, typename EnumType>
+	constexpr ValueType EnumToValue(EnumType enumValue)
+	{
+		if constexpr (orhi::utils::is_bitmask_enum_v<EnumType>)
+		{
+			return orhi::utils::ToFlagsImpl<EnumType, ValueType>(enumValue);
+		}
+		else
+		{
+			return orhi::utils::ToValueImpl<EnumType, ValueType>(enumValue);
+		}
+	}
+
+	template <typename EnumType, typename ValueType>
+	constexpr EnumType ValueToEnum(ValueType value)
+	{
+		if constexpr (orhi::utils::is_bitmask_enum_v<EnumType>)
+		{
+			return orhi::utils::FromFlagsImpl<EnumType, ValueType>(value);
+		}
+		else
+		{
+			return orhi::utils::FromValueImpl<EnumType, ValueType>(value);
 		}
 	}
 }

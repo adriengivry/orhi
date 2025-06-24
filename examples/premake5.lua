@@ -29,6 +29,7 @@ group "examples"
 	include "2-cube"
 	include "3-framebuffer"
 	include "4-geometry"
+	include "5-compute"
 group ""
 
 group "examples/deps"
