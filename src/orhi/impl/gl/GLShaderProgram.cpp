@@ -208,7 +208,7 @@ void ShaderProgram::SetUniform<type>(const std::string& p_name, const type& valu
 				case SAMPLER_CUBE: return std::make_any<Texture*>(nullptr);
 				default: return std::nullopt;
 				}
-				}();
+			}();
 
 			// Only add the uniform if it has a value (unsupported uniform types will be ignored)
 			if (uniformValue.has_value())
@@ -217,7 +217,7 @@ void ShaderProgram::SetUniform<type>(const std::string& p_name, const type& valu
 					.type = uniformType,
 					.name = name,
 					.defaultValue = uniformValue
-					});
+				});
 			}
 		}
 	}
