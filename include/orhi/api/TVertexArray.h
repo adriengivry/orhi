@@ -15,7 +15,7 @@
 namespace orhi::api
 {
 	/**
-	* Represents a vertex array, used to descript the vertex layout to the graphics backend.
+	* Represents a vertex array, used to describe a vertex layout to the graphics backend.
 	*/
 	template<types::EGraphicsBackend Backend, class VertexArrayContext, class VertexBufferContext, class IndexBufferContext, class BufferContext>
 	class TVertexArray final
