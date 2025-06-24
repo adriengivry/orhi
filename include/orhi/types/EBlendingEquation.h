@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* Blending equations used by the blending operations
+	* Blending equations used by blending operations
 	*/
 	enum class EBlendingEquation : uint8_t
 	{

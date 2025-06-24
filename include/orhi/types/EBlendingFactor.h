@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* Blending factors used for blending operations
+	* Blending factors used by blending operations
 	*/
 	enum class EBlendingFactor : uint8_t
 	{

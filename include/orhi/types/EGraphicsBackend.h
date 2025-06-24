@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* Enumerate graphics backend implementations
+	* Enumeration of available graphics backends
 	*/
 	enum class EGraphicsBackend : uint8_t
 	{

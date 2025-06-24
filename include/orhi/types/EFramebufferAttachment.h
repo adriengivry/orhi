@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of framebuffer attachments
+	* Enumeration of framebuffer attachment types
 	*/
 	enum class EFramebufferAttachment : uint8_t
 	{

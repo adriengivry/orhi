@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* OpenGL rasterization mode enum wrapper
+	* Enumeration of shader types
 	*/
 	enum class EShaderType : uint8_t
 	{

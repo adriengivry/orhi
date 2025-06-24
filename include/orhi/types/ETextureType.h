@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* Texture types
+	* Enumeration of texture types
 	*/
 	enum class ETextureType : uint8_t
 	{

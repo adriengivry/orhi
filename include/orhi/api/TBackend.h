@@ -14,7 +14,6 @@
 #include <orhi/types/EComparaisonAlgorithm.h>
 #include <orhi/types/EOperation.h>
 #include <orhi/types/ECullFace.h>
-#include <orhi/types/ECullingOptions.h>
 #include <orhi/types/EPixelDataFormat.h>
 #include <orhi/types/EPixelDataType.h>
 #include <orhi/types/EGraphicsBackend.h>

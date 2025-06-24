@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* Defines some access hints that buffers can use
+	* Defines access hints that buffers can use
 	*/
 	enum class EAccessSpecifier : uint8_t
 	{

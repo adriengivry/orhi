@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* Graphics operations (for stencil/depth buffers)
+	* Graphics operation types for stencil/depth operations
 	*/
 	enum class EOperation : uint8_t
 	{
