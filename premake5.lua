@@ -46,8 +46,13 @@ project "orhi"
 	}
 
 	includedirs {
+		"%{VULKAN_SDK}/include",
 		"include",
 		"src"
+	}
+
+	links {
+		"%{VULKAN_SDK}/lib/vulkan-1.lib"
 	}
 
 	filter { "configurations:Debug" }
