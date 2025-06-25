@@ -16,6 +16,7 @@ namespace orhi::types
 	enum class EGraphicsBackend : uint8_t
 	{
 		MOCK,
-		OPENGL
+		OPENGL,
+		VULKAN
 	};
 }

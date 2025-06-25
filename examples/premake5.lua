@@ -6,9 +6,10 @@ workspace "orhi-examples"
 	newoption {
 		trigger = "gfxapi",
 		value = "API",
-		description = "Define the graphics API to use (e.g., OpenGL, Mock)",
+		description = "Define the graphics API to use (e.g., OpenGL, Vulkan, Mock)",
 		allowed = {
 			{ "opengl", "Use OpenGL as the graphics API" },
+			{ "vulkan", "Use Vulkan as the graphics API" },
 			{ "mock", "Use Mock as the graphics API" }
 		},
 		default = "opengl"
@@ -17,8 +18,21 @@ workspace "orhi-examples"
 	filter { "options:gfxapi=opengl" }
 		defines { "ORHI_SELECT_OPENGL" }
 
+	filter { "options:gfxapi=vulkan" }
+		defines { "ORHI_SELECT_VULKAN" }
+
 	filter { "options:gfxapi=mock" }
 		defines { "ORHI_SELECT_MOCK" }
+
+	VULKAN_SDK = os.getenv("VK_SDK_PATH")
+
+	-- Check if VULKAN_SDK is set to a valid path
+	if not VULKAN_SDK or VULKAN_SDK == "" then
+		error("Couldn't find Vulkan SDK. Please make sure the Vulkan SDK is installed and the VK_SDK_PATH environment variable is set.")
+	end
+	
+	print("Vulkan SDK Path: " .. VULKAN_SDK)
+
 
 outputdir = "%{wks.location}/../bin/"
 objoutdir = "%{wks.location}/../bin-int/"
