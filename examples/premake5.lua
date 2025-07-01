@@ -39,6 +39,7 @@ objoutdir = "%{wks.location}/../bin-int/"
 depsdir = "%{wks.location}/deps/"
 
 group "examples"
+	include "0-vulkan"
 	include "1-triangle"
 	include "2-cube"
 	include "3-framebuffer"

@@ -2,8 +2,8 @@ project "orhi"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
-	targetdir (outputdir .. "%{cfg.buildcfg}/%{prj.name}")
-	objdir (objoutdir .. "%{cfg.buildcfg}/%{prj.name}")
+	targetdir (outputdir .. "bin/%{cfg.buildcfg}/%{prj.name}")
+	objdir (objoutdir .. "obj/%{cfg.buildcfg}/%{prj.name}")
 
 	print("-------------------------------------------")
 	print("Generating orhi project...")
