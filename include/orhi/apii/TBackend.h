@@ -7,7 +7,10 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 #include <orhi/types/EGraphicsBackend.h>
+#include <orhi/data/DeviceInfo.h>
+#include <orhi/data/BackendDesc.h>
 
 namespace orhi::apii
 {
@@ -20,18 +23,30 @@ namespace orhi::apii
 	public:
 		/**
 		* Creates the backend.
-		* @param p_extensions Extensions to use
-		* @param p_debug Indicates whether to enable debug mode.
+		* @param p_desc
 		*/
-		TBackend(
-			const std::vector<std::string>& p_extenions,
-			bool p_debug
-		);
+		TBackend(const data::BackendDesc& p_desc);
 
 		/**
 		* Destroys the backend.
 		*/
 		~TBackend();
+
+		/**
+		* Return the list of available devices to select from
+		*/
+		const std::vector<data::DeviceInfo>& GetSuitableDevices() const;
+
+		/**
+		* Select a device to use given its Id
+		* @param p_deviceId
+		*/
+		void SelectDevice(uint32_t p_deviceId);
+
+		/**
+		* Returns true if the backend is in a valid state
+		*/
+		bool Validate() const;
 
 	private:
 		Context m_context;

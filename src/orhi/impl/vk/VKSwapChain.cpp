@@ -8,7 +8,7 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/Surface.h>
+#include <orhi/impl/vk/SwapChain.h>
 
 using namespace orhi::impl::vk;
 

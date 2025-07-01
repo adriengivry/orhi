@@ -25,8 +25,6 @@
 #include <ranges>
 
 #include <orhi/Backend.h>
-#include <orhi/Surface.h>
-#include <orhi/DeviceManager.h>
 
 namespace
 {
@@ -55,58 +53,32 @@ namespace
 
 		return requiredExtensions;
 	}
-
-	/*
-	val::SurfaceDesc GetGlfwSurfaceDesc(GLFWwindow* p_window)
-	{
-#if defined(_WIN32) || defined(_WIN64)
-		return {
-			.windowHandle = glfwGetWin32Window(p_window),
-			.instanceHandle = GetModuleHandle(nullptr)
-		};
-#else
-#error Only supporting Windows for now!
-#endif
-	}
-	*/
 }
 
-int RunVulkan(GLFWwindow* window)
+int RunVulkan(GLFWwindow* p_window)
 {
 	// Create backend
 	auto backend = std::make_unique<orhi::Backend>(
-		GetGlfwRequiredExtensions(),
-		true
-		/*
-		val::InstanceDesc{
-			.requiredExtensions = GetGlfwRequiredExtensions()
+		orhi::data::BackendDesc{
+			.debug = true,
+			.extensions = GetGlfwRequiredExtensions(),
+			.win32_windowHandle = glfwGetWin32Window(p_window),
+			.win32_instanceHandle = GetModuleHandle(nullptr)
 		}
-		*/
 	);
 
-	// Create surface
-	auto surface = std::make_unique<orhi::Surface>(
-		/*
-		instance->GetHandle(),
-		GetGlfwSurfaceDesc(window)
-		*/
-	);
+	// Make sure there is at least one suitable device
+	const auto devices = backend->GetSuitableDevices();
 
-	// assert((surface && surface->GetHandle() != VK_NULL_HANDLE) && "invalid surface handle, cannot continue since headless isn't supported");
+	assert(!devices.empty());
 
-	// Create device manager so we can find a suitable device
-	auto deviceManager = std::make_unique<orhi::DeviceManager>(
-		/*
-		instance->GetHandle(),
-		surface->GetHandle()
-		*/
-	);
+	// Select the first found suitable device
+	backend->SelectDevice(devices.front().id);
 
-	// Retrieve the most suited device
-	// val::Device& device = deviceManager->GetSuitableDevice();
-	// device.CreateLogicalDevice(instance->GetValidationLayers());
+	// Ensures the backend is ready to go
+	assert(backend->Validate());
 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(p_window))
 	{
 		glfwPollEvents();
 	}
