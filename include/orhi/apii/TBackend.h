@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <vector>
 #include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::apii
@@ -18,10 +19,19 @@ namespace orhi::apii
 	{
 	public:
 		/**
-		* Initializes the backend.
-		* @param debug Indicates whether to enable debug mode.
+		* Creates the backend.
+		* @param p_extensions Extensions to use
+		* @param p_debug Indicates whether to enable debug mode.
 		*/
-		void Init(bool p_debug);
+		TBackend(
+			const std::vector<std::string>& p_extenions,
+			bool p_debug
+		);
+
+		/**
+		* Destroys the backend.
+		*/
+		~TBackend();
 
 	private:
 		Context m_context;

@@ -75,6 +75,8 @@ int RunVulkan(GLFWwindow* window)
 {
 	// Create backend
 	auto backend = std::make_unique<orhi::Backend>(
+		GetGlfwRequiredExtensions(),
+		true
 		/*
 		val::InstanceDesc{
 			.requiredExtensions = GetGlfwRequiredExtensions()
