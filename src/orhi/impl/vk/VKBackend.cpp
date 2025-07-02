@@ -16,6 +16,8 @@
 #include <orhi/impl/vk/details/ExtensionManager.h>
 #include <orhi/impl/vk/details/ValidationLayerManager.h>
 #include <orhi/impl/vk/details/DebugMessenger.h>
+#include <orhi/impl/vk/details/global/SharedContext.h>
+#include <orhi/impl/vk/details/SwapChainUtils.h>
 #include <format>
 #include <optional>
 #include <set>
@@ -53,13 +55,6 @@ namespace
 		}
 	};
 
-	struct SwapChainSupportDetails
-	{
-		VkSurfaceCapabilitiesKHR capabilities;
-		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR> presentModes;
-	};
-
 	struct Device
 	{
 		VkPhysicalDevice physicalDevice;
@@ -68,44 +63,21 @@ namespace
 		details::ExtensionManager extensionManager;
 		QueueFamilyIndices queueFamilyIndices;
 		orhi::data::DeviceInfo info;
-		SwapChainSupportDetails swapChainSupportDetails;
+		details::SwapChainSupportDetails swapChainSupportDetails;
 	};
 
-	std::unique_ptr<details::DebugMessenger> g_debugMessenger;
+	// Device creation
 	std::vector<Device> g_devices;
 	std::vector<orhi::data::DeviceInfo> g_suitableDeviceInfos;
 	std::vector<details::RequestedExtension> g_deviceRequestedExtensions;
 
-	SwapChainSupportDetails QuerySwapChainDetails(VkPhysicalDevice device, VkSurfaceKHR p_surface)
-	{
-		SwapChainSupportDetails details;
+	// Debug
+	std::unique_ptr<details::DebugMessenger> g_debugMessenger;
 
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, p_surface, &details.capabilities);
+	// Actual selected device
+	std::optional<Device> g_selectedDeviceDetails;
 
-		uint32_t formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, p_surface, &formatCount, nullptr);
-
-		// TODO: This pattern where we skip the second invocation of vkGetPhysicalDeviceSurfaceFormatsKHR if the count is 0,
-		// could be reused for extensions, layers, and queue families, etc.
-		if (formatCount != 0)
-		{
-			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, p_surface, &formatCount, details.formats.data());
-		}
-
-		uint32_t presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, p_surface, &presentModeCount, nullptr);
-
-		if (presentModeCount != 0)
-		{
-			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, p_surface, &presentModeCount, details.presentModes.data());
-		}
-
-		return details;
-	}
-
-	bool IsSwapChainAdequate(const SwapChainSupportDetails& p_swapChainSupportDetails)
+	bool IsSwapChainAdequate(const details::SwapChainSupportDetails& p_swapChainSupportDetails)
 	{
 		return
 			!p_swapChainSupportDetails.formats.empty() &&
@@ -129,7 +101,7 @@ namespace
 		}
 
 		// Store swap chain support details since they can be used for swap chain creation
-		p_device.swapChainSupportDetails = QuerySwapChainDetails(p_device.physicalDevice, p_surface);
+		p_device.swapChainSupportDetails = details::SwapChainUtils::QuerySwapChainDetails(p_device.physicalDevice, p_surface);
 
 		if (!IsSwapChainAdequate(p_device.swapChainSupportDetails))
 		{
@@ -360,7 +332,7 @@ namespace orhi
 	template<>
 	void Backend::SelectDevice(uint32_t p_deviceIndex)
 	{
-		const Device& selectedDevice = [p_deviceIndex]() {
+		Device selectedDevice = [p_deviceIndex]() {
 			for (const Device& device : g_devices)
 			{
 				if (device.info.id == p_deviceIndex)
@@ -372,6 +344,8 @@ namespace orhi
 			ORHI_ASSERT(false, "Provided device index doesn't correspond to any valid device");
 			return g_devices[0];
 		}();
+
+		g_selectedDeviceDetails = std::make_optional(selectedDevice);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
@@ -412,15 +386,16 @@ namespace orhi
 			.pEnabledFeatures = &selectedDevice.features,
 		};
 
-		if (vkCreateDevice(
+		VkResult result = vkCreateDevice(
 			selectedDevice.physicalDevice,
 			&createInfo,
 			nullptr,
 			&m_context.device
-		) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create logical device!");
-		}
+		);
+
+		details::global::sharedContext.device = m_context.device;
+		
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create logical device!");
 
 		VkQueue graphicsQueue, presentQueue;
 		vkGetDeviceQueue(m_context.device, selectedDevice.queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
@@ -434,6 +409,19 @@ namespace orhi
 			m_context.instance &&
 			m_context.device &&
 			m_context.surface;
+	}
+
+	template<>
+	data::SwapChainDesc Backend::GetOptimalSwapChainDesc(std::pair<uint32_t, uint32_t> p_windowSize)
+	{
+		auto optimalConfig = details::SwapChainUtils::CalculateSwapChainOptimalConfig(
+			g_selectedDeviceDetails.value().swapChainSupportDetails,
+			{ p_windowSize.first, p_windowSize.second }
+		);
+
+		return data::SwapChainDesc{
+			.format = static_cast<types::EFormat>(optimalConfig.surfaceFormat.format)
+		};
 	}
 }
 

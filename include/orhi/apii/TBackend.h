@@ -11,6 +11,7 @@
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/data/DeviceInfo.h>
 #include <orhi/data/BackendDesc.h>
+#include <orhi/data/SwapChainDesc.h>
 
 namespace orhi::apii
 {
@@ -47,6 +48,12 @@ namespace orhi::apii
 		* Returns true if the backend is in a valid state
 		*/
 		bool Validate() const;
+
+		/**
+		* Returns information about the swap chain
+		* @param p_windowSize
+		*/
+		data::SwapChainDesc GetOptimalSwapChainDesc(std::pair<uint32_t, uint32_t> p_windowSize);
 
 	private:
 		Context m_context;

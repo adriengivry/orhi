@@ -25,6 +25,7 @@
 #include <ranges>
 
 #include <orhi/Backend.h>
+#include <orhi/RenderPass.h>
 
 namespace
 {
@@ -83,6 +84,14 @@ int main()
 
 	// Ensures the backend is ready to go
 	assert(backend->Validate());
+
+	auto optimalSwapChainDesc = backend->GetOptimalSwapChainDesc(
+		GetWindowSize(window)
+	);
+
+	auto renderPass = std::make_unique<orhi::RenderPass>(
+		optimalSwapChainDesc.format
+	);
 
 	while (!glfwWindowShouldClose(window))
 	{

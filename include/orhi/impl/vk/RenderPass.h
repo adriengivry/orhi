@@ -8,8 +8,15 @@
 
 #include <orhi/apii/TRenderPass.h>
 
+struct VkRenderPass_T;
+typedef VkRenderPass_T* VkRenderPass;
+
 namespace orhi::impl::vk
 {
-	struct RenderPassContext {};
+	struct RenderPassContext
+	{
+		VkRenderPass handle;
+	};
+
 	using RenderPass = apii::TRenderPass<types::EGraphicsBackend::VULKAN, RenderPassContext>;
 }
