@@ -19,6 +19,7 @@
 #include <glm/mat4x4.hpp>
 
 #include <cassert>
+#include <array>
 #include <iostream>
 #include <vector>
 #include <span>
@@ -29,6 +30,7 @@
 #include <orhi/Backend.h>
 #include <orhi/RenderPass.h>
 #include <orhi/ShaderModule.h>
+#include <orhi/Buffer.h>
 
 namespace
 {
@@ -76,6 +78,31 @@ namespace
 		file.close();
 		return buffer;
 	}
+
+	struct Vertex
+	{
+		glm::vec2 pos;
+		glm::vec3 color;
+	};
+
+	template<class T>
+	struct VertexInputDescription
+	{
+		static auto GetBindingDescription();
+		static auto GetAttributeDescriptions();
+	};
+
+	constexpr auto k_vertices = std::to_array<Vertex>({
+		{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+		{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+		{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+		{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+	});
+
+	constexpr auto k_indices = std::to_array<uint32_t>({
+		0, 1, 2,
+		2, 3, 0
+	});
 }
 
 int main()
@@ -122,6 +149,54 @@ int main()
 		device,
 		ReadShaderFile("assets/shaders/main.frag.spv")
 	);
+
+	// Create a CPU-side buffer to hold vertices
+	auto hostVertexBuffer = std::make_unique<orhi::Buffer>(
+		device,
+		orhi::data::BufferDesc{
+			.size = sizeof(k_vertices),
+			.usage = orhi::types::EBufferUsageFlags::TRANSFER_SRC_BIT
+		}
+	);
+	hostVertexBuffer->Allocate(
+		orhi::types::EMemoryPropertyFlags::HOST_VISIBLE_BIT |
+		orhi::types::EMemoryPropertyFlags::HOST_COHERENT_BIT
+	);
+	hostVertexBuffer->Upload(k_vertices.data());
+
+	// Create a CPU-side buffer to hold indices
+	std::unique_ptr<orhi::Buffer> hostIndexBuffer = std::make_unique<orhi::Buffer>(
+		device,
+		orhi::data::BufferDesc{
+			.size = sizeof(k_indices),
+			.usage = orhi::types::EBufferUsageFlags::TRANSFER_SRC_BIT
+		}
+	);
+	hostIndexBuffer->Allocate(
+		orhi::types::EMemoryPropertyFlags::HOST_VISIBLE_BIT |
+		orhi::types::EMemoryPropertyFlags::HOST_COHERENT_BIT
+	);
+	hostIndexBuffer->Upload(k_indices.data());
+
+	// Create a GPU-side buffer to hold vertices
+	std::unique_ptr<orhi::Buffer> deviceVertexBuffer = std::make_unique<orhi::Buffer>(
+		device,
+		orhi::data::BufferDesc{
+			.size = sizeof(k_vertices),
+			.usage = orhi::types::EBufferUsageFlags::TRANSFER_DST_BIT | orhi::types::EBufferUsageFlags::VERTEX_BUFFER_BIT
+		}
+	);
+	deviceVertexBuffer->Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
+
+	// Create a GPU-side buffer to hold indices
+	auto deviceIndexBuffer = std::make_unique<orhi::Buffer>(
+		device,
+		orhi::data::BufferDesc{
+			.size = sizeof(k_indices),
+			.usage = orhi::types::EBufferUsageFlags::TRANSFER_DST_BIT | orhi::types::EBufferUsageFlags::INDEX_BUFFER_BIT
+		}
+	);
+	deviceIndexBuffer->Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
 
 	while (!glfwWindowShouldClose(window))
 	{

@@ -116,6 +116,12 @@ namespace orhi
 	{
 		return m_context.device;
 	}
+
+	template<>
+	data::NativeHandle Device::GetAdapterNativeHandle() const
+	{
+		return m_context.physicalDevice;
+	}
 }
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

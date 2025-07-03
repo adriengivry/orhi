@@ -41,6 +41,11 @@ namespace orhi::api
 		*/
 		data::NativeHandle GetNativeHandle() const;
 
+		/**
+		* Returns the adapter's native handle
+		*/
+		data::NativeHandle GetAdapterNativeHandle() const;
+
 	private:
 		Context m_context;
 	};
