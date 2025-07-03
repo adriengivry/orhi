@@ -20,8 +20,17 @@ project "0-vulkan"
 	links {
 		"glfw",
 		"glm",
-		"orhi"
+		"orhi",
+		"shaders"
     }
+
+	-- Copy assets folder to output directory
+    buildaction "Custom"
+    buildmessage "Copying assets to output folder..."
+    buildcommands {
+        "{COPYDIR} %{wks.location}assets %{cfg.targetdir}/assets"
+    }
+    buildoutputs { "%{cfg.targetdir}/assets_copied.stamp" }
 
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }

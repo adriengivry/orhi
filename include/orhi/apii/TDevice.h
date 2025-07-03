@@ -8,6 +8,7 @@
 
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/data/NativeHandle.h>
 
 namespace orhi::apii
 {
@@ -34,6 +35,11 @@ namespace orhi::apii
 		* @param p_windowSize
 		*/
 		data::SwapChainDesc GetOptimalSwapChainDesc(std::pair<uint32_t, uint32_t> p_windowSize);
+
+		/**
+		* Returns the underlying object's native handle
+		*/
+		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		Context m_context;

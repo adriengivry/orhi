@@ -53,4 +53,8 @@ group "examples/deps"
 	include "deps/glfw"
 group ""
 
+group "examples/assets"
+	include "shaders"
+group ""
+
 include "../"

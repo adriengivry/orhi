@@ -298,6 +298,12 @@ namespace orhi
 			&deviceCreationInfo
 		);
 	}
+
+	template<>
+	data::NativeHandle Backend::GetNativeHandle() const
+	{
+		return m_context.instance;
+	}
 }
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

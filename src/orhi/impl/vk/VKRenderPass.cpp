@@ -9,7 +9,6 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/RenderPass.h>
-#include <orhi/impl/vk/details/global/SharedContext.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -70,7 +69,7 @@ namespace orhi
 		};
 
 		VkResult result = vkCreateRenderPass(
-			details::global::sharedContext.device,
+			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
 			&m_context.handle
@@ -82,7 +81,11 @@ namespace orhi
 	template<>
 	RenderPass::~TRenderPass()
 	{
-		vkDestroyRenderPass(details::global::sharedContext.device, m_context.handle, nullptr);
+		vkDestroyRenderPass(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			m_context.handle,
+			nullptr
+		);
 	}
 }
 

@@ -110,6 +110,12 @@ namespace orhi
 			.format = static_cast<types::EFormat>(optimalConfig.surfaceFormat.format)
 		};
 	}
+
+	template<>
+	data::NativeHandle Device::GetNativeHandle() const
+	{
+		return m_context.device;
+	}
 }
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

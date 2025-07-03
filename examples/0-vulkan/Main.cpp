@@ -23,9 +23,12 @@
 #include <vector>
 #include <span>
 #include <ranges>
+#include <filesystem>
+#include <fstream>
 
 #include <orhi/Backend.h>
 #include <orhi/RenderPass.h>
+#include <orhi/ShaderModule.h>
 
 namespace
 {
@@ -53,6 +56,25 @@ namespace
 		}
 
 		return requiredExtensions;
+	}
+
+	std::vector<std::byte> ReadShaderFile(const std::filesystem::path p_fileName)
+	{
+		assert(std::filesystem::exists(p_fileName));
+
+		std::ifstream file(p_fileName, std::ios::ate | std::ios::binary);
+
+		if (!file.is_open())
+		{
+			throw std::runtime_error("failed to open shader file: " + p_fileName.string());
+		}
+
+		size_t fileSize = static_cast<size_t>(file.tellg());
+		std::vector<std::byte> buffer(fileSize);
+		file.seekg(0);
+		file.read(reinterpret_cast<char*>(buffer.data()), fileSize);
+		file.close();
+		return buffer;
 	}
 }
 
@@ -89,6 +111,11 @@ int main()
 	auto renderPass = std::make_unique<orhi::RenderPass>(
 		device,
 		optimalSwapChainDesc.format
+	);
+
+	auto vertexShaderModule = std::make_unique<orhi::ShaderModule>(
+		device,
+		ReadShaderFile("assets/shaders/foo.vert.spv")
 	);
 
 	while (!glfwWindowShouldClose(window))

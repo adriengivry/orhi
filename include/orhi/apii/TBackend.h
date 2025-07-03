@@ -13,6 +13,7 @@
 #include <orhi/data/DeviceInfo.h>
 #include <orhi/data/BackendDesc.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/data/NativeHandle.h>
 
 namespace orhi::apii
 {
@@ -44,6 +45,11 @@ namespace orhi::apii
 		* @param p_deviceId
 		*/
 		TDevice<Backend, DeviceContext>& CreateDevice(uint32_t p_deviceId);
+
+		/**
+		* Returns the underlying object's native handle
+		*/
+		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		Context m_context;
