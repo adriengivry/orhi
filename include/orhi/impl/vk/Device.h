@@ -8,7 +8,7 @@
 
 #include <memory>
 #include <vector>
-#include <orhi/apii/TDevice.h>
+#include <orhi/api/TDevice.h>
 
 struct VkPhysicalDevice_T;
 typedef VkPhysicalDevice_T* VkPhysicalDevice;
@@ -43,5 +43,5 @@ namespace orhi::impl::vk
 		std::vector<const char*> extensions;
 	};
 
-	using Device = apii::TDevice<types::EGraphicsBackend::VULKAN, DeviceContext>;
+	using Device = api::TDevice<types::EGraphicsBackend::VULKAN, DeviceContext>;
 }

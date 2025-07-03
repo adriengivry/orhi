@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/apii/TRenderPass.h>
+#include <orhi/api/TRenderPass.h>
 #include <orhi/impl/vk/Device.h>
 
 struct VkRenderPass_T;
@@ -20,5 +20,5 @@ namespace orhi::impl::vk
 		VkRenderPass handle;
 	};
 
-	using RenderPass = apii::TRenderPass<types::EGraphicsBackend::VULKAN, RenderPassContext, DeviceContext>;
+	using RenderPass = api::TRenderPass<types::EGraphicsBackend::VULKAN, RenderPassContext, DeviceContext>;
 }

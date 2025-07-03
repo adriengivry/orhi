@@ -7,7 +7,7 @@
 #pragma once
 
 #include <memory>
-#include <orhi/apii/TBackend.h>
+#include <orhi/api/TBackend.h>
 #include <orhi/impl/vk/Device.h>
 
 struct VkInstance_T;
@@ -33,5 +33,5 @@ namespace orhi::impl::vk
 		VkQueue presentQueue;
 	};
 
-	using Backend = apii::TBackend<types::EGraphicsBackend::VULKAN, BackendContext, DeviceContext>;
+	using Backend = api::TBackend<types::EGraphicsBackend::VULKAN, BackendContext, DeviceContext>;
 }

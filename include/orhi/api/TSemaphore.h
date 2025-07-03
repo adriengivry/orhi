@@ -8,10 +8,10 @@
 
 #include <orhi/types/EGraphicsBackend.h>
 
-namespace orhi::apii
+namespace orhi::api
 {
 	template<types::EGraphicsBackend Backend, class Context>
-	class TCommandBuffer final
+	class TSemaphore final
 	{
 	public:
 

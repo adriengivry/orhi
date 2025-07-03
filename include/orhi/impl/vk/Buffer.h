@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TBuffer.h>
+#include <orhi/api/TBuffer.h>
 
 namespace orhi::impl::vk
 {
 	struct BufferContext {};
-	using Buffer = apii::TBuffer<types::EGraphicsBackend::VULKAN, BufferContext>;
+	using Buffer = api::TBuffer<types::EGraphicsBackend::VULKAN, BufferContext>;
 }

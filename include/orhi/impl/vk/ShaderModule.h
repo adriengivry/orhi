@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/apii/TShaderModule.h>
+#include <orhi/api/TShaderModule.h>
 #include <orhi/impl/vk/Device.h>
 
 struct VkShaderModule_T;
@@ -20,5 +20,5 @@ namespace orhi::impl::vk
 		VkShaderModule handle;
 	};
 
-	using ShaderModule = apii::TShaderModule<types::EGraphicsBackend::VULKAN, ShaderModuleContext, DeviceContext>;
+	using ShaderModule = api::TShaderModule<types::EGraphicsBackend::VULKAN, ShaderModuleContext, DeviceContext>;
 }

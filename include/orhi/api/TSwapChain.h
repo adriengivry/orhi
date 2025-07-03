@@ -7,10 +7,10 @@
 #pragma once
 
 #include <orhi/types/EGraphicsBackend.h>
-#include <orhi/apii/TFramebuffer.h>
+#include <orhi/api/TFramebuffer.h>
 #include <vector>
 
-namespace orhi::apii
+namespace orhi::api
 {
 	template<types::EGraphicsBackend Backend, class Context, class FramebufferContext>
 	class TSwapChain final
@@ -25,7 +25,7 @@ namespace orhi::apii
 		/**
 		* Create framebuffers for each image in the swap chain, for a given render pass
 		*/
-		std::vector<orhi::apii::TFramebuffer<Backend, FramebufferContext>> CreateFramebuffers(/* TODO ADD RENDER PASS PARAM */);
+		std::vector<orhi::api::TFramebuffer<Backend, FramebufferContext>> CreateFramebuffers(/* TODO ADD RENDER PASS PARAM */);
 
 	private:
 		Context m_context;

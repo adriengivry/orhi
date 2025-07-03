@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TGraphicsPipeline.h>
+#include <orhi/api/TGraphicsPipeline.h>
 
 namespace orhi::impl::vk
 {
 	struct GraphicsPipelineContext {};
-	using GraphicsPipeline = apii::TGraphicsPipeline<types::EGraphicsBackend::VULKAN, GraphicsPipelineContext>;
+	using GraphicsPipeline = api::TGraphicsPipeline<types::EGraphicsBackend::VULKAN, GraphicsPipelineContext>;
 }

@@ -8,13 +8,13 @@
 
 #include <orhi/types/EGraphicsBackend.h>
 
-namespace orhi::apii
+namespace orhi::api
 {
 	template<types::EGraphicsBackend Backend, class Context>
-	class TBuffer final
+	class TQueue final
 	{
 	public:
-		
+
 
 	private:
 		Context m_context;

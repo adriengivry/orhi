@@ -10,7 +10,7 @@
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/data/NativeHandle.h>
 
-namespace orhi::apii
+namespace orhi::api
 {
 	/**
 	* Backend class that wraps the selected graphics API's context.

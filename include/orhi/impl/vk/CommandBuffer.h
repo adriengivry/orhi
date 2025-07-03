@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TCommandBuffer.h>
+#include <orhi/api/TCommandBuffer.h>
 
 namespace orhi::impl::vk
 {
 	struct CommandBufferContext {};
-	using CommandBuffer = apii::TCommandBuffer<types::EGraphicsBackend::VULKAN, CommandBufferContext>;
+	using CommandBuffer = api::TCommandBuffer<types::EGraphicsBackend::VULKAN, CommandBufferContext>;
 }

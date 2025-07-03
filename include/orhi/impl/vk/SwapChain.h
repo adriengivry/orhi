@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <orhi/apii/TSwapChain.h>
+#include <orhi/api/TSwapChain.h>
 #include <orhi/impl/vk/Framebuffer.h>
 
 namespace orhi::impl::vk
 {
 	struct SwapChainContext {};
-	using SwapChain = apii::TSwapChain<types::EGraphicsBackend::VULKAN, SwapChainContext, FramebufferContext>;
+	using SwapChain = api::TSwapChain<types::EGraphicsBackend::VULKAN, SwapChainContext, FramebufferContext>;
 }

@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TFence.h>
+#include <orhi/api/TFence.h>
 
 namespace orhi::impl::vk
 {
 	struct FenceContext {};
-	using Fence = apii::TFence<types::EGraphicsBackend::VULKAN, FenceContext>;
+	using Fence = api::TFence<types::EGraphicsBackend::VULKAN, FenceContext>;
 }

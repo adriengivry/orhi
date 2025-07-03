@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TQueue.h>
+#include <orhi/api/TQueue.h>
 
 namespace orhi::impl::vk
 {
 	struct QueueContext {};
-	using Queue = apii::TQueue<types::EGraphicsBackend::VULKAN, QueueContext>;
+	using Queue = api::TQueue<types::EGraphicsBackend::VULKAN, QueueContext>;
 }

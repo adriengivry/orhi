@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TDescriptorPool.h>
+#include <orhi/api/TDescriptorPool.h>
 
 namespace orhi::impl::vk
 {
 	struct DescriptorPoolContext {};
-	using DescriptorPool = apii::TDescriptorPool<types::EGraphicsBackend::VULKAN, DescriptorPoolContext>;
+	using DescriptorPool = api::TDescriptorPool<types::EGraphicsBackend::VULKAN, DescriptorPoolContext>;
 }

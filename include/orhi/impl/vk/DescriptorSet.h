@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TDescriptorSet.h>
+#include <orhi/api/TDescriptorSet.h>
 
 namespace orhi::impl::vk
 {
 	struct DescriptorSetContext {};
-	using DescriptorSet = apii::TDescriptorSet<types::EGraphicsBackend::VULKAN, DescriptorSetContext>;
+	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, DescriptorSetContext>;
 }

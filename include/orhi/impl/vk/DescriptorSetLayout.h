@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TDescriptorSetLayout.h>
+#include <orhi/api/TDescriptorSetLayout.h>
 
 namespace orhi::impl::vk
 {
 	struct DescriptorSetLayoutContext {};
-	using DescriptorSetLayout = apii::TDescriptorSetLayout<types::EGraphicsBackend::VULKAN, DescriptorSetLayoutContext>;
+	using DescriptorSetLayout = api::TDescriptorSetLayout<types::EGraphicsBackend::VULKAN, DescriptorSetLayoutContext>;
 }

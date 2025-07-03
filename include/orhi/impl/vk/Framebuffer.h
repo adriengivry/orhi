@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TFramebuffer.h>
+#include <orhi/api/TFramebuffer.h>
 
 namespace orhi::impl::vk
 {
 	struct FramebufferContext {};
-	using Framebuffer = apii::TFramebuffer<types::EGraphicsBackend::VULKAN, FramebufferContext>;
+	using Framebuffer = api::TFramebuffer<types::EGraphicsBackend::VULKAN, FramebufferContext>;
 }

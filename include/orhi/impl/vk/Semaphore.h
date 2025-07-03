@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TSemaphore.h>
+#include <orhi/api/TSemaphore.h>
 
 namespace orhi::impl::vk
 {
 	struct SemaphoreContext {};
-	using Semaphore = apii::TSemaphore<types::EGraphicsBackend::VULKAN, SemaphoreContext>;
+	using Semaphore = api::TSemaphore<types::EGraphicsBackend::VULKAN, SemaphoreContext>;
 }

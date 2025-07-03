@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <orhi/apii/TShaderProgram.h>
+#include <orhi/api/TShaderProgram.h>
 
 namespace orhi::impl::vk
 {
 	struct ShaderProgramContext {};
-	using ShaderProgram = apii::TShaderProgram<types::EGraphicsBackend::VULKAN, ShaderProgramContext>;
+	using ShaderProgram = api::TShaderProgram<types::EGraphicsBackend::VULKAN, ShaderProgramContext>;
 }

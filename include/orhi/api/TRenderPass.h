@@ -6,29 +6,30 @@
 
 #pragma once
 
-#include <span>
 #include <orhi/types/EGraphicsBackend.h>
-#include <orhi/apii/TDevice.h>
+#include <orhi/types/EFormat.h>
+#include <orhi/api/TDevice.h>
 
-namespace orhi::apii
+namespace orhi::api
 {
 	template<types::EGraphicsBackend Backend, class Context, class DeviceContext>
-	class TShaderModule final
+	class TRenderPass final
 	{
 	public:
 		/**
-		* Creates a shader module
+		* Creates a render pass using the give format
 		* @param p_device
+		* @param p_format
 		*/
-		TShaderModule(
+		TRenderPass(
 			TDevice<Backend, DeviceContext>& p_device,
-			const std::span<const std::byte> p_source
+			types::EFormat p_format
 		);
 
 		/**
-		* Destroys the shader module
+		* Destroys the render pass
 		*/
-		virtual ~TShaderModule();
+		~TRenderPass();
 
 	private:
 		Context m_context;
