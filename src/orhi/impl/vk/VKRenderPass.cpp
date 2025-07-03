@@ -17,7 +17,13 @@ using namespace orhi::impl::vk;
 namespace orhi
 {
 	template<>
-	RenderPass::TRenderPass(types::EFormat p_format)
+	RenderPass::TRenderPass(
+		Device& p_device,
+		types::EFormat p_format
+	) : m_context{
+		.device = p_device,
+		.handle = VK_NULL_HANDLE
+	}
 	{
 		VkAttachmentDescription colorAttachment{
 			.format = static_cast<VkFormat>(p_format), // TODO: Add proper conversion

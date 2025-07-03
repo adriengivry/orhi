@@ -80,16 +80,14 @@ int main()
 	assert(!devices.empty());
 
 	// Select the first suitable device
-	backend->SelectDevice(devices.front().id);
+	auto& device = backend->CreateDevice(devices.front().id);
 
-	// Ensures the backend is ready to go
-	assert(backend->Validate());
-
-	auto optimalSwapChainDesc = backend->GetOptimalSwapChainDesc(
+	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(
 		GetWindowSize(window)
 	);
 
 	auto renderPass = std::make_unique<orhi::RenderPass>(
+		device,
 		optimalSwapChainDesc.format
 	);
 
