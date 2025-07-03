@@ -31,6 +31,7 @@
 #include <orhi/RenderPass.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/Buffer.h>
+#include <orhi/DescriptorSetLayout.h>
 
 namespace
 {
@@ -197,6 +198,18 @@ int main()
 		}
 	);
 	deviceIndexBuffer->Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
+
+	// Create a descriptor layout for the uniform buffer
+	auto descriptorSetLayout = std::make_unique<orhi::DescriptorSetLayout>(
+		device,
+		std::initializer_list<orhi::data::DescriptorBinding>{
+			{
+				.binding = 0,
+				.type = orhi::types::EDescriptorType::UNIFORM_BUFFER,
+				.stageFlags = orhi::types::EShaderStageFlags::VERTEX_BIT,
+			}
+		}
+	);
 
 	while (!glfwWindowShouldClose(window))
 	{

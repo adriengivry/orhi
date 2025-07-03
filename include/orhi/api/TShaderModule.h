@@ -29,7 +29,7 @@ namespace orhi::api
 		/**
 		* Destroys the shader module
 		*/
-		virtual ~TShaderModule();
+		~TShaderModule();
 
 		/**
 		* Returns the underlying object's native handle
