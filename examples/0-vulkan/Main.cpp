@@ -115,7 +115,12 @@ int main()
 
 	auto vertexShaderModule = std::make_unique<orhi::ShaderModule>(
 		device,
-		ReadShaderFile("assets/shaders/foo.vert.spv")
+		ReadShaderFile("assets/shaders/main.vert.spv")
+	);
+
+	auto fragmentShaderModule = std::make_unique<orhi::ShaderModule>(
+		device,
+		ReadShaderFile("assets/shaders/main.frag.spv")
 	);
 
 	while (!glfwWindowShouldClose(window))
