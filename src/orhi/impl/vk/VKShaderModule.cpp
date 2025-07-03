@@ -43,7 +43,17 @@ namespace orhi
 	template<>
 	ShaderModule::~TShaderModule()
 	{
+		vkDestroyShaderModule(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			m_context.handle,
+			nullptr
+		);
+	}
 
+	template<>
+	data::NativeHandle ShaderModule::GetNativeHandle() const
+	{
+		return m_context.handle;
 	}
 }
 

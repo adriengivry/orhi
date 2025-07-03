@@ -9,6 +9,7 @@
 #include <span>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/api/TDevice.h>
+#include <orhi/data/NativeHandle.h>
 
 namespace orhi::api
 {
@@ -29,6 +30,11 @@ namespace orhi::api
 		* Destroys the shader module
 		*/
 		virtual ~TShaderModule();
+
+		/**
+		* Returns the underlying object's native handle
+		*/
+		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		Context m_context;
