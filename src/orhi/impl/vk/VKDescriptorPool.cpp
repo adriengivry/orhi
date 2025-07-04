@@ -13,30 +13,27 @@
 
 using namespace orhi::impl::vk;
 
-namespace
-{
-	// TODO: Remove
-	constexpr uint32_t MAX_FRAMES_IN_FLIGHT = 2;
-}
-
 namespace orhi
 {
 	template<>
 	DescriptorPool::TDescriptorPool(
-		Device& p_device
+		Device& p_device,
+		uint32_t p_maxSetCount
 	) : m_context{
 		.device = p_device,
 		.handle = VK_NULL_HANDLE
 	}
 	{
+		ORHI_ASSERT(p_maxSetCount > 0, "Max set count must be > 0");
+
 		VkDescriptorPoolSize poolSize{
 			.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-			.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT)
+			.descriptorCount = 1
 		};
 
 		VkDescriptorPoolCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-			.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT),
+			.maxSets = p_maxSetCount,
 			.poolSizeCount = 1,
 			.pPoolSizes = &poolSize,
 		};

@@ -20,7 +20,10 @@ namespace orhi::api
 		/**
 		* Creates a descriptor pool
 		*/
-		TDescriptorPool(TDevice<Backend, DeviceContext>& p_device);
+		TDescriptorPool(
+			TDevice<Backend, DeviceContext>& p_device,
+			uint32_t p_maxSetCount
+		);
 
 		/**
 		* Destroys the descriptor pool

@@ -334,10 +334,13 @@ int main()
 	}
 
 	// Create a descriptor pool to allocate descriptor sets
-	auto descriptorPool = std::make_unique<orhi::DescriptorPool>(device);
+	auto descriptorPool = std::make_unique<orhi::DescriptorPool>(
+		device,
+		k_maxFramesInFlight
+	);
 
 	// Create a descriptor set for each frame
-	std::vector<std::reference_wrapper<orhi::DescriptorSet>> descriptorSets = descriptorPool->AllocateDescriptorSets(
+	auto descriptorSets = descriptorPool->AllocateDescriptorSets(
 		*descriptorSetLayout,
 		k_maxFramesInFlight
 	);
@@ -353,8 +356,8 @@ int main()
 
 	// Create a command pool so we can create command buffers, and allocate command buffers for transfer and graphics operations.
 	auto commandPool = std::make_unique<orhi::CommandPool>(device);
-	std::vector<std::reference_wrapper<orhi::CommandBuffer>> commandBuffers = commandPool->AllocateCommandBuffers(k_maxFramesInFlight);
-	orhi::CommandBuffer& transferCommandBuffer = commandPool->AllocateCommandBuffers(1).front().get();
+	auto commandBuffers = commandPool->AllocateCommandBuffers(k_maxFramesInFlight);
+	auto& transferCommandBuffer = commandPool->AllocateCommandBuffers(1).front().get();
 
 	// Upload CPU (host) buffers to the GPU (device)
 	transferCommandBuffer.Begin(orhi::types::ECommandBufferUsageFlags::ONE_TIME_SUBMIT_BIT);
