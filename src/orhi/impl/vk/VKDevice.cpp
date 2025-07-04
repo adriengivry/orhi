@@ -6,10 +6,6 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#if defined(_WIN32) || defined(_WIN64)
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif
-
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/Device.h>
@@ -26,10 +22,6 @@
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
-
-namespace
-{
-}
 
 namespace orhi
 {
