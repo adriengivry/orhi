@@ -40,7 +40,9 @@
 #include <orhi/DescriptorPool.h>
 #include <orhi/CommandPool.h>
 #include <orhi/CommandBuffer.h>
+#include <orhi/Queue.h>
 #include <orhi/DescriptorSet.h>
+#include <orhi/except/OutOfDateSwapChain.h>
 
 namespace
 {
@@ -155,9 +157,9 @@ namespace
 
 	struct FrameData
 	{
-		// orhi::CommandBuffer& commandBuffer;
+		orhi::CommandBuffer& commandBuffer;
 		orhi::Buffer& ubo;
-		// orhi::DescriptorSet& descriptorSet;
+		orhi::DescriptorSet& descriptorSet;
 		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
 		std::unique_ptr<orhi::Semaphore> renderFinishedSemaphore;
 		std::unique_ptr<orhi::Fence> inFlightFence;
@@ -359,7 +361,7 @@ int main()
 	transferCommandBuffer.CopyBuffer(*hostVertexBuffer, *deviceVertexBuffer);
 	transferCommandBuffer.CopyBuffer(*hostIndexBuffer, *deviceIndexBuffer);
 	transferCommandBuffer.End();
-	// device.GetGraphicsQueue().Submit({ transferCommandBuffer });
+	device.GetGraphicsQueue().As<orhi::Queue*>()->Submit({transferCommandBuffer});
 	device.WaitIdle();
 
 	// At this point we don't need the client copy of these buffers anymore
@@ -371,7 +373,9 @@ int main()
 	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
 		frameDataArray.emplace_back(
+			commandBuffers[i],
 			ubos[i],
+			descriptorSets[i],
 			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Fence>(device, true)
@@ -396,6 +400,7 @@ int main()
 		frameData.inFlightFence->Reset();
 
 		orhi::Framebuffer& framebuffer = framebuffers[swapImageIndex];
+		orhi::CommandBuffer& commandBuffer = frameData.commandBuffer;
 
 		const float time = static_cast<float>(glfwGetTime());
 
@@ -409,6 +414,76 @@ int main()
 		uboData.proj[1][1] *= -1;
 
 		frameData.ubo.Upload(&uboData);
+
+		commandBuffer.Reset();
+		commandBuffer.Begin();
+
+		commandBuffer.BeginRenderPass(
+			*renderPass,
+			framebuffer,
+			windowSize
+		);
+
+		commandBuffer.BindPipeline(
+			orhi::types::EPipelineBindPoint::GRAPHICS,
+			graphicsPipeline->GetNativeHandle()
+		);
+
+		// As noted in the fixed functions chapter, we did specify viewport and scissor state for this pipeline to be dynamic.
+		// So we need to set them in the command buffer before issuing our draw command:
+		commandBuffer.SetViewport({
+			.x = 0.0f,
+			.y = 0.0f,
+			.width = static_cast<float>(windowSize.first),
+			.height = static_cast<float>(windowSize.second),
+			.minDepth = 0.0f,
+			.maxDepth = 1.0f
+		});
+
+		commandBuffer.SetScissor({
+			.offset = { 0, 0 },
+			.extent = windowSize
+		});
+
+		commandBuffer.BindVertexBuffers(
+			std::to_array({ std::ref(*deviceVertexBuffer) }),
+			std::to_array<uint64_t>({ 0 })
+		);
+
+		commandBuffer.BindIndexBuffer(
+			*deviceIndexBuffer
+		);
+
+		commandBuffer.BindDescriptorSets(
+			std::to_array({ std::ref(frameData.descriptorSet) }),
+			graphicsPipeline->GetLayoutHandle()
+		);
+
+		commandBuffer.DrawIndexed(static_cast<uint32_t>(k_indices.size()));
+
+		commandBuffer.EndRenderPass();
+		commandBuffer.End();
+
+		device.GetGraphicsQueue().As<orhi::Queue*>()->Submit(
+			{ commandBuffer },
+			{ *frameData.imageAvailableSemaphore },
+			{ *frameData.renderFinishedSemaphore },
+			*frameData.inFlightFence
+		);
+
+		try
+		{
+			device.GetPresentQueue().As<orhi::Queue*>()->Present(
+				{ *frameData.renderFinishedSemaphore },
+				*swapChain,
+				swapImageIndex
+			);
+		}
+		catch (orhi::except::OutOfDateSwapChain)
+		{
+			recreateSwapChain();
+			continue;
+		}
 
 		currentFrameIndex = (currentFrameIndex + 1) % k_maxFramesInFlight;
 	}

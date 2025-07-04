@@ -32,6 +32,18 @@ namespace orhi::api
 		~TDevice();
 
 		/**
+		* Returns the graphics queue associated with this logical device
+		* @note doesn't return a native handle, but an actual handle
+		*/
+		data::NativeHandle GetGraphicsQueue() const;
+
+		/**
+		* Returns the present queue associated with this logical device
+		* @note doesn't return a native handle, but an actual handle
+		*/
+		data::NativeHandle GetPresentQueue() const;
+
+		/**
 		* Returns information about the swap chain
 		* @param p_windowSize
 		*/

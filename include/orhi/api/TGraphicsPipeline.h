@@ -38,6 +38,11 @@ namespace orhi::api
 		~TGraphicsPipeline();
 
 		/**
+		* Returns the graphics pipeline layout native handle
+		*/
+		data::NativeHandle GetLayoutHandle() const;
+
+		/**
 		* Returns the underlying object's native handle
 		*/
 		data::NativeHandle GetNativeHandle() const;

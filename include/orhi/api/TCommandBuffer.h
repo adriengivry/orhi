@@ -44,7 +44,7 @@ namespace orhi::api
 		/**
 		* Begin recording commands
 		*/
-		void Begin(types::ECommandBufferUsageFlags p_flags = 0);
+		void Begin(types::ECommandBufferUsageFlags p_flags = types::ECommandBufferUsageFlags::NONE);
 
 		/**
 		* Finish recording commands

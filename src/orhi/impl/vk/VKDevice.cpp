@@ -87,15 +87,38 @@ namespace orhi
 		VkQueue graphicsQueue, presentQueue;
 		vkGetDeviceQueue(m_context.device, m_context.queueFamilyIndices->graphicsFamily.value(), 0, &graphicsQueue);
 		vkGetDeviceQueue(m_context.device, m_context.queueFamilyIndices->presentFamily.value(), 0, &presentQueue);
+
+		m_context.graphicsQueue = std::unique_ptr<Queue>(new Queue(
+			m_context.device,
+			graphicsQueue
+		));
+
+		m_context.presentQueue = std::unique_ptr<Queue>(new Queue(
+			m_context.device,
+			presentQueue
+		));
 	}
 
 	template<>
 	Device::~TDevice()
 	{
+		m_context.graphicsQueue.reset();
+		m_context.presentQueue.reset();
+
 		vkDestroyDevice(
 			m_context.device,
 			nullptr
 		);
+	}
+
+	data::NativeHandle Device::GetGraphicsQueue() const
+	{
+		return m_context.graphicsQueue.get();
+	}
+
+	data::NativeHandle Device::GetPresentQueue() const
+	{
+		return m_context.presentQueue.get();
 	}
 
 	template<>

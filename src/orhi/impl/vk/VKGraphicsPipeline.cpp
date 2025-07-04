@@ -263,6 +263,12 @@ namespace orhi
 	}
 
 	template<>
+	data::NativeHandle GraphicsPipeline::GetLayoutHandle() const
+	{
+		return m_context.layout;
+	}
+
+	template<>
 	data::NativeHandle GraphicsPipeline::GetNativeHandle() const
 	{
 		return m_context.handle;
