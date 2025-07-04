@@ -142,10 +142,17 @@ namespace
 		2, 3, 0
 	});
 
+	struct UniformBufferObject
+	{
+		alignas(16) glm::mat4 model;
+		alignas(16) glm::mat4 view;
+		alignas(16) glm::mat4 proj;
+	};
+
 	struct FrameData
 	{
 		// orhi::CommandBuffer& commandBuffer;
-		// orhi::Buffer& ubo;
+		orhi::Buffer& ubo;
 		// orhi::DescriptorSet& descriptorSet;
 		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
 		std::unique_ptr<orhi::Semaphore> renderFinishedSemaphore;
@@ -272,25 +279,12 @@ int main()
 		}
 	);
 
-	constexpr uint8_t k_maxFramesInFlight = 2;
-
-	std::vector<FrameData> frameDataArray;
-	frameDataArray.reserve(k_maxFramesInFlight);
-	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
-	{
-		frameDataArray.emplace_back(
-			std::make_unique<orhi::Semaphore>(device),
-			std::make_unique<orhi::Semaphore>(device),
-			std::make_unique<orhi::Fence>(device, true)
-		);
-	}
-
 	std::vector<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 
-	auto recreateSwapChain = [&] {
-		std::pair<uint32_t, uint32_t> windowSize = { 0, 0 };
+	std::pair<uint32_t, uint32_t> windowSize = { 0, 0 };
 
+	auto recreateSwapChain = [&] {
 		for (windowSize = GetWindowSize(window); windowSize.first == 0 || windowSize.second == 0;)
 		{
 			glfwWaitEvents();
@@ -312,6 +306,39 @@ int main()
 
 	recreateSwapChain();
 
+	constexpr uint8_t k_maxFramesInFlight = 2;
+
+	// Make sure the swap chain support the requested k_maxFramesInFlight
+	assert(framebuffers.size() >= k_maxFramesInFlight);
+
+	// Create UBOs (one for each frame)
+	std::vector<orhi::Buffer> ubos;
+	ubos.reserve(k_maxFramesInFlight);
+	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
+	{
+		auto& ubo = ubos.emplace_back(
+			device,
+			orhi::data::BufferDesc{
+				.size = sizeof(UniformBufferObject),
+				.usage = orhi::types::EBufferUsageFlags::UNIFORM_BUFFER_BIT
+			}
+		);
+
+		ubo.Allocate(orhi::types::EMemoryPropertyFlags::HOST_VISIBLE_BIT | orhi::types::EMemoryPropertyFlags::HOST_COHERENT_BIT);
+	}
+
+	std::vector<FrameData> frameDataArray;
+	frameDataArray.reserve(k_maxFramesInFlight);
+	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
+	{
+		frameDataArray.emplace_back(
+			ubos[i],
+			std::make_unique<orhi::Semaphore>(device),
+			std::make_unique<orhi::Semaphore>(device),
+			std::make_unique<orhi::Fence>(device, true)
+		);
+	}
+
 	uint32_t swapImageIndex = 0;
 	uint8_t currentFrameIndex = 0;
 
@@ -328,6 +355,21 @@ int main()
 		);
 
 		frameData.inFlightFence->Reset();
+
+		orhi::Framebuffer& framebuffer = framebuffers[swapImageIndex];
+
+		const float time = static_cast<float>(glfwGetTime());
+
+		// Update UBO data each frame
+		UniformBufferObject uboData{
+			.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+			.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+			.proj = glm::perspective(glm::radians(45.0f), windowSize.first / (float)windowSize.second, 0.1f, 10.0f)
+		};
+
+		uboData.proj[1][1] *= -1;
+
+		frameData.ubo.Upload(&uboData);
 
 		currentFrameIndex = (currentFrameIndex + 1) % k_maxFramesInFlight;
 	}
