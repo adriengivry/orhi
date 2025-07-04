@@ -31,7 +31,7 @@ workspace "orhi-examples"
 
 
 outputdir = "%{wks.location}/../bin/"
-objoutdir = "%{wks.location}/../bin-int/"
+objoutdir = "%{wks.location}/../obj/"
 depsdir = "%{wks.location}/deps/"
 
 group "examples"
@@ -41,10 +41,6 @@ group ""
 group "examples/deps"
 	include "deps/glm"
 	include "deps/glfw"
-group ""
-
-group "examples/assets"
-	include "shaders"
 group ""
 
 include "../"
