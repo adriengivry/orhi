@@ -1,5 +1,5 @@
 /**
-* @project: vulkan-sandbox
+* @project: orhi (OpenRHI)
 * @author: Adrien Givry
 * @licence: MIT
 */

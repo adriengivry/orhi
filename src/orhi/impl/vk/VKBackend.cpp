@@ -141,7 +141,7 @@ namespace orhi
 		VkApplicationInfo appInfo{
 			.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
 			.pNext = VK_NULL_HANDLE, // To pass additionnal information, e.g. for extensions
-			.pApplicationName = "vulkan-sandbox",
+			.pApplicationName = "orhi (OpenRHI)",
 			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
 			.pEngineName = "No Engine",
 			.engineVersion = VK_MAKE_VERSION(1, 0, 0),
