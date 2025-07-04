@@ -46,6 +46,28 @@ namespace orhi
 	}
 
 	template<>
+	void Fence::Wait(std::optional<uint64_t> p_timeout)
+	{
+		vkWaitForFences(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			1UL,
+			&m_context.handle,
+			VK_TRUE,
+			p_timeout.value_or(std::numeric_limits<decltype(p_timeout)::value_type>::max())
+		);
+	}
+
+	template<>
+	void Fence::Reset()
+	{
+		vkResetFences(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			1,
+			&m_context.handle
+		);
+	}
+
+	template<>
 	data::NativeHandle Fence::GetNativeHandle() const
 	{
 		return m_context.handle;

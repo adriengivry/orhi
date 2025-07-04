@@ -8,6 +8,7 @@
 
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/api/TDevice.h>
+#include <optional>
 
 namespace orhi::api
 {
@@ -24,6 +25,12 @@ namespace orhi::api
 		* Destroys the semaphore
 		*/
 		~TSemaphore();
+
+		/**
+		* Wait for semaphore
+		* @param p_timeout
+		*/
+		void Wait(std::optional<uint64_t> p_timeout = std::nullopt);
 
 		/**
 		* Returns the underlying object's native handle

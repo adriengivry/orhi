@@ -321,13 +321,13 @@ int main()
 
 		FrameData& frameData = frameDataArray[currentFrameIndex];
 
-		// device.WaitForFences({ *frameData.inFlightFence });
+		frameData.inFlightFence->Wait();
 
 		swapImageIndex = swapChain->AcquireNextImage(
 			*frameData.imageAvailableSemaphore
 		);
 
-		// device.ResetFences({ *frameData.inFlightFence });
+		frameData.inFlightFence->Reset();
 
 		currentFrameIndex = (currentFrameIndex + 1) % k_maxFramesInFlight;
 	}

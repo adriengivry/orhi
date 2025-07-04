@@ -45,6 +45,22 @@ namespace orhi
 	}
 
 	template<>
+	void Semaphore::Wait(std::optional<uint64_t> p_timeout)
+	{
+		VkSemaphoreWaitInfo waitInfo{
+			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO,
+			.semaphoreCount = 1,
+			.pSemaphores = &m_context.handle
+		};
+
+		vkWaitSemaphores(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			&waitInfo,
+			p_timeout.value_or(std::numeric_limits<decltype(p_timeout)::value_type>::max())
+		);
+	}
+
+	template<>
 	data::NativeHandle Semaphore::GetNativeHandle() const
 	{
 		return m_context.handle;
