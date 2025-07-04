@@ -37,6 +37,8 @@
 #include <orhi/Semaphore.h>
 #include <orhi/Fence.h>
 #include <orhi/SwapChain.h>
+#include <orhi/DescriptorPool.h>
+#include <orhi/DescriptorSet.h>
 
 namespace
 {
@@ -325,6 +327,24 @@ int main()
 		);
 
 		ubo.Allocate(orhi::types::EMemoryPropertyFlags::HOST_VISIBLE_BIT | orhi::types::EMemoryPropertyFlags::HOST_COHERENT_BIT);
+	}
+
+	// Create a descriptor pool to allocate descriptor sets
+	auto descriptorPool = std::make_unique<orhi::DescriptorPool>(device);
+
+	// Create a descriptor set for each frame
+	std::vector<std::reference_wrapper<orhi::DescriptorSet>> descriptorSets = descriptorPool->AllocateDescriptorSets(
+		*descriptorSetLayout,
+		k_maxFramesInFlight
+	);
+
+	// Update each descriptor set (attach each uniform buffer to each descriptor set)
+	for (size_t i = 0; i < k_maxFramesInFlight; i++)
+	{
+		descriptorSets[i].get().Write(
+			orhi::types::EDescriptorType::UNIFORM_BUFFER,
+			std::to_array({ std::ref(ubos[i]) })
+		);
 	}
 
 	std::vector<FrameData> frameDataArray;

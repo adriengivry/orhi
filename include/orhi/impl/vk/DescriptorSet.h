@@ -7,9 +7,19 @@
 #pragma once
 
 #include <orhi/api/TDescriptorSet.h>
+#include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/Buffer.h>
+
+struct VkDescriptorSet_T;
+typedef VkDescriptorSet_T* VkDescriptorSet;
 
 namespace orhi::impl::vk
 {
-	struct DescriptorSetContext {};
-	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, DescriptorSetContext>;
+	struct DescriptorSetContext
+	{
+		Device& device;
+		VkDescriptorSet handle;
+	};
+
+	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, DescriptorSetContext, DeviceContext, BufferContext>;
 }
