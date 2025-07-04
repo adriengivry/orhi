@@ -16,7 +16,6 @@
 #include <orhi/impl/vk/details/ExtensionManager.h>
 #include <orhi/impl/vk/details/ValidationLayerManager.h>
 #include <orhi/impl/vk/details/DebugMessenger.h>
-#include <orhi/impl/vk/details/global/SharedContext.h>
 #include <orhi/impl/vk/details/SwapChainUtils.h>
 #include <orhi/impl/vk/details/DeviceCreationInfo.h>
 #include <orhi/impl/vk/details/QueueFamilyIndices.h>
@@ -79,8 +78,6 @@ namespace orhi
 			nullptr,
 			&m_context.device
 		);
-
-		details::global::sharedContext.device = m_context.device;
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create logical device!");
 
