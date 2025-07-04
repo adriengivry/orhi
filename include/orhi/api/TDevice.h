@@ -9,6 +9,7 @@
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/data/NativeHandle.h>
+#include <orhi/data/QueuesDesc.h>
 
 namespace orhi::api
 {
@@ -35,6 +36,16 @@ namespace orhi::api
 		* @param p_windowSize
 		*/
 		data::SwapChainDesc GetOptimalSwapChainDesc(std::pair<uint32_t, uint32_t> p_windowSize);
+
+		/**
+		* Returns information about available queues for this device
+		*/
+		data::QueuesDesc GetQueuesDesc() const;
+
+		/**
+		* Wait idle
+		*/
+		void WaitIdle() const;
 
 		/**
 		* Returns the underlying object's native handle

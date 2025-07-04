@@ -5,6 +5,7 @@
 */
 
 #include <orhi/impl/vk/details/SwapChainUtils.h>
+#include <orhi/debug/Assert.h>
 #include <algorithm>
 
 namespace
@@ -73,31 +74,37 @@ namespace
 
 namespace orhi::impl::vk::details
 {
-	SwapChainSupportDetails SwapChainUtils::QuerySwapChainDetails(VkPhysicalDevice device, VkSurfaceKHR p_surface)
+	SwapChainSupportDetails SwapChainUtils::QuerySwapChainDetails(VkPhysicalDevice p_device, VkSurfaceKHR p_surface)
 	{
 		SwapChainSupportDetails details;
 
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, p_surface, &details.capabilities);
-
 		uint32_t formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, p_surface, &formatCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(p_device, p_surface, &formatCount, nullptr);
 
 		// TODO: This pattern where we skip the second invocation of vkGetPhysicalDeviceSurfaceFormatsKHR if the count is 0,
 		// could be reused for extensions, layers, and queue families, etc.
 		if (formatCount != 0)
 		{
 			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(device, p_surface, &formatCount, details.formats.data());
+			vkGetPhysicalDeviceSurfaceFormatsKHR(p_device, p_surface, &formatCount, details.formats.data());
 		}
 
 		uint32_t presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, p_surface, &presentModeCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(p_device, p_surface, &presentModeCount, nullptr);
 
 		if (presentModeCount != 0)
 		{
 			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(device, p_surface, &presentModeCount, details.presentModes.data());
+			vkGetPhysicalDeviceSurfacePresentModesKHR(p_device, p_surface, &presentModeCount, details.presentModes.data());
 		}
+
+		VkResult capabilityQueryResult = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+			p_device,
+			p_surface,
+			&details.capabilities
+		);
+
+		ORHI_ASSERT(capabilityQueryResult == VK_SUCCESS, "failed to retrieve device's capabilities.");
 
 		return details;
 	}

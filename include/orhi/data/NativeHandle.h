@@ -14,6 +14,11 @@ namespace orhi::data
 	class NativeHandle
 	{
 	public:
+		NativeHandle() : m_handle(nullptr)
+		{
+
+		}
+
 		NativeHandle(void* p_ptr) :
 			m_handle(p_ptr)
 		{

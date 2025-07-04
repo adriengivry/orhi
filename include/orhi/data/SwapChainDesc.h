@@ -8,6 +8,9 @@
 
 #include <cstdint>
 #include <orhi/types/EFormat.h>
+#include <orhi/types/EPresentMode.h>
+#include <orhi/types/EColorSpace.h>
+#include <orhi/types/ESurfaceTransformFlags.h>
 
 namespace orhi::data
 {
@@ -17,5 +20,10 @@ namespace orhi::data
 	struct SwapChainDesc
 	{
 		types::EFormat format;
+		types::EColorSpace colorSpace;
+		types::EPresentMode presentMode;
+		types::ESurfaceTransformFlags currentTransform;
+		uint32_t minImageCount;
+		uint32_t maxImageCount;
 	};
 }

@@ -33,6 +33,8 @@
 #include <orhi/Buffer.h>
 #include <orhi/DescriptorSetLayout.h>
 #include <orhi/GraphicsPipeline.h>
+#include <orhi/Framebuffer.h>
+#include <orhi/SwapChain.h>
 
 namespace
 {
@@ -257,6 +259,33 @@ int main()
 			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)})
 		}
 	);
+
+	std::vector<orhi::Framebuffer> framebuffers;
+	std::unique_ptr<orhi::SwapChain> swapChain;
+
+	auto recreateSwapChain = [&] {
+		std::pair<uint32_t, uint32_t> windowSize = { 0, 0 };
+
+		for (windowSize = GetWindowSize(window); windowSize.first == 0 || windowSize.second == 0;)
+		{
+			glfwWaitEvents();
+		}
+
+		device.WaitIdle();
+		framebuffers.clear();
+		swapChain.reset();
+
+		swapChain = std::make_unique<orhi::SwapChain>(
+			device,
+			backend->GetSurfaceHandle(),
+			windowSize,
+			optimalSwapChainDesc
+		);
+
+		framebuffers = swapChain->CreateFramebuffers(*renderPass);
+	};
+
+	recreateSwapChain();
 
 	while (!glfwWindowShouldClose(window))
 	{

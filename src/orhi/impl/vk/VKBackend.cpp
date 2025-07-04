@@ -192,8 +192,8 @@ namespace orhi
 #if defined(_WIN32) || defined(_WIN64)
 		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-			.hinstance = static_cast<HINSTANCE>(p_desc.win32_windowHandle),
-			.hwnd = static_cast<HWND>(p_desc.win32_instanceHandle)
+			.hinstance = static_cast<HINSTANCE>(p_desc.win32_instanceHandle),
+			.hwnd = static_cast<HWND>(p_desc.win32_windowHandle)
 		};
 
 		result = vkCreateWin32SurfaceKHR(
@@ -303,6 +303,12 @@ namespace orhi
 	data::NativeHandle Backend::GetNativeHandle() const
 	{
 		return m_context.instance;
+	}
+
+	template<>
+	data::NativeHandle Backend::GetSurfaceHandle() const
+	{
+		return m_context.surface;
 	}
 }
 

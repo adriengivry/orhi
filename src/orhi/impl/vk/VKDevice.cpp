@@ -107,8 +107,27 @@ namespace orhi
 		);
 
 		return data::SwapChainDesc{
-			.format = static_cast<types::EFormat>(optimalConfig.surfaceFormat.format)
+			.format = static_cast<types::EFormat>(optimalConfig.surfaceFormat.format),
+			.colorSpace = static_cast<types::EColorSpace>(optimalConfig.surfaceFormat.colorSpace),
+			.presentMode = static_cast<types::EPresentMode>(optimalConfig.presentMode),
+			.currentTransform = static_cast<types::ESurfaceTransformFlags>(optimalConfig.capabilities.currentTransform),
+			.minImageCount = optimalConfig.capabilities.minImageCount,
+			.maxImageCount = optimalConfig.capabilities.maxImageCount
 		};
+	}
+
+	template<>
+	data::QueuesDesc Device::GetQueuesDesc() const
+	{
+		return data::QueuesDesc{
+			.indices = m_context.queueFamilyIndices->GetUniqueQueueIndices()
+		};
+	}
+
+	template<>
+	void Device::WaitIdle() const
+	{
+		vkDeviceWaitIdle(m_context.device);
 	}
 
 	template<>

@@ -51,6 +51,11 @@ namespace orhi::api
 		*/
 		data::NativeHandle GetNativeHandle() const;
 
+		/**
+		* Returns a handle to the surface
+		*/
+		data::NativeHandle GetSurfaceHandle() const;
+
 	private:
 		Context m_context;
 	};
