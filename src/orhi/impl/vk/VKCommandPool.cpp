@@ -9,6 +9,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/CommandPool.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -62,7 +63,7 @@ namespace orhi
 		VkCommandBufferAllocateInfo allocInfo{
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 			.commandPool = m_context.handle,
-			.level = static_cast<VkCommandBufferLevel>(p_level),
+			.level = utils::EnumToValue<VkCommandBufferLevel>(p_level),
 			.commandBufferCount = p_count
 		};
 

@@ -17,6 +17,6 @@ namespace orhi::types
 	{
 		MOCK,
 		OPENGL,
-		VULKAN
+		VULKAN,
 	};
 }

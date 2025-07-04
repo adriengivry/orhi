@@ -9,6 +9,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/DescriptorSet.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -60,7 +61,7 @@ namespace orhi
 			.dstBinding = 0,
 			.dstArrayElement = 0,
 			.descriptorCount = 1,
-			.descriptorType = static_cast<VkDescriptorType>(p_type),
+			.descriptorType = utils::EnumToValue<VkDescriptorType>(p_type),
 			.pImageInfo = nullptr, // Optional
 			.pBufferInfo = bufferInfos.data(),
 			.pTexelBufferView = nullptr, // Optional

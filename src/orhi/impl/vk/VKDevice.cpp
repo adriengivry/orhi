@@ -19,6 +19,7 @@
 #include <orhi/impl/vk/details/SwapChainUtils.h>
 #include <orhi/impl/vk/details/DeviceCreationInfo.h>
 #include <orhi/impl/vk/details/QueueFamilyIndices.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <format>
 #include <optional>
 #include <set>
@@ -128,9 +129,11 @@ namespace orhi
 
 		return data::SwapChainDesc{
 			.format = static_cast<types::EFormat>(optimalConfig.surfaceFormat.format),
-			.colorSpace = static_cast<types::EColorSpace>(optimalConfig.surfaceFormat.colorSpace),
-			.presentMode = static_cast<types::EPresentMode>(optimalConfig.presentMode),
-			.currentTransform = static_cast<types::ESurfaceTransformFlags>(optimalConfig.capabilities.currentTransform),
+			.colorSpace = utils::ValueToEnum<types::EColorSpace>(optimalConfig.surfaceFormat.colorSpace),
+			.presentMode = utils::ValueToEnum<types::EPresentMode>(optimalConfig.presentMode),
+			.currentTransform = utils::ValueToEnum<types::ESurfaceTransformFlags>(
+				static_cast<VkSurfaceTransformFlagsKHR>(optimalConfig.capabilities.currentTransform)
+			),
 			.minImageCount = optimalConfig.capabilities.minImageCount,
 			.maxImageCount = optimalConfig.capabilities.maxImageCount
 		};

@@ -10,6 +10,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/SwapChain.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 #include <vulkan/vulkan.h>
 
@@ -55,8 +56,8 @@ namespace orhi
 			.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 			.surface = p_surface.As<VkSurfaceKHR>(),
 			.minImageCount = CalculateSwapChainImageCount(m_context.desc),
-			.imageFormat = static_cast<VkFormat>(m_context.desc.format),
-			.imageColorSpace = static_cast<VkColorSpaceKHR>(m_context.desc.colorSpace),
+			.imageFormat = utils::EnumToValue<VkFormat>(m_context.desc.format),
+			.imageColorSpace = utils::EnumToValue<VkColorSpaceKHR>(m_context.desc.colorSpace),
 			.imageExtent = { 
 				m_context.extent.first,
 				m_context.extent.second
@@ -79,11 +80,13 @@ namespace orhi
 			.queueFamilyIndexCount = indices.size() > 1 ? static_cast<uint32_t>(indices.size()) : 0,
 			.pQueueFamilyIndices = indices.size() > 1 ? indices.data() : VK_NULL_HANDLE,
 
-			.preTransform = static_cast<VkSurfaceTransformFlagBitsKHR>(m_context.desc.currentTransform),
+			.preTransform = static_cast<VkSurfaceTransformFlagBitsKHR>(
+				utils::EnumToValue<VkSurfaceTransformFlagsKHR>(m_context.desc.currentTransform)
+			),
 
 			// The compositeAlpha field specifies if the alpha channel should be used for blending with other windows in the window system. You'll almost always want to simply ignore the alpha channel, hence VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR.
 			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-			.presentMode = static_cast<VkPresentModeKHR>(m_context.desc.presentMode),
+			.presentMode = utils::EnumToValue<VkPresentModeKHR>(m_context.desc.presentMode),
 			.clipped = VK_TRUE,
 			.oldSwapchain = VK_NULL_HANDLE
 		};
@@ -122,7 +125,7 @@ namespace orhi
 				.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 				.image = m_context.images[i],
 				.viewType = VK_IMAGE_VIEW_TYPE_2D,
-				.format = static_cast<VkFormat>(m_context.desc.format),
+				.format = utils::EnumToValue<VkFormat>(m_context.desc.format),
 				.components = {
 					.r = VK_COMPONENT_SWIZZLE_IDENTITY,
 					.g = VK_COMPONENT_SWIZZLE_IDENTITY,

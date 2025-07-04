@@ -9,6 +9,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/GraphicsPipeline.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 #include <array>
 
@@ -25,7 +26,9 @@ namespace
 		{
 			formattedStages.push_back(VkPipelineShaderStageCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-				.stage = static_cast<VkShaderStageFlagBits>(stageType),
+				.stage = static_cast<VkShaderStageFlagBits>(
+					orhi::utils::EnumToValue<VkShaderStageFlags>(stageType)
+				),
 				.module = stageInstance.get().GetNativeHandle().As<VkShaderModule>(),
 				.pName = "main"
 			});
@@ -44,7 +47,7 @@ namespace
 			formattedAttributes.push_back(VkVertexInputAttributeDescription{
 				.location = attribute.location,
 				.binding = attribute.binding,
-				.format = static_cast<VkFormat>(attribute.format),
+				.format = orhi::utils::EnumToValue<VkFormat>(attribute.format),
 				.offset = attribute.offset,
 			});
 		}

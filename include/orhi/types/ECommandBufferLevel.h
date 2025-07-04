@@ -16,6 +16,6 @@ namespace orhi::types
 	enum class ECommandBufferLevel
 	{
 		PRIMARY = 0,
-		SECONDARY = 1
+		SECONDARY = 1,
 	};
 }

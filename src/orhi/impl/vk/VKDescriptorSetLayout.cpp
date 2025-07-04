@@ -9,6 +9,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/DescriptorSetLayout.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -31,9 +32,9 @@ namespace orhi
 		{
 			bindings.push_back(VkDescriptorSetLayoutBinding{
 				.binding = binding.binding,
-				.descriptorType = static_cast<VkDescriptorType>(binding.type),
+				.descriptorType = utils::EnumToValue<VkDescriptorType>(binding.type),
 				.descriptorCount = 1,
-				.stageFlags = static_cast<VkShaderStageFlags>(binding.stageFlags),
+				.stageFlags = utils::EnumToValue<VkShaderStageFlags>(binding.stageFlags),
 				.pImmutableSamplers = nullptr // Optional
 			});
 		}

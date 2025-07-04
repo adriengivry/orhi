@@ -14,8 +14,9 @@ namespace orhi::types
 	/**
 	* 
 	*/
-	enum class EMemoryPropertyFlags
+	enum class EMemoryPropertyFlags : uint32_t
 	{
+		NONE = 0,
 		DEVICE_LOCAL_BIT = 0x00000001,
 		HOST_VISIBLE_BIT = 0x00000002,
 		HOST_COHERENT_BIT = 0x00000004,
@@ -25,7 +26,7 @@ namespace orhi::types
 		DEVICE_COHERENT_BIT_AMD = 0x00000040,
 		DEVICE_UNCACHED_BIT_AMD = 0x00000080,
 		RDMA_CAPABLE_BIT_NV = 0x00000100,
-		FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
+		ALL = ~NONE,
 	};
 }
 

@@ -14,8 +14,9 @@ namespace orhi::types
 	/**
 	* Enumeration of surface transform flags
 	*/
-	enum class ESurfaceTransformFlags
+	enum class ESurfaceTransformFlags : uint32_t
 	{
+		NONE = 0,
 		IDENTITY_BIT_KHR = 0x00000001,
 		ROTATE_90_BIT_KHR = 0x00000002,
 		ROTATE_180_BIT_KHR = 0x00000004,
@@ -25,7 +26,7 @@ namespace orhi::types
 		HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR = 0x00000040,
 		HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR = 0x00000080,
 		INHERIT_BIT_KHR = 0x00000100,
-		FLAG_BITS_MAX_ENUM_KHR = 0x7FFFFFFF
+		ALL = ~NONE,
 	};
 }
 

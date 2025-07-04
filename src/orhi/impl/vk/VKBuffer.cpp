@@ -9,6 +9,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/Buffer.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -49,7 +50,7 @@ namespace orhi
 		VkBufferCreateInfo bufferInfo{
 			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 			.size = p_desc.size,
-			.usage = static_cast<VkBufferUsageFlags>(p_desc.usage),
+			.usage = utils::EnumToValue<VkBufferUsageFlags>(p_desc.usage),
 			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
 		};
 
@@ -101,7 +102,7 @@ namespace orhi
 		const auto memoryType = FindMemoryType(
 			m_context.device.GetAdapterNativeHandle().As<VkPhysicalDevice>(),
 			memRequirements.memoryTypeBits,
-			static_cast<VkMemoryPropertyFlags>(p_properties)
+			utils::EnumToValue<VkMemoryPropertyFlags>(p_properties)
 		);
 
 		VkMemoryAllocateInfo allocInfo{

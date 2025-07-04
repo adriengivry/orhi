@@ -22,6 +22,5 @@ namespace orhi::types
 		NONE_NV = NONE_KHR,
 		UINT8_EXT = UINT8,
 		UINT8_KHR = UINT8,
-		MAX_ENUM = 0x7FFFFFFF
 	};
 }

@@ -10,6 +10,7 @@
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/CommandBuffer.h>
 #include <orhi/impl/vk/details/MemoryUtils.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -43,7 +44,7 @@ namespace orhi
 	{
 		VkCommandBufferBeginInfo beginInfo{
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			.flags = static_cast<VkCommandBufferUsageFlags>(p_flags),
+			.flags = utils::EnumToValue<VkCommandBufferUsageFlags>(p_flags),
 			.pInheritanceInfo = nullptr // Optional
 		};
 
@@ -143,7 +144,7 @@ namespace orhi
 	{
 		vkCmdBindPipeline(
 			m_context.handle,
-			static_cast<VkPipelineBindPoint>(p_bindPoint),
+			utils::EnumToValue<VkPipelineBindPoint>(p_bindPoint),
 			p_pipeline.As<VkPipeline>()
 		);
 	}
@@ -159,7 +160,7 @@ namespace orhi
 			m_context.handle,
 			p_indexBuffer.GetNativeHandle().As<VkBuffer>(),
 			0,
-			static_cast<VkIndexType>(p_indexType)
+			utils::EnumToValue<VkIndexType>(p_indexType)
 		);
 	}
 

@@ -14,8 +14,9 @@ namespace orhi::types
 	/**
 	*
 	*/
-	enum class EShaderStageFlags
+	enum class EShaderStageFlags : uint32_t
 	{
+		NONE = 0,
 		VERTEX_BIT = 0x00000001,
 		TESSELLATION_CONTROL_BIT = 0x00000002,
 		TESSELLATION_EVALUATION_BIT = 0x00000004,
@@ -23,7 +24,6 @@ namespace orhi::types
 		FRAGMENT_BIT = 0x00000010,
 		COMPUTE_BIT = 0x00000020,
 		ALL_GRAPHICS = 0x0000001F,
-		ALL = 0x7FFFFFFF,
 		RAYGEN_BIT_KHR = 0x00000100,
 		ANY_HIT_BIT_KHR = 0x00000200,
 		CLOSEST_HIT_BIT_KHR = 0x00000400,
@@ -42,7 +42,7 @@ namespace orhi::types
 		CALLABLE_BIT_NV = CALLABLE_BIT_KHR,
 		TASK_BIT_NV = TASK_BIT_EXT,
 		MESH_BIT_NV = MESH_BIT_EXT,
-		FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
+		ALL = ~NONE,
 	};
 }
 

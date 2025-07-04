@@ -14,8 +14,9 @@ namespace orhi::types
 	/**
 	* Enumeration of buffer usage
 	*/
-	enum class EBufferUsageFlags
+	enum class EBufferUsageFlags : uint32_t
 	{
+		NONE = 0,
 		TRANSFER_SRC_BIT = 0x00000001,
 		TRANSFER_DST_BIT = 0x00000002,
 		UNIFORM_TEXEL_BUFFER_BIT = 0x00000004,
@@ -45,7 +46,7 @@ namespace orhi::types
 		RAY_TRACING_BIT_NV = SHADER_BINDING_TABLE_BIT_KHR,
 		SHADER_DEVICE_ADDRESS_BIT_EXT = SHADER_DEVICE_ADDRESS_BIT,
 		SHADER_DEVICE_ADDRESS_BIT_KHR = SHADER_DEVICE_ADDRESS_BIT,
-		FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
+		ALL = ~NONE,
 	};
 }
 

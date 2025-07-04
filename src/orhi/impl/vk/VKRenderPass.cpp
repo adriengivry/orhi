@@ -9,6 +9,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/RenderPass.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -25,7 +26,7 @@ namespace orhi
 	}
 	{
 		VkAttachmentDescription colorAttachment{
-			.format = static_cast<VkFormat>(p_format), // TODO: Add proper conversion
+			.format = utils::EnumToValue<VkFormat>(p_format),
 			.samples = VK_SAMPLE_COUNT_1_BIT,
 			.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
 			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
