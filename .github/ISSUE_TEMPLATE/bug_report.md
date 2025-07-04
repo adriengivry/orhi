@@ -31,7 +31,7 @@ int main()
 * Platform: (e.g., Windows, MacOS, Linux)
 * Compiler version: (e.g., MSVC 19.35, GCC 12.2)
 * Build system: (e.g., CMake 3.25, MSBuild)
-* Build flags/options used: (e.g., ORHI_COMPILE_OPENGL)
+* Build flags/options used: (e.g., ORHI_COMPILE_VULKAN)
 
 ## Logs
 If applicable, add any log or callstack related to this issue.

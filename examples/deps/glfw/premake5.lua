@@ -17,9 +17,8 @@ project "glfw"
 		"include"
 	}
 
-	defines {
-		"_GLFW_WIN32"
-	}
+	filter { "system:windows" }
+		defines { "_GLFW_WIN32" }
 
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }

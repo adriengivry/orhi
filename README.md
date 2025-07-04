@@ -26,9 +26,8 @@ Target platforms are:
 
 | API | Target Platforms | Status |
 |-|-|-|
-| Mock (Headless) | 🪟🐧🍎 | ✅ Production Ready |
-| OpenGL 4.5 | 🪟🐧 | ✅ Production Ready |
-| Vulkan | 🪟🐧 | ⏳ In Progress |
+| Vulkan | 🪟🐧 | 🌓 Partial |
+| Mock (Headless) | 🪟🐧🍎 | 📅 Planned |
 | DirectX | 🪟 | ❓ TBD |
 | Metal | 🍎 | ❓ TBD |
 | Software | 🪟🐧🍎 | ❓ TBD |
@@ -61,7 +60,6 @@ If you need to bundle more than one graphics API into your project, you can achi
 ```powershell
 premake5
     [action]
-    --compile-opengl
     --compile-vulkan
     --compile-mock
 ```
@@ -69,7 +67,6 @@ premake5
 **CMake:**
 ```powershell
 cmake
-    -DORHI_COMPILE_OPENGL=ON 
     -DORHI_COMPILE_VULKAN=ON 
     -DORHI_COMPILE_MOCK=ON
 ```
@@ -77,23 +74,25 @@ cmake
 ### Using Graphics APIs Explicitely
 Compiled backends are always available through their respective headers, and objects from multiple backends can live together in the same application.
 ```cpp
-// Include some OpenGL headers...
-#include <orhi/impl/gl/Backend.h>
-#include <orhi/impl/gl/Framebuffer.h>
+// Include some Vulkan headers...
+#include <orhi/impl/vk/Backend.h>
 
 // Include some Mock headers...
-#include <orhi/impl/mock/Backend.h>
-#include <orhi/impl/mock/ShaderProgram.h>
+#include <orhi/impl/vk/Backend.h>
 
 int main()
 {
-    // Create OpenGL objects
-    orhi::impl::gl::Backend glBackend;
-    orhi::impl::gl::Framebuffer glFramebuffer;
+    // Common to all backend
+    orhi::data::BackendDesc backendDesc{
+        .debug = true,
+        .extensions = GetGlfwRequiredExtensions(),
+        .win32_windowHandle = glfwGetWin32Window(window),
+        .win32_instanceHandle = GetModuleHandle(nullptr)
+    };
 
-    // Create Mock objects
-    orhi::impl::mock::Backend mockBackend;
-    orhi::impl::mock::ShaderProgram mockShader;
+    // Create Vulkan and Mock backend side-by-side.
+    orhi::impl::vk::Backend vkBackend { backendDesc };
+    orhi::impl::mock::Backend mockBackend { backendDesc }
 
     return 0;
 }
@@ -101,22 +100,17 @@ int main()
 
 ### Selecting Default Graphics API
 A default graphics API can be selected by defining one of the following defines to your project:
-- `ORHI_SELECT_OPENGL` (also requires `ORHI_COMPILE_OPENGL` to be defined)
 - `ORHI_SELECT_VULKAN` (also requires `ORHI_COMPILE_VULKAN` to be defined)
 - `ORHI_SELECT_MOCK` (also requires `ORHI_COMPILE_MOCK` to be defined)
 
 **Premake5:**
 ```lua
-defines { "ORHI_SELECT_OPENGL", "ORHI_COMPILE_OPENGL" }
--- or
 defines { "ORHI_SELECT_VULKAN", "ORHI_COMPILE_VULKAN" }
 -- or
 defines { "ORHI_SELECT_MOCK", "ORHI_COMPILE_MOCK" }
 ```
 **CMake:**
 ```cmake
-add_compile_definitions(ORHI_SELECT_OPENGL ORHI_COMPILE_OPENGL)
-# or
 add_compile_definitions(ORHI_SELECT_VULKAN ORHI_COMPILE_VULKAN)
 # or
 add_compile_definitions(ORHI_SELECT_MOCK ORHI_COMPILE_MOCK)
@@ -129,8 +123,7 @@ Once a graphics API is selected, it can be included using agnostic headers:
 // Included symbols will vary depending on the selected graphics API.
 // Agnostic aliases also get exposed, e.g. orhi::Backend, orhi::Framebuffer, etc.
 #include <orhi/Backend.h>
-#include <orhi/Framebuffer.h>
-#include <orhi/ShaderProgram.h>
+#include <orhi/Buffer.h>
 
 // Can also be combined with explicitely included backends
 #include <orhi/impl/mock/Backend.h>
@@ -138,87 +131,14 @@ Once a graphics API is selected, it can be included using agnostic headers:
 int main()
 {
     // Create objects using the default graphics API.
-    // i.e. if OpenGL is selected, orhi::Backend will resolve to orhi::impl::gl::Backend
-    orhi::Backend backend; 
-    orhi::Framebuffer framebuffer;
-    orhi::ShaderProgram shader;
+    // i.e. if Vulkan is selected, orhi::Backend will resolve to orhi::impl::vk::Backend
+    orhi::Backend backend{}; 
 
     // And also create graphics API-specific objects
-    orhi::impl::mock::Backend backend;
+    orhi::impl::mock::Backend backend{};
 
     return 0;
 }
-```
-
-## In Practice
-**OpenRHI** aims to **reduce boilerplate** and **simplify tedious tasks**, while maintaining a **consistent design** throughout its [API](include/orhi/api/).
-
-### Creating Shader Program
-```cpp
-const std::string vertexSource = /* ... */;
-const std::string fragmentSource = /* ... */;
-
-orhi::ShaderStage vs(orhi::types::EShaderType::VERTEX);
-vs.Upload(vertexSource);
-vs.Compile();
-
-orhi::ShaderStage fs(orhi::types::EShaderType::FRAGMENT);
-fs.Upload(fragmentSource);
-fs.Compile();
-
-orhi::ShaderProgram program;
-program.Attach(vs);
-program.Attach(fs);
-program.Link();
-```
-
-### Creating Vertex Array (Mesh Data)
-```cpp
-const Vertex vertices[] = { /* ... */ };
-const uint32_t indices[] = { /* ... */ };
-
-orhi::VertexBuffer vb;
-vb.Allocate(sizeof(vertices), orhi::types::EAccessSpecifier::STATIC_DRAW);
-vb.Upload(vertices);
-
-orhi::IndexBuffer ib;
-ib.Allocate(sizeof(indices), orhi::types::EAccessSpecifier::STATIC_DRAW);
-ib.Upload(indices);
-
-orhi::VertexArray va;
-va.SetLayout(
-    std::to_array<orhi::data::VertexAttribute>({
-        { orhi::types::EDataType::FLOAT, 3 }, // Position
-        { orhi::types::EDataType::FLOAT, 2 }, // UV
-        { orhi::types::EDataType::FLOAT, 3 }  // Normals
-    }), vb, ib
-);
-```
-### Creating Framebuffer
-```cpp
-// Texture creation (framebuffer color attachment)
-std::shared_ptr<orhi::Texture> colorBuffer = std::make_shared<orhi::Texture>(
-    orhi::types::ETextureType::TEXTURE_2D
-);
-colorBuffer->Allocate(orhi::data::TextureDesc{
-    .width = 800,
-    .height = 600,
-    .internalFormat = orhi::types::EInternalFormat::RGBA32F,
-    .useMipMaps = false,
-    .mutableDesc = orhi::data::MutableTextureDesc{
-        .format = orhi::types::EFormat::RGBA,
-        .type = orhi::types::EPixelDataType::FLOAT
-    }
-});
-
-// Renderbuffer creation (framebuffer depth attachment)
-std::shared_ptr<orhi::Renderbuffer> depthBuffer = std::make_shared<orhi::Renderbuffer>();
-depthBuffer->Allocate(800, 600, orhi::types::EInternalFormat::DEPTH_COMPONENT);
-
-orhi::Framebuffer framebuffer;
-framebuffer.Attach(colorBuffer, orhi::types::EFramebufferAttachment::COLOR);
-framebuffer.Attach(depthBuffer, orhi::types::EFramebufferAttachment::DEPTH);
-assert(framebuffer.Validate());
 ```
 
 ## Building & Running Examples (Premake)
@@ -236,10 +156,9 @@ cd .\orhi\
 .\examples\orhi-examples.sln
 ```
 > ℹ️ You can edit `gen_examples.bat` to modify the options used to generate the projects, such as:
-> - `--compile-opengl` compile OpenGL backend 
 > - `--compile-vulkan` compile Vulkan backend 
 > - `--compile-mock` compile Mock backend
-> - `--gfxapi=opengl` set OpenGL as the default graphics API
+> - `--gfxapi=vulkan` set Vulkan as the default graphics API
 
 ### Any Platform (Windows, MacOS, Linux)
 1. Get [premake5](https://premake.github.io/download):
@@ -257,10 +176,9 @@ cd orhi/examples/
 ```powershell
 premake5				
     [action*]
-    --compile-opengl	# compile OpenGL backend 
     --compile-vulkan	# compile Vulkan backend 
     --compile-mock		# compile Mock backend
-    --gfxapi=opengl		# sets OpenGL as the default graphics API
+    --gfxapi=vulkan		# sets Vulkan as the default graphics API
 ```
 **for a full list of available actions, check-out: [Premake5/Using-Premake](https://premake.github.io/docs/Using-Premake/).*
 
@@ -283,8 +201,6 @@ workspace "your-workspace-name"
     include "path/to/orhi"
 
     -- Default graphics API (⚠️ define only one)
-    defines { "ORHI_SELECT_OPENGL", "ORHI_COMPILE_OPENGL" }
-    -- or
     defines { "ORHI_SELECT_VULKAN, "ORHI_COMPILE_VULKAN" }
     -- or
     defines { "ORHI_SELECT_MOCK", "ORHI_COMPILE_MOCK" }
@@ -305,8 +221,6 @@ project "your-project-name"
 In your project's `CMakeLists.txt` file:
 ```cmake
 # Default graphics API (⚠️ define only one)
-add_compile_definitions(ORHI_SELECT_OPENGL ORHI_COMPILE_OPENGL)
-# or
 add_compile_definitions(ORHI_SELECT_VULKAN ORHI_COMPILE_VULKAN)
 # or
 add_compile_definitions(ORHI_SELECT_MOCK ORHI_COMPILE_MOCK)

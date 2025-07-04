@@ -9,6 +9,7 @@ project "0-vulkan"
 	files {
 		"**.h",
 		"**.cpp",
+		"**.lua",
 	}
 
 	includedirs {
@@ -22,15 +23,15 @@ project "0-vulkan"
 		"glm",
 		"orhi",
 		"shaders"
-    }
+	}
 
 	-- Copy assets folder to output directory
-    buildaction "Custom"
-    buildmessage "Copying assets to output folder..."
-    buildcommands {
-        "{COPYDIR} %{wks.location}assets %{cfg.targetdir}/assets"
-    }
-    buildoutputs { "%{cfg.targetdir}/assets_copied.stamp" }
+	buildaction "Custom"
+	buildmessage "Copying assets to output folder..."
+	buildcommands {
+		"{COPYDIR} %{wks.location}assets %{cfg.targetdir}/assets"
+	}
+	buildoutputs { "%{cfg.targetdir}/assets_copied.stamp" }
 
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }
