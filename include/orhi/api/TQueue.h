@@ -15,7 +15,6 @@ namespace orhi::api
 	{
 	public:
 
-
 	private:
 		Context m_context;
 	};

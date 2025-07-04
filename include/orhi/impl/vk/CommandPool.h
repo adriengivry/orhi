@@ -7,9 +7,28 @@
 #pragma once
 
 #include <orhi/api/TCommandPool.h>
+#include <orhi/impl/vk/CommandBuffer.h>
+
+struct VkCommandPool_T;
+typedef VkCommandPool_T* VkCommandPool;
 
 namespace orhi::impl::vk
 {
-	struct CommandPoolContext {};
-	using CommandPool = api::TCommandPool<types::EGraphicsBackend::VULKAN, CommandPoolContext>;
+	struct CommandPoolContext
+	{
+		Device& device;
+		VkCommandPool handle;
+		std::list<CommandBuffer> commandBuffers;
+	};
+
+	using CommandPool = api::TCommandPool<
+		types::EGraphicsBackend::VULKAN,
+		CommandPoolContext,
+		DeviceContext,
+		CommandBufferContext,
+		RenderPassContext,
+		FramebufferContext,
+		BufferContext,
+		DescriptorSetContext
+	>;
 }

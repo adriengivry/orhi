@@ -38,6 +38,8 @@
 #include <orhi/Fence.h>
 #include <orhi/SwapChain.h>
 #include <orhi/DescriptorPool.h>
+#include <orhi/CommandPool.h>
+#include <orhi/CommandBuffer.h>
 #include <orhi/DescriptorSet.h>
 
 namespace
@@ -346,6 +348,23 @@ int main()
 			std::to_array({ std::ref(ubos[i]) })
 		);
 	}
+
+	// Create a command pool so we can create command buffers, and allocate command buffers for transfer and graphics operations.
+	auto commandPool = std::make_unique<orhi::CommandPool>(device);
+	std::vector<std::reference_wrapper<orhi::CommandBuffer>> commandBuffers = commandPool->AllocateCommandBuffers(k_maxFramesInFlight);
+	orhi::CommandBuffer& transferCommandBuffer = commandPool->AllocateCommandBuffers(1).front().get();
+
+	// Upload CPU (host) buffers to the GPU (device)
+	transferCommandBuffer.Begin(orhi::types::ECommandBufferUsageFlags::ONE_TIME_SUBMIT_BIT);
+	transferCommandBuffer.CopyBuffer(*hostVertexBuffer, *deviceVertexBuffer);
+	transferCommandBuffer.CopyBuffer(*hostIndexBuffer, *deviceIndexBuffer);
+	transferCommandBuffer.End();
+	// device.GetGraphicsQueue().Submit({ transferCommandBuffer });
+	device.WaitIdle();
+
+	// At this point we don't need the client copy of these buffers anymore
+	hostVertexBuffer->Deallocate();
+	hostIndexBuffer->Deallocate();
 
 	std::vector<FrameData> frameDataArray;
 	frameDataArray.reserve(k_maxFramesInFlight);
