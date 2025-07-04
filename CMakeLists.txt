@@ -6,11 +6,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(ORHI_COMPILE_OPENGL "Compile OpenGL backend" OFF)
+option(ORHI_COMPILE_VULKAN "Compile Vulkan backend" OFF)
 option(ORHI_COMPILE_MOCK "Compile Mock backend" OFF)
 
-if (ORHI_COMPILE_OPENGL)
-    add_compile_definitions(ORHI_COMPILE_OPENGL)
+if (ORHI_COMPILE_VULKAN)
+    add_compile_definitions(ORHI_COMPILE_VULKAN)
 endif()
 
 if (ORHI_COMPILE_MOCK)

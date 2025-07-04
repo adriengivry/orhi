@@ -1,7 +1,7 @@
 .vs/
 .vscode/
-/Bin/
-/Bin-Int/
+/bin/
+/obj/
 /Build/
 imgui.ini
 *.aps
@@ -9,3 +9,4 @@ imgui.ini
 *.sln
 *.vcxitems*
 /Releases/
+*.spv
