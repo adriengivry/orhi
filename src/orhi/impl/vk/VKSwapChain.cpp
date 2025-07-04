@@ -10,6 +10,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/SwapChain.h>
+#include <orhi/except/OutOfDateSwapChain.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -156,6 +157,34 @@ namespace orhi
 			m_context.handle,
 			nullptr
 		);
+	}
+
+	template<>
+	uint32_t SwapChain::AcquireNextImage(
+		std::optional<std::reference_wrapper<Semaphore>> p_semaphore,
+		std::optional<std::reference_wrapper<Fence>> p_fence,
+		std::optional<uint64_t> p_timeout
+	)
+	{
+		uint32_t imageIndex;
+
+		VkResult result = vkAcquireNextImageKHR(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			m_context.handle,
+			p_timeout.value_or(UINT64_MAX),
+			p_semaphore.has_value() ? p_semaphore->get().GetNativeHandle().As<VkSemaphore>() : VK_NULL_HANDLE,
+			p_fence.has_value() ? p_fence->get().GetNativeHandle().As<VkFence>() : VK_NULL_HANDLE,
+			&imageIndex
+		);
+
+		if (result == VK_ERROR_OUT_OF_DATE_KHR)
+		{
+			throw except::OutOfDateSwapChain();
+		}
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to acquire next image");
+
+		return imageIndex;
 	}
 
 	template<>

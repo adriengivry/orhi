@@ -9,11 +9,14 @@
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/api/TFramebuffer.h>
 #include <orhi/api/TRenderPass.h>
+#include <orhi/api/TSemaphore.h>
+#include <orhi/api/TFence.h>
 #include <vector>
+#include <optional>
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class FramebufferContext, class RenderPassContext>
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class FramebufferContext, class RenderPassContext, class SemaphoreContext, class FenceContext>
 	class TSwapChain final
 	{
 	public:
@@ -41,6 +44,16 @@ namespace orhi::api
 		*/
 		std::vector<orhi::api::TFramebuffer<Backend, FramebufferContext, DeviceContext, RenderPassContext>> CreateFramebuffers(
 			TRenderPass<Backend, RenderPassContext, DeviceContext>& p_renderPass
+		);
+
+		/**
+		* Returns the index of the next image
+		* @note throw an exception if the swapchain is out of date
+		*/
+		uint32_t AcquireNextImage(
+			std::optional<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_semaphore = std::nullopt,
+			std::optional<std::reference_wrapper<TFence<Backend, FenceContext, DeviceContext>>> p_fence = std::nullopt,
+			std::optional<uint64_t> p_timeout = std::nullopt
 		);
 
 		/**

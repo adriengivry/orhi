@@ -7,14 +7,28 @@
 #pragma once
 
 #include <orhi/types/EGraphicsBackend.h>
+#include <orhi/api/TDevice.h>
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context>
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext>
 	class TSemaphore final
 	{
 	public:
+		/**
+		* Creates a semaphore
+		*/
+		TSemaphore(TDevice<Backend, DeviceContext>& p_device);
 
+		/**
+		* Destroys the semaphore
+		*/
+		~TSemaphore();
+
+		/**
+		* Returns the underlying object's native handle
+		*/
+		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		Context m_context;

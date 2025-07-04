@@ -34,6 +34,8 @@
 #include <orhi/DescriptorSetLayout.h>
 #include <orhi/GraphicsPipeline.h>
 #include <orhi/Framebuffer.h>
+#include <orhi/Semaphore.h>
+#include <orhi/Fence.h>
 #include <orhi/SwapChain.h>
 
 namespace
@@ -139,6 +141,16 @@ namespace
 		0, 1, 2,
 		2, 3, 0
 	});
+
+	struct FrameData
+	{
+		// orhi::CommandBuffer& commandBuffer;
+		// orhi::Buffer& ubo;
+		// orhi::DescriptorSet& descriptorSet;
+		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
+		std::unique_ptr<orhi::Semaphore> renderFinishedSemaphore;
+		std::unique_ptr<orhi::Fence> inFlightFence;
+	};
 }
 
 int main()
@@ -260,6 +272,19 @@ int main()
 		}
 	);
 
+	constexpr uint8_t k_maxFramesInFlight = 2;
+
+	std::vector<FrameData> frameDataArray;
+	frameDataArray.reserve(k_maxFramesInFlight);
+	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
+	{
+		frameDataArray.emplace_back(
+			std::make_unique<orhi::Semaphore>(device),
+			std::make_unique<orhi::Semaphore>(device),
+			std::make_unique<orhi::Fence>(device, true)
+		);
+	}
+
 	std::vector<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 
@@ -287,9 +312,24 @@ int main()
 
 	recreateSwapChain();
 
+	uint32_t swapImageIndex = 0;
+	uint8_t currentFrameIndex = 0;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+
+		FrameData& frameData = frameDataArray[currentFrameIndex];
+
+		// device.WaitForFences({ *frameData.inFlightFence });
+
+		swapImageIndex = swapChain->AcquireNextImage(
+			*frameData.imageAvailableSemaphore
+		);
+
+		// device.ResetFences({ *frameData.inFlightFence });
+
+		currentFrameIndex = (currentFrameIndex + 1) % k_maxFramesInFlight;
 	}
 
 	glfwDestroyWindow(window);

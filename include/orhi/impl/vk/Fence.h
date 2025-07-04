@@ -7,9 +7,18 @@
 #pragma once
 
 #include <orhi/api/TFence.h>
+#include <orhi/impl/vk/Device.h>
+
+struct VkFence_T;
+typedef VkFence_T* VkFence;
 
 namespace orhi::impl::vk
 {
-	struct FenceContext {};
-	using Fence = api::TFence<types::EGraphicsBackend::VULKAN, FenceContext>;
+	struct FenceContext
+	{
+		Device& device;
+		VkFence handle;
+	};
+
+	using Fence = api::TFence<types::EGraphicsBackend::VULKAN, FenceContext, DeviceContext>;
 }
