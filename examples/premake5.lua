@@ -1,7 +1,7 @@
 workspace "orhi-examples"
 	configurations { "Debug", "Release" }
 	platforms { "x64" }
-	startproject "1-triangle"
+	startproject "0-vulkan"
 
 	newoption {
 		trigger = "gfxapi",
