@@ -7,9 +7,32 @@
 #pragma once
 
 #include <orhi/api/TGraphicsPipeline.h>
+#include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/ShaderModule.h>
+#include <orhi/impl/vk/RenderPass.h>
+#include <orhi/impl/vk/DescriptorSetLayout.h>
+
+struct VkPipeline_T;
+typedef VkPipeline_T* VkPipeline;
+
+struct VkPipelineLayout_T;
+typedef VkPipelineLayout_T* VkPipelineLayout;
 
 namespace orhi::impl::vk
 {
-	struct GraphicsPipelineContext {};
-	using GraphicsPipeline = api::TGraphicsPipeline<types::EGraphicsBackend::VULKAN, GraphicsPipelineContext>;
+	struct GraphicsPipelineContext 
+	{
+		Device& device;
+		VkPipelineLayout layout;
+		VkPipeline handle;
+	};
+
+	using GraphicsPipeline = api::TGraphicsPipeline<
+		types::EGraphicsBackend::VULKAN,
+		GraphicsPipelineContext,
+		DeviceContext,
+		ShaderModuleContext,
+		RenderPassContext,
+		DescriptorSetLayoutContext
+	>;
 }

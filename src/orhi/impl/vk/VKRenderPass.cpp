@@ -87,6 +87,12 @@ namespace orhi
 			nullptr
 		);
 	}
+
+	template<>
+	data::NativeHandle RenderPass::GetNativeHandle() const
+	{
+		return m_context.handle;
+	}
 }
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

@@ -31,6 +31,11 @@ namespace orhi::api
 		*/
 		~TRenderPass();
 
+		/**
+		* Returns the underlying object's native handle
+		*/
+		data::NativeHandle GetNativeHandle() const;
+
 	private:
 		Context m_context;
 	};

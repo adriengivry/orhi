@@ -32,6 +32,7 @@
 #include <orhi/ShaderModule.h>
 #include <orhi/Buffer.h>
 #include <orhi/DescriptorSetLayout.h>
+#include <orhi/GraphicsPipeline.h>
 
 namespace
 {
@@ -91,6 +92,38 @@ namespace
 	{
 		static auto GetBindingDescription();
 		static auto GetAttributeDescriptions();
+	};
+
+	template<>
+	struct VertexInputDescription<Vertex>
+	{
+		static auto GetBindingDescription()
+		{
+			return std::to_array<orhi::data::VertexBindingDesc>({
+				{
+					.binding = 0,
+					.stride = sizeof(Vertex),
+				}
+			});
+		}
+
+		static auto GetAttributeDescriptions()
+		{
+			return std::to_array<orhi::data::VertexAttributeDesc>({
+				{
+					.binding = 0,
+					.location = 0,
+					.offset = offsetof(Vertex, pos),
+					.format = orhi::types::EFormat::R32G32_SFLOAT
+				},
+				{
+					.binding = 0,
+					.location = 1,
+					.offset = offsetof(Vertex, color),
+					.format = orhi::types::EFormat::R32G32B32_SFLOAT
+				}
+			});
+		}
 	};
 
 	constexpr auto k_vertices = std::to_array<Vertex>({
@@ -208,6 +241,20 @@ int main()
 				.type = orhi::types::EDescriptorType::UNIFORM_BUFFER,
 				.stageFlags = orhi::types::EShaderStageFlags::VERTEX_BIT,
 			}
+		}
+	);
+
+	auto graphicsPipeline = std::make_unique<orhi::GraphicsPipeline>(
+		device,
+		orhi::GraphicsPipeline::Desc{
+			.stages = {
+				{orhi::types::EShaderStageFlags::VERTEX_BIT, std::ref(*vertexShaderModule)},
+				{orhi::types::EShaderStageFlags::FRAGMENT_BIT, std::ref(*fragmentShaderModule)},
+			},
+			.renderPass = *renderPass,
+			.vertexAttributes = VertexInputDescription<Vertex>::GetAttributeDescriptions(),
+			.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
+			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)})
 		}
 	);
 

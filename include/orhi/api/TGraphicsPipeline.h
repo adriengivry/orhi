@@ -7,14 +7,40 @@
 #pragma once
 
 #include <orhi/types/EGraphicsBackend.h>
+#include <orhi/data/GraphicsPipelineDesc.h>
+#include <orhi/api/TDevice.h>
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context>
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class ShaderModuleContext, class RenderPassContext, class DescriptorSetLayoutContext>
 	class TGraphicsPipeline final
 	{
 	public:
+		using Desc = const data::GraphicsPipelineDesc<
+			Backend,
+			DeviceContext,
+			ShaderModuleContext,
+			RenderPassContext,
+			DescriptorSetLayoutContext
+		>;
 
+		/**
+		* Creates a graphics pipeline
+		*/
+		TGraphicsPipeline(
+			TDevice<Backend, DeviceContext>& p_device,
+			const Desc& p_desc
+		);
+
+		/**
+		* Destructor of the graphics pipeline
+		*/
+		~TGraphicsPipeline();
+
+		/**
+		* Returns the underlying object's native handle
+		*/
+		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		Context m_context;
