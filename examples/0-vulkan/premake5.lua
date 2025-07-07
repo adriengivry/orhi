@@ -22,8 +22,8 @@ project "0-vulkan"
 	}
 
 	includedirs {
-		depsdir .. "glm/include",
-		depsdir .. "glfw/include",
+		depsdir .. "_glm/glm",
+		depsdir .. "_glfw/glfw/include",
 		"%{wks.location}../../include",
 	}
 

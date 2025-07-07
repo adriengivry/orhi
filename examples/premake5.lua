@@ -39,8 +39,8 @@ group "examples"
 group ""
 
 group "examples/deps"
-	include "deps/glm"
-	include "deps/glfw"
+	include "deps/_glm"
+	include "deps/_glfw"
 group ""
 
 include "../"
