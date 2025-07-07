@@ -10,11 +10,15 @@
 
 # OpenRHI
 
-**OpenRHI** — *orhi* — is a simple, permissive (MIT license), cross-platform **Render Hardware Interface** written in C++20.
+**OpenRHI** — *orhi* — is a simple, permissive (MIT licensed), cross-platform **Render Hardware Interface** written in C++20.
 
 Write hardware-agnostic code once, and ship it to multiple platforms using different graphics APIs.
 
 ## Supported Graphics APIs
+
+> [!WARNING]
+> **OpenRHI** [API](include/orhi/api/) is expected to undergo significant changes as support for additional graphics backends is added, in order to accommodate the requirements and design philosophies of each backend.
+
 The primary target for **OpenRHI** is **desktop platforms**, but its [API](include/orhi/api/) is designed to be flexible enough to support any backend your product may require.
 
 Target platforms are:
@@ -27,12 +31,10 @@ Target platforms are:
 | API | Target Platforms | Status |
 |-|-|-|
 | Vulkan | 🪟🐧 | 🌓 Partial |
+| DirectX 12 | 🪟 | 📅 Planned |
 | Mock (Headless) | 🪟🐧🍎 | 📅 Planned |
-| DirectX | 🪟 | ❓ TBD |
-| Metal | 🍎 | ❓ TBD |
-| Software | 🪟🐧🍎 | ❓ TBD |
-
-> ⚠️ **OpenRHI** [API](include/orhi/api/) is expected to undergo significant changes as support for additional graphics backends is added, in order to accommodate the requirements and design philosophies of each backend.
+| Metal | 🍎 | 📅 Planned  |
+| OpenGL | 🪟🐧 | ☠️ Deprecated / Moved to [BareGL](https://github.com/adriengivry/baregl) |
 
 ## Features
 
@@ -43,7 +45,7 @@ Target platforms are:
 - ⛓️‍💥 **Standalone:** comes with everything you need, requires no additional libraries.
 - 📃 **Documented:** fully documented source code.
 - 💻 **Cross-platform:** supports Windows, MacOS, and Linux.
-- ⚙️ **Modern** leveraging the power of C++20.
+- ⚙️ **Modern:** leveraging the power of C++20.
 
 ## Template Projects
 
@@ -143,8 +145,6 @@ int main()
 
 ## Building & Running Examples (Premake)
 ### Windows Quick Start (Visual Studio 2022)
-> ⚡ Clone, build, and run **OpenRHI** examples in less than 2 minutes!
-
 From the command-line:
 ```powershell
 # Clone orhi and navigate to the repository root
@@ -172,7 +172,8 @@ git clone https://github.com/adriengivry/orhi
 cd orhi/examples/
 ```
 1. From the command line, execute:
-> ℹ️ If premake hasn't been added to PATH, use the path to downloaded executable instead
+> [!NOTE]
+> If premake hasn't been added to PATH, use the path to downloaded executable instead
 ```powershell
 premake5				
     [action*]
@@ -185,7 +186,8 @@ premake5
 ## Adding OpenRHI to Your Project
 **OpenRHI** is setup to work with `premake5` and `CMake` out of the box.
 
-> ⚠️ **OpenRHI** only supports static linking at the moment, so you cannot build it as a shared library. You'll need to add `orhi` to your project files instead.
+> [!WARNING]
+> **OpenRHI** only supports static linking at the moment, so you cannot build it as a shared library. You'll need to add `orhi` to your project files instead.
 
 To get started, add `orhi` as a submodule to your repository:
 ```powershell
@@ -201,7 +203,7 @@ workspace "your-workspace-name"
     include "path/to/orhi"
 
     -- Default graphics API (⚠️ define only one)
-    defines { "ORHI_SELECT_VULKAN, "ORHI_COMPILE_VULKAN" }
+    defines { "ORHI_SELECT_VULKAN", "ORHI_COMPILE_VULKAN" }
     -- or
     defines { "ORHI_SELECT_MOCK", "ORHI_COMPILE_MOCK" }
 ```
