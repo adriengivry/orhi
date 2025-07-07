@@ -16,7 +16,7 @@ Write hardware-agnostic code once, and ship it to multiple platforms using diffe
 
 ## Supported Graphics APIs
 
-> [!WARNING]
+> [!IMPORTANT]
 > **OpenRHI** [API](include/orhi/api/) is expected to undergo significant changes as support for additional graphics backends is added, in order to accommodate the requirements and design philosophies of each backend.
 
 The primary target for **OpenRHI** is **desktop platforms**, but its [API](include/orhi/api/) is designed to be flexible enough to support any backend your product may require.
@@ -144,18 +144,22 @@ int main()
 ```
 
 ## Building & Running Examples (Premake)
+> [!IMPORTANT]
+> Example projects rely on [glfw](https://github.com/glfw/glfw) and [glm](https://github.com/g-truc/glm), which are included as submodules. Make sure to initialize submodules for example projects to function properly!
+
 ### Windows Quick Start (Visual Studio 2022)
 From the command-line:
 ```powershell
-# Clone orhi and navigate to the repository root
-git clone https://github.com/adriengivry/orhi
-cd .\orhi\
+# Clone orhi and navigate to the "examples" folder
+git clone --recurse-submodules https://github.com/adriengivry/orhi
+cd .\orhi\examples\
 
 # Generate example projects and open in Visual Studio
 .\gen_examples.bat
-.\examples\orhi-examples.sln
+.\orhi-examples.sln
 ```
-> ℹ️ You can edit `gen_examples.bat` to modify the options used to generate the projects, such as:
+> [!TIP]
+> You can edit `gen_examples.bat` to modify the options used to generate the projects, such as:
 > - `--compile-vulkan` compile Vulkan backend 
 > - `--compile-mock` compile Mock backend
 > - `--gfxapi=vulkan` set Vulkan as the default graphics API
