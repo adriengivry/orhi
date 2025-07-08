@@ -113,11 +113,8 @@ int main()
 			{orhi::types::EShaderStageFlags::FRAGMENT_BIT, std::ref(*fragmentShader)},
 		},
 		.renderPass = *renderPass,
-		.vertexAttributes = {},
-		.vertexBindings = {},
-		.descriptorSetLayouts = {},
 		.colorBlendState = {
-			.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>{}
+			.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
 		},
 		.dynamicState = {
 			.dynamicStates = std::to_array<orhi::types::EDynamicState>({

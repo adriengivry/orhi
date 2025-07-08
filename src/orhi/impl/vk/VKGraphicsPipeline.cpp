@@ -10,7 +10,9 @@
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/GraphicsPipeline.h>
 #include <orhi/impl/vk/details/Types.h>
+#include <orhi/data/VertexInputStateDesc.h>
 #include <orhi/data/InputAssemblyStateDesc.h>
+#include <orhi/data/ViewportStateDesc.h>
 #include <orhi/data/RasterizationStateDesc.h>
 #include <orhi/data/MultisampleStateDesc.h>
 #include <orhi/data/DepthStencilStateDesc.h>
@@ -224,6 +226,68 @@ namespace
 			.pDynamicStates = p_dynamicStates.data()
 		};
 	}
+
+	auto FormatVertexInputState(const orhi::data::VertexInputStateDesc& p_desc, 
+		const std::vector<VkVertexInputBindingDescription>& p_bindings,
+		const std::vector<VkVertexInputAttributeDescription>& p_attributes)
+	{
+		return VkPipelineVertexInputStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+			.vertexBindingDescriptionCount = static_cast<uint32_t>(p_bindings.size()),
+			.pVertexBindingDescriptions = p_bindings.data(),
+			.vertexAttributeDescriptionCount = static_cast<uint32_t>(p_attributes.size()),
+			.pVertexAttributeDescriptions = p_attributes.data()
+		};
+	}
+
+	auto FormatViewports(const std::span<const orhi::data::ViewportDesc>& p_viewports)
+	{
+		std::vector<VkViewport> formattedViewports;
+		formattedViewports.reserve(p_viewports.size());
+
+		for (auto& viewport : p_viewports)
+		{
+			formattedViewports.push_back(VkViewport{
+				.x = viewport.x,
+				.y = viewport.y,
+				.width = viewport.width,
+				.height = viewport.height,
+				.minDepth = viewport.minDepth,
+				.maxDepth = viewport.maxDepth
+			});
+		}
+
+		return formattedViewports;
+	}
+
+	auto FormatScissors(const std::span<const orhi::data::Rect2D>& p_scissors)
+	{
+		std::vector<VkRect2D> formattedScissors;
+		formattedScissors.reserve(p_scissors.size());
+
+		for (auto& scissor : p_scissors)
+		{
+			formattedScissors.push_back(VkRect2D{
+				.offset = { scissor.offset.first, scissor.offset.second },
+				.extent = { scissor.extent.first, scissor.extent.second }
+			});
+		}
+
+		return formattedScissors;
+	}
+
+	auto FormatViewportState(const orhi::data::ViewportStateDesc& p_desc,
+		const std::vector<VkViewport>& p_viewports,
+		const std::vector<VkRect2D>& p_scissors)
+	{
+		return VkPipelineViewportStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+			.viewportCount = static_cast<uint32_t>(p_viewports.size()),
+			.pViewports = p_viewports.empty() ? nullptr : p_viewports.data(),
+			.scissorCount = static_cast<uint32_t>(p_scissors.size()),
+			.pScissors = p_scissors.empty() ? nullptr : p_scissors.data()
+		};
+	}
 }
 
 namespace orhi
@@ -240,12 +304,18 @@ namespace orhi
 	{
 		// Collect and format pipeline components
 		const auto stages = FormatStages(p_desc.stages);
-		const auto vertexAttributes = FormatVertexAttributes(p_desc.vertexAttributes);
-		const auto vertexBindings = FormatVertexBindings(p_desc.vertexBindings);
+		const auto vertexAttributes = FormatVertexAttributes(p_desc.vertexInputState.vertexAttributes);
+		const auto vertexBindings = FormatVertexBindings(p_desc.vertexInputState.vertexBindings);
 		const auto descriptorSetLayouts = FormatDescriptorSetLayouts(p_desc.descriptorSetLayouts);
 		
 		// Format pipeline states using descriptors
+		const auto vertexInputState = FormatVertexInputState(p_desc.vertexInputState, vertexBindings, vertexAttributes);
 		const auto inputAssemblyState = FormatInputAssemblyState(p_desc.inputAssemblyState);
+		
+		const auto viewports = FormatViewports(p_desc.viewportState.viewports);
+		const auto scissors = FormatScissors(p_desc.viewportState.scissors);
+		const auto viewportState = FormatViewportState(p_desc.viewportState, viewports, scissors);
+		
 		const auto rasterizationState = FormatRasterizationState(p_desc.rasterizationState);
 		const auto multisampleState = FormatMultisampleState(p_desc.multisampleState);
 		const auto depthStencilState = FormatDepthStencilState(p_desc.depthStencilState);
@@ -255,24 +325,6 @@ namespace orhi
 		
 		const auto dynamicStatesArray = FormatDynamicStates(p_desc.dynamicState.dynamicStates);
 		const auto dynamicState = FormatDynamicState(p_desc.dynamicState, dynamicStatesArray);
-
-		// Vertex input state
-		VkPipelineVertexInputStateCreateInfo vertexInputState{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-			.vertexBindingDescriptionCount = static_cast<uint32_t>(vertexBindings.size()),
-			.pVertexBindingDescriptions = vertexBindings.data(),
-			.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertexAttributes.size()),
-			.pVertexAttributeDescriptions = vertexAttributes.data()
-		};
-
-		// Viewport state (dynamic by default)
-		VkPipelineViewportStateCreateInfo viewportState{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-			.viewportCount = 1,
-			.pViewports = nullptr, // Dynamic viewport
-			.scissorCount = 1,
-			.pScissors = nullptr // Dynamic scissor
-		};
 
 		// Create pipeline layout
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{
