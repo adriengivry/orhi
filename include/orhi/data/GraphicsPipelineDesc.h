@@ -18,6 +18,7 @@
 #include <orhi/data/VertexAttributeDesc.h>
 #include <orhi/data/VertexInputStateDesc.h>
 #include <orhi/data/InputAssemblyStateDesc.h>
+#include <orhi/data/TessellationStateDesc.h>
 #include <orhi/data/ViewportStateDesc.h>
 #include <orhi/data/RasterizationStateDesc.h>
 #include <orhi/data/MultisampleStateDesc.h>
@@ -40,6 +41,7 @@ namespace orhi::data
 		// Pipeline state descriptors
 		VertexInputStateDesc vertexInputState{};
 		InputAssemblyStateDesc inputAssemblyState{};
+		TessellationStateDesc tessellationState{};
 		ViewportStateDesc viewportState{};
 		RasterizationStateDesc rasterizationState{};
 		MultisampleStateDesc multisampleState{};

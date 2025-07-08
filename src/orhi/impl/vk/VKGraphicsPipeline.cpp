@@ -12,6 +12,7 @@
 #include <orhi/impl/vk/details/Types.h>
 #include <orhi/data/VertexInputStateDesc.h>
 #include <orhi/data/InputAssemblyStateDesc.h>
+#include <orhi/data/TessellationStateDesc.h>
 #include <orhi/data/ViewportStateDesc.h>
 #include <orhi/data/RasterizationStateDesc.h>
 #include <orhi/data/MultisampleStateDesc.h>
@@ -288,6 +289,14 @@ namespace
 			.pScissors = p_scissors.empty() ? nullptr : p_scissors.data()
 		};
 	}
+
+	auto FormatTessellationState(const orhi::data::TessellationStateDesc& p_desc)
+	{
+		return VkPipelineTessellationStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+			.patchControlPoints = p_desc.patchControlPoints
+		};
+	}
 }
 
 namespace orhi
@@ -311,6 +320,7 @@ namespace orhi
 		// Format pipeline states using descriptors
 		const auto vertexInputState = FormatVertexInputState(p_desc.vertexInputState, vertexBindings, vertexAttributes);
 		const auto inputAssemblyState = FormatInputAssemblyState(p_desc.inputAssemblyState);
+		const auto tessellationState = FormatTessellationState(p_desc.tessellationState);
 		
 		const auto viewports = FormatViewports(p_desc.viewportState.viewports);
 		const auto scissors = FormatScissors(p_desc.viewportState.scissors);
@@ -344,17 +354,25 @@ namespace orhi
 		
 		ORHI_ASSERT(pipelineLayoutCreationResult == VK_SUCCESS, "failed to create pipeline layout!");
 
-		// Create graphics pipeline
+		const bool hasTessellationStages =
+			p_desc.stages.contains(orhi::types::EShaderStageFlags::TESSELLATION_CONTROL_BIT) || 
+			p_desc.stages.contains(orhi::types::EShaderStageFlags::TESSELLATION_EVALUATION_BIT);
+
+		const bool hasDepthOrStencil =
+			p_desc.depthStencilState.depthTestEnable ||
+			p_desc.depthStencilState.stencilTestEnable;
+		
 		VkGraphicsPipelineCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
 			.stageCount = static_cast<uint32_t>(stages.size()),
 			.pStages = stages.data(),
 			.pVertexInputState = &vertexInputState,
 			.pInputAssemblyState = &inputAssemblyState,
+			.pTessellationState = hasTessellationStages ? &tessellationState : nullptr,
 			.pViewportState = &viewportState,
 			.pRasterizationState = &rasterizationState,
 			.pMultisampleState = &multisampleState,
-			.pDepthStencilState = p_desc.depthStencilState.depthTestEnable || p_desc.depthStencilState.stencilTestEnable ? &depthStencilState : nullptr,
+			.pDepthStencilState = hasDepthOrStencil ? &depthStencilState : nullptr,
 			.pColorBlendState = &colorBlendState,
 			.pDynamicState = dynamicStatesArray.empty() ? nullptr : &dynamicState,
 			.layout = m_context.layout,
