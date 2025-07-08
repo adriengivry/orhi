@@ -36,6 +36,7 @@ depsdir = "%{wks.location}/deps/"
 
 group "examples"
 	include "0-vulkan"
+	include "1-triangle"
 group ""
 
 group "examples/deps"
