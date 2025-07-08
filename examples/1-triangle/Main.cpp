@@ -29,17 +29,6 @@
 #include <orhi/CommandBuffer.h>
 #include <orhi/Queue.h>
 #include <orhi/except/OutOfDateSwapChain.h>
-#include <orhi/types/EPrimitiveTopology.h>
-#include <orhi/types/EPolygonMode.h>
-#include <orhi/types/ECullModeFlags.h>
-#include <orhi/types/EFrontFace.h>
-#include <orhi/types/ESampleCountFlags.h>
-#include <orhi/types/ECompareOp.h>
-#include <orhi/types/ELogicOp.h>
-#include <orhi/types/EBlendFactor.h>
-#include <orhi/types/EBlendOp.h>
-#include <orhi/types/EColorComponentFlags.h>
-#include <orhi/types/EDynamicState.h>
 
 namespace
 {
@@ -86,50 +75,53 @@ int main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Triangle", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "1-triangle", nullptr, nullptr);
 
 	// Create backend and device
-	auto backend = std::make_unique<orhi::Backend>(orhi::data::BackendDesc{
+	orhi::Backend backend(orhi::data::BackendDesc{
 		.debug = true,
 		.extensions = GetGlfwRequiredExtensions(),
 		.win32_windowHandle = glfwGetWin32Window(window),
 		.win32_instanceHandle = GetModuleHandle(nullptr)
 	});
 
-	const auto& devices = backend->GetSuitableDevices();
+	const auto& devices = backend.GetSuitableDevices();
 	assert(!devices.empty());
-	auto& device = backend->CreateDevice(devices.front().id);
+	auto& device = backend.CreateDevice(devices.front().id);
 
 	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(GetWindowSize(window));
 
 	// Create render pass and pipeline
-	auto renderPass = std::make_unique<orhi::RenderPass>(device, optimalSwapChainDesc.format);
-	auto vertexShader = std::make_unique<orhi::ShaderModule>(device, ReadShaderFile("assets/shaders/main.vert.spv"));
-	auto fragmentShader = std::make_unique<orhi::ShaderModule>(device, ReadShaderFile("assets/shaders/main.frag.spv"));
+	orhi::RenderPass renderPass{ device, optimalSwapChainDesc.format };
+	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
+	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
 	
-	auto pipeline = std::make_unique<orhi::GraphicsPipeline>(device, orhi::GraphicsPipeline::Desc{
-		.stages = {
-			{orhi::types::EShaderStageFlags::VERTEX_BIT, std::ref(*vertexShader)},
-			{orhi::types::EShaderStageFlags::FRAGMENT_BIT, std::ref(*fragmentShader)},
-		},
-		.renderPass = *renderPass,
-		.colorBlendState = {
-			.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
-		},
-		.dynamicState = {
-			.dynamicStates = std::to_array<orhi::types::EDynamicState>({
-				orhi::types::EDynamicState::VIEWPORT,
-				orhi::types::EDynamicState::SCISSOR
-			})
+	orhi::GraphicsPipeline pipeline{
+		device,
+		orhi::GraphicsPipeline::Desc{
+			.stages = {
+				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
+				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
+			},
+			.renderPass = renderPass,
+			.colorBlendState = {
+				.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
+			},
+			.dynamicState = {
+				.dynamicStates = std::to_array<orhi::types::EDynamicState>({
+					orhi::types::EDynamicState::VIEWPORT,
+					orhi::types::EDynamicState::SCISSOR
+				})
+			}
 		}
-	});
+	};
 
 	// Swap chain and framebuffers
 	std::vector<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	std::pair<uint32_t, uint32_t> windowSize;
 
-	auto recreateSwapChain = [&]() {
+	auto recreateSwapChain = [&]{
 		while ((windowSize = GetWindowSize(window)).first == 0 || windowSize.second == 0)
 		{
 			glfwWaitEvents();
@@ -137,22 +129,22 @@ int main()
 
 		device.WaitIdle();
 		framebuffers.clear();
-		swapChain = std::make_unique<orhi::SwapChain>(device, backend->GetSurfaceHandle(), windowSize, optimalSwapChainDesc);
-		framebuffers = swapChain->CreateFramebuffers(*renderPass);
+		swapChain = std::make_unique<orhi::SwapChain>(device, backend.GetSurfaceHandle(), windowSize, optimalSwapChainDesc);
+		framebuffers = swapChain->CreateFramebuffers(renderPass);
 	};
 
 	recreateSwapChain();
 
 	// Command buffers and synchronization
-	constexpr uint8_t maxFramesInFlight = 2;
-	assert(framebuffers.size() >= maxFramesInFlight);
+	constexpr uint8_t k_maxFramesInFlight = 2;
+	assert(framebuffers.size() >= k_maxFramesInFlight);
 
-	auto commandPool = std::make_unique<orhi::CommandPool>(device);
-	auto commandBuffers = commandPool->AllocateCommandBuffers(maxFramesInFlight);
+	orhi::CommandPool commandPool{ device };
+	auto commandBuffers = commandPool.AllocateCommandBuffers(k_maxFramesInFlight);
 
 	std::vector<FrameData> frames;
-	frames.reserve(maxFramesInFlight);
-	for (uint8_t i = 0; i < maxFramesInFlight; ++i)
+	frames.reserve(k_maxFramesInFlight);
+	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
 		frames.emplace_back(
 			commandBuffers[i],
@@ -179,8 +171,8 @@ int main()
 		auto& commandBuffer = frame.commandBuffer;
 		commandBuffer.Reset();
 		commandBuffer.Begin();
-		commandBuffer.BeginRenderPass(*renderPass, framebuffers[imageIndex], windowSize);
-		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline->GetNativeHandle());
+		commandBuffer.BeginRenderPass(renderPass, framebuffers[imageIndex], windowSize);
+		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline.GetNativeHandle());
 
 		commandBuffer.SetViewport({
 			.x = 0.0f, .y = 0.0f,
@@ -219,7 +211,7 @@ int main()
 			continue;
 		}
 
-		frameIndex = (frameIndex + 1) % maxFramesInFlight;
+		frameIndex = (frameIndex + 1) % k_maxFramesInFlight;
 	}
 
 	glfwDestroyWindow(window);
