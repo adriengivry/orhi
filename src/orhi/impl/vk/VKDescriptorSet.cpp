@@ -60,7 +60,7 @@ namespace orhi
 			.dstSet = m_context.handle,
 			.dstBinding = 0,
 			.dstArrayElement = 0,
-			.descriptorCount = 1,
+			.descriptorCount = static_cast<uint32_t>(bufferInfos.size()),
 			.descriptorType = utils::EnumToValue<VkDescriptorType>(p_type),
 			.pImageInfo = nullptr, // Optional
 			.pBufferInfo = bufferInfos.data(),

@@ -194,7 +194,7 @@ namespace orhi
 			VK_PIPELINE_BIND_POINT_GRAPHICS,
 			p_pipelineLayout.As<VkPipelineLayout>(),
 			0,
-			1,
+			static_cast<uint32_t>(descriptorSets.size()),
 			descriptorSets.data(),
 			0,
 			nullptr
