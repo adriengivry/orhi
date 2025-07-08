@@ -9,6 +9,8 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/DescriptorPool.h>
+#include <orhi/impl/vk/details/Types.h>
+#include <orhi/utils/EnumMapper.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -18,24 +20,35 @@ namespace orhi
 	template<>
 	DescriptorPool::TDescriptorPool(
 		Device& p_device,
-		uint32_t p_maxSetCount
+		const data::DescriptorPoolDesc& p_desc
 	) : m_context{
 		.device = p_device,
 		.handle = VK_NULL_HANDLE
 	}
 	{
-		ORHI_ASSERT(p_maxSetCount > 0, "Max set count must be > 0");
+		ORHI_ASSERT(p_desc.maxSets > 0, "Max set count must be > 0");
+		ORHI_ASSERT(!p_desc.poolSizes.empty(), "Pool sizes cannot be empty");
 
-		VkDescriptorPoolSize poolSize{
-			.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-			.descriptorCount = 1
-		};
+		// Convert pool sizes to Vulkan format
+		std::vector<VkDescriptorPoolSize> vkPoolSizes;
+		vkPoolSizes.reserve(p_desc.poolSizes.size());
+
+		for (const auto& poolSize : p_desc.poolSizes)
+		{
+			ORHI_ASSERT(poolSize.descriptorCount > 0, "Descriptor count must be > 0");
+			
+			vkPoolSizes.push_back({
+				.type = utils::EnumToValue<VkDescriptorType>(poolSize.type),
+				.descriptorCount = poolSize.descriptorCount
+			});
+		}
 
 		VkDescriptorPoolCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-			.maxSets = p_maxSetCount,
-			.poolSizeCount = 1,
-			.pPoolSizes = &poolSize,
+			.flags = utils::EnumToValue<VkDescriptorPoolCreateFlags>(p_desc.flags),
+			.maxSets = p_desc.maxSets,
+			.poolSizeCount = static_cast<uint32_t>(vkPoolSizes.size()),
+			.pPoolSizes = vkPoolSizes.data(),
 		};
 
 		VkResult result = vkCreateDescriptorPool(

@@ -8,6 +8,7 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
+#include <orhi/types/EDescriptorPoolCreateFlags.h>
 #include <orhi/types/EBufferUsageFlags.h>
 #include <orhi/types/EColorSpace.h>
 #include <orhi/types/ECommandBufferLevel.h>
@@ -713,6 +714,22 @@ struct orhi::utils::MappingFor<orhi::types::EDynamicState, VkDynamicState>
 		EnumValuePair<EnumType::RASTERIZER_DISCARD_ENABLE, VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE>,
 		EnumValuePair<EnumType::DEPTH_BIAS_ENABLE, VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE>,
 		EnumValuePair<EnumType::PRIMITIVE_RESTART_ENABLE, VK_DYNAMIC_STATE_PRIMITIVE_RESTART_ENABLE>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EDescriptorPoolCreateFlags, VkDescriptorPoolCreateFlags>
+{
+	using EnumType = orhi::types::EDescriptorPoolCreateFlags;
+	using type = std::tuple<
+		EnumValuePair<EnumType::NONE, 0>,
+		EnumValuePair<EnumType::FREE_DESCRIPTOR_SET_BIT, VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT>,
+		EnumValuePair<EnumType::UPDATE_AFTER_BIND_BIT, VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT>,
+		EnumValuePair<EnumType::HOST_ONLY_BIT_EXT, VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT>,
+		EnumValuePair<EnumType::ALLOW_OVERALLOCATION_SETS_BIT_NV, VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_SETS_BIT_NV>,
+		EnumValuePair<EnumType::ALLOW_OVERALLOCATION_POOLS_BIT_NV, VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV>,
+		EnumValuePair<EnumType::UPDATE_AFTER_BIND_BIT_EXT, VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT>,
+		EnumValuePair<EnumType::HOST_ONLY_BIT_VALVE, VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_VALVE>
 	>;
 };
 

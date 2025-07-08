@@ -9,6 +9,7 @@
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/api/TDescriptorSetLayout.h>
 #include <orhi/api/TDescriptorSet.h>
+#include <orhi/data/DescriptorPoolDesc.h>
 #include <vector>
 
 namespace orhi::api
@@ -22,7 +23,7 @@ namespace orhi::api
 		*/
 		TDescriptorPool(
 			TDevice<Backend, DeviceContext>& p_device,
-			uint32_t p_maxSetCount
+			const data::DescriptorPoolDesc& p_desc
 		);
 
 		/**

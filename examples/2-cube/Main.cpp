@@ -361,7 +361,13 @@ int main()
 	// Create a descriptor pool to allocate descriptor sets
 	auto descriptorPool = std::make_unique<orhi::DescriptorPool>(
 		device,
-		k_maxFramesInFlight
+		orhi::data::DescriptorPoolDesc{
+			.flags = orhi::types::EDescriptorPoolCreateFlags::NONE,
+			.maxSets = k_maxFramesInFlight,
+			.poolSizes = {
+				{ orhi::types::EDescriptorType::UNIFORM_BUFFER, k_maxFramesInFlight }
+			}
+		}
 	);
 
 	// Create a descriptor set for each frame
