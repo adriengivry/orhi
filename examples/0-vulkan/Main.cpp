@@ -46,48 +46,32 @@
 
 namespace
 {
-	std::pair<uint32_t, uint32_t> GetWindowSize(GLFWwindow* p_window)
+	std::pair<uint32_t, uint32_t> GetWindowSize(GLFWwindow* window)
 	{
 		int width, height;
-		glfwGetFramebufferSize(p_window, &width, &height);
-		return {
-			static_cast<uint32_t>(width),
-			static_cast<uint32_t>(height)
-		};
+		glfwGetFramebufferSize(window, &width, &height);
+		return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 	}
 
 	std::vector<std::string> GetGlfwRequiredExtensions()
 	{
-		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;
-		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-		std::vector<std::string> requiredExtensions;
-		requiredExtensions.reserve(glfwExtensionCount);
-		for (uint32_t i = 0; i < glfwExtensionCount; ++i)
-		{
-			requiredExtensions.push_back(glfwExtensions[i]);
-		}
-
-		return requiredExtensions;
+		uint32_t count = 0;
+		const char** extensions = glfwGetRequiredInstanceExtensions(&count);
+		return { extensions, extensions + count };
 	}
 
-	std::vector<std::byte> ReadShaderFile(const std::filesystem::path p_fileName)
+	std::vector<std::byte> ReadShaderFile(const std::filesystem::path& p_fileName)
 	{
-		assert(std::filesystem::exists(p_fileName));
-
 		std::ifstream file(p_fileName, std::ios::ate | std::ios::binary);
-
 		if (!file.is_open())
 		{
-			throw std::runtime_error("failed to open shader file: " + p_fileName.string());
+			throw std::runtime_error("Failed to open shader file: " + p_fileName.string());
 		}
 
 		size_t fileSize = static_cast<size_t>(file.tellg());
 		std::vector<std::byte> buffer(fileSize);
 		file.seekg(0);
 		file.read(reinterpret_cast<char*>(buffer.data()), fileSize);
-		file.close();
 		return buffer;
 	}
 
@@ -279,9 +263,20 @@ int main()
 				{orhi::types::EShaderStageFlags::FRAGMENT_BIT, std::ref(*fragmentShaderModule)},
 			},
 			.renderPass = *renderPass,
-			.vertexAttributes = VertexInputDescription<Vertex>::GetAttributeDescriptions(),
-			.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
-			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)})
+			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)}),
+			.vertexInputState{
+				.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
+				.vertexAttributes = VertexInputDescription<Vertex>::GetAttributeDescriptions()
+			},
+			.colorBlendState = {
+				.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
+			},
+			.dynamicState = {
+				.dynamicStates = std::to_array<orhi::types::EDynamicState>({
+					orhi::types::EDynamicState::VIEWPORT,
+					orhi::types::EDynamicState::SCISSOR
+				})
+			}
 		}
 	);
 
