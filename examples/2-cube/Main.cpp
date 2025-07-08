@@ -19,29 +19,26 @@
 #include <glm/mat4x4.hpp>
 
 #include <cassert>
-#include <array>
-#include <iostream>
 #include <vector>
-#include <span>
-#include <ranges>
 #include <filesystem>
 #include <fstream>
+#include <array>
 
 #include <orhi/Backend.h>
 #include <orhi/RenderPass.h>
 #include <orhi/ShaderModule.h>
-#include <orhi/Buffer.h>
-#include <orhi/DescriptorSetLayout.h>
 #include <orhi/GraphicsPipeline.h>
 #include <orhi/Framebuffer.h>
 #include <orhi/Semaphore.h>
 #include <orhi/Fence.h>
 #include <orhi/SwapChain.h>
-#include <orhi/DescriptorPool.h>
+#include <orhi/Buffer.h>
 #include <orhi/CommandPool.h>
 #include <orhi/CommandBuffer.h>
-#include <orhi/Queue.h>
+#include <orhi/DescriptorPool.h>
 #include <orhi/DescriptorSet.h>
+#include <orhi/DescriptorSetLayout.h>
+#include <orhi/Queue.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 
 namespace
@@ -75,10 +72,25 @@ namespace
 		return buffer;
 	}
 
+	struct FrameResources
+	{
+		orhi::CommandBuffer& commandBuffer;
+		orhi::Buffer& ubo;
+		orhi::DescriptorSet& descriptorSet;
+		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
+		std::unique_ptr<orhi::Fence> inFlightFence;
+	};
+
+	struct SwapImageResources
+	{
+		orhi::Framebuffer& framebuffer;
+		std::unique_ptr<orhi::Semaphore> renderFinishedSemaphore;
+	};
+
 	struct Vertex
 	{
-		glm::vec2 pos;
-		glm::vec3 color;
+		glm::vec3 pos;
+		glm::vec3 normal;
 	};
 
 	template<class T>
@@ -108,12 +120,12 @@ namespace
 					.binding = 0,
 					.location = 0,
 					.offset = offsetof(Vertex, pos),
-					.format = orhi::types::EFormat::R32G32_SFLOAT
+					.format = orhi::types::EFormat::R32G32B32_SFLOAT
 				},
 				{
 					.binding = 0,
 					.location = 1,
-					.offset = offsetof(Vertex, color),
+					.offset = offsetof(Vertex, normal),
 					.format = orhi::types::EFormat::R32G32B32_SFLOAT
 				}
 			});
@@ -121,15 +133,51 @@ namespace
 	};
 
 	constexpr auto k_vertices = std::to_array<Vertex>({
-		{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-		{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-		{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-		{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+		// Front face (normal: 0, 0, 1)
+		{{-0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}, // 0
+		{{ 0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}, // 1
+		{{ 0.5f,  0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}, // 2
+		{{-0.5f,  0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}, // 3
+		// Right face (normal: 1, 0, 0)
+		{{ 0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.0f}}, // 4
+		{{ 0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // 5
+		{{ 0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}}, // 6
+		{{ 0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 0.0f}}, // 7
+		// Back face (normal: 0, 0, -1)
+		{{ 0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}}, // 8
+		{{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}}, // 9
+		{{-0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}}, // 10
+		{{ 0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}}, // 11
+		// Left face (normal: -1, 0, 0)
+		{{-0.5f, -0.5f, -0.5f}, {-1.0f, 0.0f, 0.0f}}, // 12
+		{{-0.5f, -0.5f,  0.5f}, {-1.0f, 0.0f, 0.0f}}, // 13
+		{{-0.5f,  0.5f,  0.5f}, {-1.0f, 0.0f, 0.0f}}, // 14
+		{{-0.5f,  0.5f, -0.5f}, {-1.0f, 0.0f, 0.0f}}, // 15
+		// Top face (normal: 0, 1, 0)
+		{{-0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}}, // 16
+		{{ 0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}}, // 17
+		{{ 0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}}, // 18
+		{{-0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}}, // 19
+		// Bottom face (normal: 0, -1, 0)
+		{{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f, 0.0f}}, // 20
+		{{ 0.5f, -0.5f, -0.5f}, {0.0f, -1.0f, 0.0f}}, // 21
+		{{ 0.5f, -0.5f,  0.5f}, {0.0f, -1.0f, 0.0f}}, // 22
+		{{-0.5f, -0.5f,  0.5f}, {0.0f, -1.0f, 0.0f}}, // 23
 	});
 
 	constexpr auto k_indices = std::to_array<uint32_t>({
-		0, 1, 2,
-		2, 3, 0
+		// Front face
+		0, 1, 2,  2, 3, 0,
+		// Right face
+		4, 5, 6,  6, 7, 4,
+		// Back face
+		8, 9, 10,  10, 11, 8,
+		// Left face
+		12, 13, 14,  14, 15, 12,
+		// Top face
+		16, 17, 18,  18, 19, 16,
+		// Bottom face
+		20, 21, 22,  22, 23, 20,
 	});
 
 	struct UniformBufferObject
@@ -138,62 +186,28 @@ namespace
 		alignas(16) glm::mat4 view;
 		alignas(16) glm::mat4 proj;
 	};
-
-	struct FrameResources
-	{
-		orhi::CommandBuffer& commandBuffer;
-		orhi::Buffer& ubo;
-		orhi::DescriptorSet& descriptorSet;
-		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
-		std::unique_ptr<orhi::Semaphore> renderFinishedSemaphore;
-		std::unique_ptr<orhi::Fence> inFlightFence;
-	};
 }
 
 int main()
 {
 	glfwInit();
-
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "0-vulkan", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "2-cube", nullptr, nullptr);
 
-	// Create backend
-	auto backend = std::make_unique<orhi::Backend>(
-		orhi::data::BackendDesc{
-			.debug = true,
-			.extensions = GetGlfwRequiredExtensions(),
-			.win32_windowHandle = glfwGetWin32Window(window),
-			.win32_instanceHandle = GetModuleHandle(nullptr)
-		}
-	);
+	// Create backend and device
+	orhi::Backend backend(orhi::data::BackendDesc{
+		.debug = true,
+		.extensions = GetGlfwRequiredExtensions(),
+		.win32_windowHandle = glfwGetWin32Window(window),
+		.win32_instanceHandle = GetModuleHandle(nullptr)
+	});
 
-	// Make sure there is at least one suitable device
-	const auto& devices = backend->GetSuitableDevices();
-
+	const auto& devices = backend.GetSuitableDevices();
 	assert(!devices.empty());
+	auto& device = backend.CreateDevice(devices.front().id);
 
-	// Select the first suitable device
-	auto& device = backend->CreateDevice(devices.front().id);
-
-	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(
-		GetWindowSize(window)
-	);
-
-	auto renderPass = std::make_unique<orhi::RenderPass>(
-		device,
-		optimalSwapChainDesc.format
-	);
-
-	auto vertexShaderModule = std::make_unique<orhi::ShaderModule>(
-		device,
-		ReadShaderFile("assets/shaders/main.vert.spv")
-	);
-
-	auto fragmentShaderModule = std::make_unique<orhi::ShaderModule>(
-		device,
-		ReadShaderFile("assets/shaders/main.frag.spv")
-	);
+	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(GetWindowSize(window));
 
 	// Create a CPU-side buffer to hold vertices
 	auto hostVertexBuffer = std::make_unique<orhi::Buffer>(
@@ -255,14 +269,19 @@ int main()
 		}
 	);
 
-	auto graphicsPipeline = std::make_unique<orhi::GraphicsPipeline>(
+	// Create render pass and pipeline
+	orhi::RenderPass renderPass{ device, optimalSwapChainDesc.format };
+	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
+	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
+
+	orhi::GraphicsPipeline pipeline{
 		device,
 		orhi::GraphicsPipeline::Desc{
 			.stages = {
-				{orhi::types::EShaderStageFlags::VERTEX_BIT, std::ref(*vertexShaderModule)},
-				{orhi::types::EShaderStageFlags::FRAGMENT_BIT, std::ref(*fragmentShaderModule)},
+				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
+				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
-			.renderPass = *renderPass,
+			.renderPass = renderPass,
 			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)}),
 			.vertexInputState{
 				.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
@@ -278,12 +297,13 @@ int main()
 				})
 			}
 		}
-	);
+	};
 
+	// Swap chain and framebuffers
 	std::vector<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
-
-	std::pair<uint32_t, uint32_t> windowSize = { 0, 0 };
+	std::pair<uint32_t, uint32_t> windowSize;
+	std::vector<SwapImageResources> swapImagesResources;
 
 	auto recreateSwapChain = [&] {
 		do
@@ -294,23 +314,32 @@ int main()
 
 		device.WaitIdle();
 		framebuffers.clear();
+		swapImagesResources.clear();
 
 		swapChain = std::make_unique<orhi::SwapChain>(
 			device,
-			backend->GetSurfaceHandle(),
+			backend.GetSurfaceHandle(),
 			windowSize,
 			optimalSwapChainDesc,
 			swapChain ? std::make_optional(std::ref(*swapChain)) : std::nullopt
 		);
 
-		framebuffers = swapChain->CreateFramebuffers(*renderPass);
+		framebuffers = swapChain->CreateFramebuffers(renderPass);
+
+		swapImagesResources.reserve(framebuffers.size());
+		for (uint32_t i = 0; i < framebuffers.size(); ++i)
+		{
+			swapImagesResources.emplace_back(
+				framebuffers[i],
+				std::make_unique<orhi::Semaphore>(device)
+			);
+		}
 	};
 
 	recreateSwapChain();
 
+	// Command buffers and synchronization
 	constexpr uint8_t k_maxFramesInFlight = 2;
-
-	// Make sure the swap chain support the requested k_maxFramesInFlight
 	assert(framebuffers.size() >= k_maxFramesInFlight);
 
 	// Create UBOs (one for each frame)
@@ -350,56 +379,67 @@ int main()
 		);
 	}
 
-	// Create a command pool so we can create command buffers, and allocate command buffers for transfer and graphics operations.
-	auto commandPool = std::make_unique<orhi::CommandPool>(device);
-	auto commandBuffers = commandPool->AllocateCommandBuffers(k_maxFramesInFlight);
-	auto& transferCommandBuffer = commandPool->AllocateCommandBuffers(1).front().get();
+	orhi::CommandPool commandPool{ device };
+	auto commandBuffers = commandPool.AllocateCommandBuffers(k_maxFramesInFlight);
+	auto& transferCommandBuffer = commandPool.AllocateCommandBuffers(1).front().get();
 
 	// Upload CPU (host) buffers to the GPU (device)
 	transferCommandBuffer.Begin(orhi::types::ECommandBufferUsageFlags::ONE_TIME_SUBMIT_BIT);
 	transferCommandBuffer.CopyBuffer(*hostVertexBuffer, *deviceVertexBuffer);
 	transferCommandBuffer.CopyBuffer(*hostIndexBuffer, *deviceIndexBuffer);
 	transferCommandBuffer.End();
-	device.GetGraphicsQueue().As<orhi::Queue*>()->Submit({transferCommandBuffer});
+	device.GetGraphicsQueue().As<orhi::Queue*>()->Submit({ transferCommandBuffer });
 	device.WaitIdle();
 
 	// At this point we don't need the client copy of these buffers anymore
 	hostVertexBuffer->Deallocate();
 	hostIndexBuffer->Deallocate();
 
-	std::vector<FrameResources> frameDataArray;
-	frameDataArray.reserve(k_maxFramesInFlight);
+	std::vector<FrameResources> framesResources;
+	framesResources.reserve(k_maxFramesInFlight);
 	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
-		frameDataArray.emplace_back(
+		framesResources.emplace_back(
 			commandBuffers[i],
 			ubos[i],
 			descriptorSets[i],
-			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Fence>(device, true)
 		);
 	}
 
-	uint32_t swapImageIndex = 0;
-	uint8_t currentFrameIndex = 0;
+	uint32_t imageIndex = 0;
+	uint8_t frameIndex = 0;
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		FrameResources& frameData = frameDataArray[currentFrameIndex];
+		auto& frameResources = framesResources[frameIndex];
 
-		frameData.inFlightFence->Wait();
+		frameResources.inFlightFence->Wait();
+		imageIndex = swapChain->AcquireNextImage(*frameResources.imageAvailableSemaphore);
+		frameResources.inFlightFence->Reset();
 
-		swapImageIndex = swapChain->AcquireNextImage(
-			*frameData.imageAvailableSemaphore
-		);
+		auto& swapImageResources = swapImagesResources[imageIndex];
 
-		frameData.inFlightFence->Reset();
+		auto& commandBuffer = frameResources.commandBuffer;
+		commandBuffer.Reset();
+		commandBuffer.Begin();
+		commandBuffer.BeginRenderPass(renderPass, swapImageResources.framebuffer, windowSize);
+		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline.GetNativeHandle());
 
-		orhi::Framebuffer& framebuffer = framebuffers[swapImageIndex];
-		orhi::CommandBuffer& commandBuffer = frameData.commandBuffer;
+		commandBuffer.SetViewport({
+			.x = 0.0f, .y = 0.0f,
+			.width = static_cast<float>(windowSize.first),
+			.height = static_cast<float>(windowSize.second),
+			.minDepth = 0.0f, .maxDepth = 1.0f
+		});
+
+		commandBuffer.SetScissor({
+			.offset = {0, 0},
+			.extent = windowSize
+		});
 
 		const float time = static_cast<float>(glfwGetTime());
 
@@ -412,37 +452,7 @@ int main()
 
 		uboData.proj[1][1] *= -1;
 
-		frameData.ubo.Upload(&uboData);
-
-		commandBuffer.Reset();
-		commandBuffer.Begin();
-
-		commandBuffer.BeginRenderPass(
-			*renderPass,
-			framebuffer,
-			windowSize
-		);
-
-		commandBuffer.BindPipeline(
-			orhi::types::EPipelineBindPoint::GRAPHICS,
-			graphicsPipeline->GetNativeHandle()
-		);
-
-		// As noted in the fixed functions chapter, we did specify viewport and scissor state for this pipeline to be dynamic.
-		// So we need to set them in the command buffer before issuing our draw command:
-		commandBuffer.SetViewport({
-			.x = 0.0f,
-			.y = 0.0f,
-			.width = static_cast<float>(windowSize.first),
-			.height = static_cast<float>(windowSize.second),
-			.minDepth = 0.0f,
-			.maxDepth = 1.0f
-		});
-
-		commandBuffer.SetScissor({
-			.offset = { 0, 0 },
-			.extent = windowSize
-		});
+		frameResources.ubo.Upload(&uboData);
 
 		commandBuffer.BindVertexBuffers(
 			std::to_array({ std::ref(*deviceVertexBuffer) }),
@@ -454,8 +464,8 @@ int main()
 		);
 
 		commandBuffer.BindDescriptorSets(
-			std::to_array({ std::ref(frameData.descriptorSet) }),
-			graphicsPipeline->GetLayoutHandle()
+			std::to_array({ std::ref(frameResources.descriptorSet) }),
+			pipeline.GetLayoutHandle()
 		);
 
 		commandBuffer.DrawIndexed(static_cast<uint32_t>(k_indices.size()));
@@ -465,17 +475,17 @@ int main()
 
 		device.GetGraphicsQueue().As<orhi::Queue*>()->Submit(
 			{ commandBuffer },
-			{ *frameData.imageAvailableSemaphore },
-			{ *frameData.renderFinishedSemaphore },
-			*frameData.inFlightFence
+			{ *frameResources.imageAvailableSemaphore },
+			{ *swapImageResources.renderFinishedSemaphore },
+			*frameResources.inFlightFence
 		);
 
 		try
 		{
 			device.GetPresentQueue().As<orhi::Queue*>()->Present(
-				{ *frameData.renderFinishedSemaphore },
+				{ *swapImageResources.renderFinishedSemaphore },
 				*swapChain,
-				swapImageIndex
+				imageIndex
 			);
 		}
 		catch (orhi::except::OutOfDateSwapChain)
@@ -484,8 +494,10 @@ int main()
 			continue;
 		}
 
-		currentFrameIndex = (currentFrameIndex + 1) % k_maxFramesInFlight;
+		frameIndex = (frameIndex + 1) % k_maxFramesInFlight;
 	}
+
+	device.WaitIdle();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

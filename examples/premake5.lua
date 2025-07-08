@@ -1,7 +1,7 @@
 workspace "orhi-examples"
 	configurations { "Debug", "Release" }
 	platforms { "x64" }
-	startproject "0-vulkan"
+	startproject "1-triangle"
 
 	newoption {
 		trigger = "gfxapi",
@@ -35,8 +35,8 @@ objoutdir = "%{wks.location}/../obj/"
 depsdir = "%{wks.location}/deps/"
 
 group "examples"
-	include "0-vulkan"
 	include "1-triangle"
+	include "2-cube"
 group ""
 
 group "examples/deps"

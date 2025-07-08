@@ -1,4 +1,4 @@
-project "0-vulkan"
+project "2-cube"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
