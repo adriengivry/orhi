@@ -16,11 +16,17 @@
 #include <orhi/api/TDescriptorSetLayout.h>
 #include <orhi/data/VertexBindingDesc.h>
 #include <orhi/data/VertexAttributeDesc.h>
+#include <orhi/data/InputAssemblyStateDesc.h>
+#include <orhi/data/RasterizationStateDesc.h>
+#include <orhi/data/MultisampleStateDesc.h>
+#include <orhi/data/DepthStencilStateDesc.h>
+#include <orhi/data/ColorBlendStateDesc.h>
+#include <orhi/data/DynamicStateDesc.h>
 
 namespace orhi::data
 {
 	/**
-	* 
+	* Graphics pipeline descriptor
 	*/
 	template<types::EGraphicsBackend Backend, class DeviceContext, class ShaderModuleContext, class RenderPassContext, class DescriptorSetLayoutContext>
 	struct GraphicsPipelineDesc
@@ -30,5 +36,13 @@ namespace orhi::data
 		std::span<const VertexAttributeDesc> vertexAttributes;
 		std::span<const VertexBindingDesc> vertexBindings;
 		std::span<const std::reference_wrapper<api::TDescriptorSetLayout<Backend, DescriptorSetLayoutContext, DeviceContext>>> descriptorSetLayouts;
+		
+		// Pipeline state descriptors
+		InputAssemblyStateDesc inputAssemblyState{};
+		RasterizationStateDesc rasterizationState{};
+		MultisampleStateDesc multisampleState{};
+		DepthStencilStateDesc depthStencilState{};
+		ColorBlendStateDesc colorBlendState{};
+		DynamicStateDesc dynamicState{};
 	};
 }

@@ -10,6 +10,12 @@
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/GraphicsPipeline.h>
 #include <orhi/impl/vk/details/Types.h>
+#include <orhi/data/InputAssemblyStateDesc.h>
+#include <orhi/data/RasterizationStateDesc.h>
+#include <orhi/data/MultisampleStateDesc.h>
+#include <orhi/data/DepthStencilStateDesc.h>
+#include <orhi/data/ColorBlendStateDesc.h>
+#include <orhi/data/DynamicStateDesc.h>
 #include <vulkan/vulkan.h>
 #include <array>
 
@@ -89,6 +95,135 @@ namespace
 
 		return formattedDescriptorSetLayouts;
 	}
+
+	auto FormatInputAssemblyState(const orhi::data::InputAssemblyStateDesc& p_desc)
+	{
+		return VkPipelineInputAssemblyStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+			.topology = orhi::utils::EnumToValue<VkPrimitiveTopology>(p_desc.topology),
+			.primitiveRestartEnable = p_desc.primitiveRestartEnable ? VK_TRUE : VK_FALSE
+		};
+	}
+
+	auto FormatRasterizationState(const orhi::data::RasterizationStateDesc& p_desc)
+	{
+		return VkPipelineRasterizationStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+			.depthClampEnable = p_desc.depthClampEnable ? VK_TRUE : VK_FALSE,
+			.rasterizerDiscardEnable = p_desc.rasterizerDiscardEnable ? VK_TRUE : VK_FALSE,
+			.polygonMode = orhi::utils::EnumToValue<VkPolygonMode>(p_desc.polygonMode),
+			.cullMode = orhi::utils::EnumToValue<VkCullModeFlags>(p_desc.cullMode),
+			.frontFace = orhi::utils::EnumToValue<VkFrontFace>(p_desc.frontFace),
+			.depthBiasEnable = p_desc.depthBiasEnable ? VK_TRUE : VK_FALSE,
+			.depthBiasConstantFactor = p_desc.depthBiasConstantFactor,
+			.depthBiasClamp = p_desc.depthBiasClamp,
+			.depthBiasSlopeFactor = p_desc.depthBiasSlopeFactor,
+			.lineWidth = p_desc.lineWidth
+		};
+	}
+
+	auto FormatMultisampleState(const orhi::data::MultisampleStateDesc& p_desc)
+	{
+		return VkPipelineMultisampleStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+			.rasterizationSamples = orhi::utils::EnumToValue<VkSampleCountFlagBits>(p_desc.rasterizationSamples),
+			.sampleShadingEnable = p_desc.sampleShadingEnable ? VK_TRUE : VK_FALSE,
+			.minSampleShading = p_desc.minSampleShading,
+			.pSampleMask = p_desc.pSampleMask,
+			.alphaToCoverageEnable = p_desc.alphaToCoverageEnable ? VK_TRUE : VK_FALSE,
+			.alphaToOneEnable = p_desc.alphaToOneEnable ? VK_TRUE : VK_FALSE
+		};
+	}
+
+	auto FormatStencilOpState(const orhi::data::StencilOpStateDesc& p_desc)
+	{
+		return VkStencilOpState{
+			.failOp = orhi::utils::EnumToValue<VkStencilOp>(p_desc.failOp),
+			.passOp = orhi::utils::EnumToValue<VkStencilOp>(p_desc.passOp),
+			.depthFailOp = orhi::utils::EnumToValue<VkStencilOp>(p_desc.depthFailOp),
+			.compareOp = orhi::utils::EnumToValue<VkCompareOp>(p_desc.compareOp),
+			.compareMask = p_desc.compareMask,
+			.writeMask = p_desc.writeMask,
+			.reference = p_desc.reference
+		};
+	}
+
+	auto FormatDepthStencilState(const orhi::data::DepthStencilStateDesc& p_desc)
+	{
+		return VkPipelineDepthStencilStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+			.depthTestEnable = p_desc.depthTestEnable ? VK_TRUE : VK_FALSE,
+			.depthWriteEnable = p_desc.depthWriteEnable ? VK_TRUE : VK_FALSE,
+			.depthCompareOp = orhi::utils::EnumToValue<VkCompareOp>(p_desc.depthCompareOp),
+			.depthBoundsTestEnable = p_desc.depthBoundsTestEnable ? VK_TRUE : VK_FALSE,
+			.stencilTestEnable = p_desc.stencilTestEnable ? VK_TRUE : VK_FALSE,
+			.front = FormatStencilOpState(p_desc.front),
+			.back = FormatStencilOpState(p_desc.back),
+			.minDepthBounds = p_desc.minDepthBounds,
+			.maxDepthBounds = p_desc.maxDepthBounds
+		};
+	}
+
+	auto FormatColorBlendAttachments(const std::span<const orhi::data::ColorBlendAttachmentStateDesc>& p_attachments)
+	{
+		std::vector<VkPipelineColorBlendAttachmentState> formattedAttachments;
+		formattedAttachments.reserve(p_attachments.size());
+
+		for (auto& attachment : p_attachments)
+		{
+			formattedAttachments.push_back(VkPipelineColorBlendAttachmentState{
+				.blendEnable = attachment.blendEnable ? VK_TRUE : VK_FALSE,
+				.srcColorBlendFactor = orhi::utils::EnumToValue<VkBlendFactor>(attachment.srcColorBlendFactor),
+				.dstColorBlendFactor = orhi::utils::EnumToValue<VkBlendFactor>(attachment.dstColorBlendFactor),
+				.colorBlendOp = orhi::utils::EnumToValue<VkBlendOp>(attachment.colorBlendOp),
+				.srcAlphaBlendFactor = orhi::utils::EnumToValue<VkBlendFactor>(attachment.srcAlphaBlendFactor),
+				.dstAlphaBlendFactor = orhi::utils::EnumToValue<VkBlendFactor>(attachment.dstAlphaBlendFactor),
+				.alphaBlendOp = orhi::utils::EnumToValue<VkBlendOp>(attachment.alphaBlendOp),
+				.colorWriteMask = orhi::utils::EnumToValue<VkColorComponentFlags>(attachment.colorWriteMask)
+			});
+		}
+
+		return formattedAttachments;
+	}
+
+	auto FormatColorBlendState(const orhi::data::ColorBlendStateDesc& p_desc, const std::vector<VkPipelineColorBlendAttachmentState>& p_attachments)
+	{
+		return VkPipelineColorBlendStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+			.logicOpEnable = p_desc.logicOpEnable ? VK_TRUE : VK_FALSE,
+			.logicOp = orhi::utils::EnumToValue<VkLogicOp>(p_desc.logicOp),
+			.attachmentCount = static_cast<uint32_t>(p_attachments.size()),
+			.pAttachments = p_attachments.data(),
+			.blendConstants = {
+				p_desc.blendConstants[0],
+				p_desc.blendConstants[1],
+				p_desc.blendConstants[2],
+				p_desc.blendConstants[3]
+			}
+		};
+	}
+
+	auto FormatDynamicStates(const std::span<const orhi::types::EDynamicState>& p_dynamicStates)
+	{
+		std::vector<VkDynamicState> formattedDynamicStates;
+		formattedDynamicStates.reserve(p_dynamicStates.size());
+
+		for (auto& dynamicState : p_dynamicStates)
+		{
+			formattedDynamicStates.push_back(orhi::utils::EnumToValue<VkDynamicState>(dynamicState));
+		}
+
+		return formattedDynamicStates;
+	}
+
+	auto FormatDynamicState(const orhi::data::DynamicStateDesc& p_desc, const std::vector<VkDynamicState>& p_dynamicStates)
+	{
+		return VkPipelineDynamicStateCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+			.dynamicStateCount = static_cast<uint32_t>(p_dynamicStates.size()),
+			.pDynamicStates = p_dynamicStates.data()
+		};
+	}
 }
 
 namespace orhi
@@ -103,114 +238,49 @@ namespace orhi
 		.handle = VK_NULL_HANDLE
 	}
 	{
-		// Collect shader stages
+		// Collect and format pipeline components
 		const auto stages = FormatStages(p_desc.stages);
 		const auto vertexAttributes = FormatVertexAttributes(p_desc.vertexAttributes);
 		const auto vertexBindings = FormatVertexBindings(p_desc.vertexBindings);
 		const auto descriptorSetLayouts = FormatDescriptorSetLayouts(p_desc.descriptorSetLayouts);
 		
-		const auto dynamicStates = std::to_array({
-			VK_DYNAMIC_STATE_VIEWPORT,
-			VK_DYNAMIC_STATE_SCISSOR
-		});
+		// Format pipeline states using descriptors
+		const auto inputAssemblyState = FormatInputAssemblyState(p_desc.inputAssemblyState);
+		const auto rasterizationState = FormatRasterizationState(p_desc.rasterizationState);
+		const auto multisampleState = FormatMultisampleState(p_desc.multisampleState);
+		const auto depthStencilState = FormatDepthStencilState(p_desc.depthStencilState);
+		
+		const auto colorBlendAttachments = FormatColorBlendAttachments(p_desc.colorBlendState.attachments);
+		const auto colorBlendState = FormatColorBlendState(p_desc.colorBlendState, colorBlendAttachments);
+		
+		const auto dynamicStatesArray = FormatDynamicStates(p_desc.dynamicState.dynamicStates);
+		const auto dynamicState = FormatDynamicState(p_desc.dynamicState, dynamicStatesArray);
 
-		// While most of the pipeline state needs to be baked into the pipeline state, a limited amount of the state can actually be
-		// changed without recreating the pipeline at draw time. Examples are the size of the viewport, line width and blend constants.
-		// If you want to use dynamic state and keep these properties out, then you'll have to fill in a VkPipelineDynamicStateCreateInfo
-		// structure like this:
-		VkPipelineDynamicStateCreateInfo dynamicState{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
-			.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size()),
-			.pDynamicStates = dynamicStates.data()
-		};
-
-		// Describes the format of the vertex data that will be passed to the vertex shader. It describes this in roughly two ways:
-		//	Bindings: spacing between data and whether the data is per - vertex or per - instance(see instancing)
-		//	Attribute descriptions : type of the attributes passed to the vertex shader, which binding to load them from and at which offset
+		// Vertex input state
 		VkPipelineVertexInputStateCreateInfo vertexInputState{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 			.vertexBindingDescriptionCount = static_cast<uint32_t>(vertexBindings.size()),
-			.pVertexBindingDescriptions = vertexBindings.data(), // Optional
+			.pVertexBindingDescriptions = vertexBindings.data(),
 			.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertexAttributes.size()),
-			.pVertexAttributeDescriptions = vertexAttributes.data() // Optional
+			.pVertexAttributeDescriptions = vertexAttributes.data()
 		};
 
-		// The VkPipelineInputAssemblyStateCreateInfo struct describes two things:
-		// - what kind of geometry will be drawn from the vertices
-		// - if primitive restart should be enabled.
-		VkPipelineInputAssemblyStateCreateInfo inputAssemblyState{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-			.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-			.primitiveRestartEnable = VK_FALSE
-		};
-
+		// Viewport state (dynamic by default)
 		VkPipelineViewportStateCreateInfo viewportState{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
 			.viewportCount = 1,
-			.pViewports = VK_NULL_HANDLE, // Dynamic viewport (VK_DYNAMIC_STATE_VIEWPORT)
+			.pViewports = nullptr, // Dynamic viewport
 			.scissorCount = 1,
-			.pScissors = VK_NULL_HANDLE // Dynamic scissor (VK_DYNAMIC_STATE_SCISSOR)
+			.pScissors = nullptr // Dynamic scissor
 		};
 
-		VkPipelineRasterizationStateCreateInfo rasterizationState{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-			.depthClampEnable = VK_FALSE,
-			.rasterizerDiscardEnable = VK_FALSE,
-			.polygonMode = VK_POLYGON_MODE_FILL,
-			.cullMode = VK_CULL_MODE_BACK_BIT,
-			.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE,
-			.depthBiasEnable = VK_FALSE,
-			.depthBiasConstantFactor = 0.0f, // Optional
-			.depthBiasClamp = 0.0f, // Optional
-			.depthBiasSlopeFactor = 0.0f, // Optional
-			.lineWidth = 1.0f
-		};
-
-		VkPipelineMultisampleStateCreateInfo multisampleState{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-			.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT,
-			.sampleShadingEnable = VK_FALSE,
-			.minSampleShading = 1.0f, // Optional
-			.pSampleMask = nullptr, // Optional
-			.alphaToCoverageEnable = VK_FALSE, // Optional
-			.alphaToOneEnable = VK_FALSE // Optional
-		};
-
-		// If you are using a depth and/or stencil buffer, then you also need to configure the depth and stencil tests using
-		// VkPipelineDepthStencilStateCreateInfo. We don't have one right now, so we can simply pass a nullptr instead of a
-		// pointer to such a struct. We'll get back to it in the depth buffering chapter.
-
-		VkPipelineColorBlendAttachmentState colorBlendAttachmentState{
-			.blendEnable = VK_FALSE,
-			.srcColorBlendFactor = VK_BLEND_FACTOR_ONE, // Optional
-			.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO, // Optional
-			.colorBlendOp = VK_BLEND_OP_ADD, // Optional
-			.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE, // Optional
-			.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO, // Optional
-			.alphaBlendOp = VK_BLEND_OP_ADD, // Optional
-			.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT,
-		};
-
-		VkPipelineColorBlendStateCreateInfo colorBlendState{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-			.logicOpEnable = VK_FALSE,
-			.logicOp = VK_LOGIC_OP_COPY, // Optional
-			.attachmentCount = 1,
-			.pAttachments = &colorBlendAttachmentState,
-			.blendConstants = {
-				0.0f, // Optional
-				0.0f, // Optional
-				0.0f, // Optional
-				0.0f // Optional
-			}
-		};
-
+		// Create pipeline layout
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 			.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size()),
 			.pSetLayouts = descriptorSetLayouts.data(),
-			.pushConstantRangeCount = 0, // Optional
-			.pPushConstantRanges = nullptr // Optional
+			.pushConstantRangeCount = 0,
+			.pPushConstantRanges = nullptr
 		};
 
 		VkResult pipelineLayoutCreationResult = vkCreatePipelineLayout(
@@ -222,6 +292,7 @@ namespace orhi
 		
 		ORHI_ASSERT(pipelineLayoutCreationResult == VK_SUCCESS, "failed to create pipeline layout!");
 
+		// Create graphics pipeline
 		VkGraphicsPipelineCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
 			.stageCount = static_cast<uint32_t>(stages.size()),
@@ -231,8 +302,9 @@ namespace orhi
 			.pViewportState = &viewportState,
 			.pRasterizationState = &rasterizationState,
 			.pMultisampleState = &multisampleState,
+			.pDepthStencilState = p_desc.depthStencilState.depthTestEnable || p_desc.depthStencilState.stencilTestEnable ? &depthStencilState : nullptr,
 			.pColorBlendState = &colorBlendState,
-			.pDynamicState = &dynamicState,
+			.pDynamicState = dynamicStatesArray.empty() ? nullptr : &dynamicState,
 			.layout = m_context.layout,
 			.renderPass = p_desc.renderPass.GetNativeHandle().As<VkRenderPass>(),
 		};

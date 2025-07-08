@@ -20,6 +20,18 @@
 #include <orhi/types/EPresentMode.h>
 #include <orhi/types/EShaderStageFlags.h>
 #include <orhi/types/ESurfaceTransformFlags.h>
+#include <orhi/types/EPrimitiveTopology.h>
+#include <orhi/types/EPolygonMode.h>
+#include <orhi/types/ECullModeFlags.h>
+#include <orhi/types/EFrontFace.h>
+#include <orhi/types/ESampleCountFlags.h>
+#include <orhi/types/EBlendFactor.h>
+#include <orhi/types/EBlendOp.h>
+#include <orhi/types/EColorComponentFlags.h>
+#include <orhi/types/ELogicOp.h>
+#include <orhi/types/ECompareOp.h>
+#include <orhi/types/EStencilOp.h>
+#include <orhi/types/EDynamicState.h>
 
 #include <orhi/utils/EnumMapper.h>
 #include <vulkan/vulkan.h>
@@ -445,6 +457,262 @@ struct orhi::utils::MappingFor<orhi::types::ESurfaceTransformFlags, VkSurfaceTra
 		EnumValuePair<EnumType::HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR, VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR>,
 		EnumValuePair<EnumType::INHERIT_BIT_KHR, VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR>,
 		EnumValuePair<EnumType::ALL, VK_SURFACE_TRANSFORM_FLAG_BITS_MAX_ENUM_KHR>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EPrimitiveTopology, VkPrimitiveTopology>
+{
+	using EnumType = orhi::types::EPrimitiveTopology;
+	using type = std::tuple<
+		EnumValuePair<EnumType::POINT_LIST, VK_PRIMITIVE_TOPOLOGY_POINT_LIST>,
+		EnumValuePair<EnumType::LINE_LIST, VK_PRIMITIVE_TOPOLOGY_LINE_LIST>,
+		EnumValuePair<EnumType::LINE_STRIP, VK_PRIMITIVE_TOPOLOGY_LINE_STRIP>,
+		EnumValuePair<EnumType::TRIANGLE_LIST, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST>,
+		EnumValuePair<EnumType::TRIANGLE_STRIP, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP>,
+		EnumValuePair<EnumType::TRIANGLE_FAN, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN>,
+		EnumValuePair<EnumType::LINE_LIST_WITH_ADJACENCY, VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY>,
+		EnumValuePair<EnumType::LINE_STRIP_WITH_ADJACENCY, VK_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY>,
+		EnumValuePair<EnumType::TRIANGLE_LIST_WITH_ADJACENCY, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY>,
+		EnumValuePair<EnumType::TRIANGLE_STRIP_WITH_ADJACENCY, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY>,
+		EnumValuePair<EnumType::PATCH_LIST, VK_PRIMITIVE_TOPOLOGY_PATCH_LIST>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EPolygonMode, VkPolygonMode>
+{
+	using EnumType = orhi::types::EPolygonMode;
+	using type = std::tuple<
+		EnumValuePair<EnumType::FILL, VK_POLYGON_MODE_FILL>,
+		EnumValuePair<EnumType::LINE, VK_POLYGON_MODE_LINE>,
+		EnumValuePair<EnumType::POINT, VK_POLYGON_MODE_POINT>,
+		EnumValuePair<EnumType::FILL_RECTANGLE_NV, VK_POLYGON_MODE_FILL_RECTANGLE_NV>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ECullModeFlags, VkCullModeFlags>
+{
+	using EnumType = orhi::types::ECullModeFlags;
+	using type = std::tuple<
+		EnumValuePair<EnumType::NONE, VK_CULL_MODE_NONE>,
+		EnumValuePair<EnumType::FRONT_BIT, VK_CULL_MODE_FRONT_BIT>,
+		EnumValuePair<EnumType::BACK_BIT, VK_CULL_MODE_BACK_BIT>,
+		EnumValuePair<EnumType::FRONT_AND_BACK, VK_CULL_MODE_FRONT_AND_BACK>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EFrontFace, VkFrontFace>
+{
+	using EnumType = orhi::types::EFrontFace;
+	using type = std::tuple<
+		EnumValuePair<EnumType::COUNTER_CLOCKWISE, VK_FRONT_FACE_COUNTER_CLOCKWISE>,
+		EnumValuePair<EnumType::CLOCKWISE, VK_FRONT_FACE_CLOCKWISE>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ESampleCountFlags, VkSampleCountFlagBits>
+{
+	using EnumType = orhi::types::ESampleCountFlags;
+	using type = std::tuple<
+		EnumValuePair<EnumType::COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT>,
+		EnumValuePair<EnumType::COUNT_2_BIT, VK_SAMPLE_COUNT_2_BIT>,
+		EnumValuePair<EnumType::COUNT_4_BIT, VK_SAMPLE_COUNT_4_BIT>,
+		EnumValuePair<EnumType::COUNT_8_BIT, VK_SAMPLE_COUNT_8_BIT>,
+		EnumValuePair<EnumType::COUNT_16_BIT, VK_SAMPLE_COUNT_16_BIT>,
+		EnumValuePair<EnumType::COUNT_32_BIT, VK_SAMPLE_COUNT_32_BIT>,
+		EnumValuePair<EnumType::COUNT_64_BIT, VK_SAMPLE_COUNT_64_BIT>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EBlendFactor, VkBlendFactor>
+{
+	using EnumType = orhi::types::EBlendFactor;
+	using type = std::tuple<
+		EnumValuePair<EnumType::ZERO, VK_BLEND_FACTOR_ZERO>,
+		EnumValuePair<EnumType::ONE, VK_BLEND_FACTOR_ONE>,
+		EnumValuePair<EnumType::SRC_COLOR, VK_BLEND_FACTOR_SRC_COLOR>,
+		EnumValuePair<EnumType::ONE_MINUS_SRC_COLOR, VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR>,
+		EnumValuePair<EnumType::DST_COLOR, VK_BLEND_FACTOR_DST_COLOR>,
+		EnumValuePair<EnumType::ONE_MINUS_DST_COLOR, VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR>,
+		EnumValuePair<EnumType::SRC_ALPHA, VK_BLEND_FACTOR_SRC_ALPHA>,
+		EnumValuePair<EnumType::ONE_MINUS_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA>,
+		EnumValuePair<EnumType::DST_ALPHA, VK_BLEND_FACTOR_DST_ALPHA>,
+		EnumValuePair<EnumType::ONE_MINUS_DST_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA>,
+		EnumValuePair<EnumType::CONSTANT_COLOR, VK_BLEND_FACTOR_CONSTANT_COLOR>,
+		EnumValuePair<EnumType::ONE_MINUS_CONSTANT_COLOR, VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR>,
+		EnumValuePair<EnumType::CONSTANT_ALPHA, VK_BLEND_FACTOR_CONSTANT_ALPHA>,
+		EnumValuePair<EnumType::ONE_MINUS_CONSTANT_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA>,
+		EnumValuePair<EnumType::SRC_ALPHA_SATURATE, VK_BLEND_FACTOR_SRC_ALPHA_SATURATE>,
+		EnumValuePair<EnumType::SRC1_COLOR, VK_BLEND_FACTOR_SRC1_COLOR>,
+		EnumValuePair<EnumType::ONE_MINUS_SRC1_COLOR, VK_BLEND_FACTOR_ONE_MINUS_SRC1_COLOR>,
+		EnumValuePair<EnumType::SRC1_ALPHA, VK_BLEND_FACTOR_SRC1_ALPHA>,
+		EnumValuePair<EnumType::ONE_MINUS_SRC1_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EBlendOp, VkBlendOp>
+{
+	using EnumType = orhi::types::EBlendOp;
+	using type = std::tuple<
+		EnumValuePair<EnumType::ADD, VK_BLEND_OP_ADD>,
+		EnumValuePair<EnumType::SUBTRACT, VK_BLEND_OP_SUBTRACT>,
+		EnumValuePair<EnumType::REVERSE_SUBTRACT, VK_BLEND_OP_REVERSE_SUBTRACT>,
+		EnumValuePair<EnumType::MIN, VK_BLEND_OP_MIN>,
+		EnumValuePair<EnumType::MAX, VK_BLEND_OP_MAX>,
+		EnumValuePair<EnumType::ZERO_EXT, VK_BLEND_OP_ZERO_EXT>,
+		EnumValuePair<EnumType::SRC_EXT, VK_BLEND_OP_SRC_EXT>,
+		EnumValuePair<EnumType::DST_EXT, VK_BLEND_OP_DST_EXT>,
+		EnumValuePair<EnumType::SRC_OVER_EXT, VK_BLEND_OP_SRC_OVER_EXT>,
+		EnumValuePair<EnumType::DST_OVER_EXT, VK_BLEND_OP_DST_OVER_EXT>,
+		EnumValuePair<EnumType::SRC_IN_EXT, VK_BLEND_OP_SRC_IN_EXT>,
+		EnumValuePair<EnumType::DST_IN_EXT, VK_BLEND_OP_DST_IN_EXT>,
+		EnumValuePair<EnumType::SRC_OUT_EXT, VK_BLEND_OP_SRC_OUT_EXT>,
+		EnumValuePair<EnumType::DST_OUT_EXT, VK_BLEND_OP_DST_OUT_EXT>,
+		EnumValuePair<EnumType::SRC_ATOP_EXT, VK_BLEND_OP_SRC_ATOP_EXT>,
+		EnumValuePair<EnumType::DST_ATOP_EXT, VK_BLEND_OP_DST_ATOP_EXT>,
+		EnumValuePair<EnumType::XOR_EXT, VK_BLEND_OP_XOR_EXT>,
+		EnumValuePair<EnumType::MULTIPLY_EXT, VK_BLEND_OP_MULTIPLY_EXT>,
+		EnumValuePair<EnumType::SCREEN_EXT, VK_BLEND_OP_SCREEN_EXT>,
+		EnumValuePair<EnumType::OVERLAY_EXT, VK_BLEND_OP_OVERLAY_EXT>,
+		EnumValuePair<EnumType::DARKEN_EXT, VK_BLEND_OP_DARKEN_EXT>,
+		EnumValuePair<EnumType::LIGHTEN_EXT, VK_BLEND_OP_LIGHTEN_EXT>,
+		EnumValuePair<EnumType::COLORDODGE_EXT, VK_BLEND_OP_COLORDODGE_EXT>,
+		EnumValuePair<EnumType::COLORBURN_EXT, VK_BLEND_OP_COLORBURN_EXT>,
+		EnumValuePair<EnumType::HARDLIGHT_EXT, VK_BLEND_OP_HARDLIGHT_EXT>,
+		EnumValuePair<EnumType::SOFTLIGHT_EXT, VK_BLEND_OP_SOFTLIGHT_EXT>,
+		EnumValuePair<EnumType::DIFFERENCE_EXT, VK_BLEND_OP_DIFFERENCE_EXT>,
+		EnumValuePair<EnumType::EXCLUSION_EXT, VK_BLEND_OP_EXCLUSION_EXT>,
+		EnumValuePair<EnumType::INVERT_EXT, VK_BLEND_OP_INVERT_EXT>,
+		EnumValuePair<EnumType::INVERT_RGB_EXT, VK_BLEND_OP_INVERT_RGB_EXT>,
+		EnumValuePair<EnumType::LINEARDODGE_EXT, VK_BLEND_OP_LINEARDODGE_EXT>,
+		EnumValuePair<EnumType::LINEARBURN_EXT, VK_BLEND_OP_LINEARBURN_EXT>,
+		EnumValuePair<EnumType::VIVIDLIGHT_EXT, VK_BLEND_OP_VIVIDLIGHT_EXT>,
+		EnumValuePair<EnumType::LINEARLIGHT_EXT, VK_BLEND_OP_LINEARLIGHT_EXT>,
+		EnumValuePair<EnumType::PINLIGHT_EXT, VK_BLEND_OP_PINLIGHT_EXT>,
+		EnumValuePair<EnumType::HARDMIX_EXT, VK_BLEND_OP_HARDMIX_EXT>,
+		EnumValuePair<EnumType::HSL_HUE_EXT, VK_BLEND_OP_HSL_HUE_EXT>,
+		EnumValuePair<EnumType::HSL_SATURATION_EXT, VK_BLEND_OP_HSL_SATURATION_EXT>,
+		EnumValuePair<EnumType::HSL_COLOR_EXT, VK_BLEND_OP_HSL_COLOR_EXT>,
+		EnumValuePair<EnumType::HSL_LUMINOSITY_EXT, VK_BLEND_OP_HSL_LUMINOSITY_EXT>,
+		EnumValuePair<EnumType::PLUS_EXT, VK_BLEND_OP_PLUS_EXT>,
+		EnumValuePair<EnumType::PLUS_CLAMPED_EXT, VK_BLEND_OP_PLUS_CLAMPED_EXT>,
+		EnumValuePair<EnumType::PLUS_CLAMPED_ALPHA_EXT, VK_BLEND_OP_PLUS_CLAMPED_ALPHA_EXT>,
+		EnumValuePair<EnumType::PLUS_DARKER_EXT, VK_BLEND_OP_PLUS_DARKER_EXT>,
+		EnumValuePair<EnumType::MINUS_EXT, VK_BLEND_OP_MINUS_EXT>,
+		EnumValuePair<EnumType::MINUS_CLAMPED_EXT, VK_BLEND_OP_MINUS_CLAMPED_EXT>,
+		EnumValuePair<EnumType::CONTRAST_EXT, VK_BLEND_OP_CONTRAST_EXT>,
+		EnumValuePair<EnumType::INVERT_OVG_EXT, VK_BLEND_OP_INVERT_OVG_EXT>,
+		EnumValuePair<EnumType::RED_EXT, VK_BLEND_OP_RED_EXT>,
+		EnumValuePair<EnumType::GREEN_EXT, VK_BLEND_OP_GREEN_EXT>,
+		EnumValuePair<EnumType::BLUE_EXT, VK_BLEND_OP_BLUE_EXT>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EColorComponentFlags, VkColorComponentFlags>
+{
+	using EnumType = orhi::types::EColorComponentFlags;
+	using type = std::tuple<
+		EnumValuePair<EnumType::NONE, 0>,
+		EnumValuePair<EnumType::R_BIT, VK_COLOR_COMPONENT_R_BIT>,
+		EnumValuePair<EnumType::G_BIT, VK_COLOR_COMPONENT_G_BIT>,
+		EnumValuePair<EnumType::B_BIT, VK_COLOR_COMPONENT_B_BIT>,
+		EnumValuePair<EnumType::A_BIT, VK_COLOR_COMPONENT_A_BIT>,
+		EnumValuePair<EnumType::ALL, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ELogicOp, VkLogicOp>
+{
+	using EnumType = orhi::types::ELogicOp;
+	using type = std::tuple<
+		EnumValuePair<EnumType::CLEAR, VK_LOGIC_OP_CLEAR>,
+		EnumValuePair<EnumType::AND, VK_LOGIC_OP_AND>,
+		EnumValuePair<EnumType::AND_REVERSE, VK_LOGIC_OP_AND_REVERSE>,
+		EnumValuePair<EnumType::COPY, VK_LOGIC_OP_COPY>,
+		EnumValuePair<EnumType::AND_INVERTED, VK_LOGIC_OP_AND_INVERTED>,
+		EnumValuePair<EnumType::NO_OP, VK_LOGIC_OP_NO_OP>,
+		EnumValuePair<EnumType::XOR, VK_LOGIC_OP_XOR>,
+		EnumValuePair<EnumType::OR, VK_LOGIC_OP_OR>,
+		EnumValuePair<EnumType::NOR, VK_LOGIC_OP_NOR>,
+		EnumValuePair<EnumType::EQUIVALENT, VK_LOGIC_OP_EQUIVALENT>,
+		EnumValuePair<EnumType::INVERT, VK_LOGIC_OP_INVERT>,
+		EnumValuePair<EnumType::OR_REVERSE, VK_LOGIC_OP_OR_REVERSE>,
+		EnumValuePair<EnumType::COPY_INVERTED, VK_LOGIC_OP_COPY_INVERTED>,
+		EnumValuePair<EnumType::OR_INVERTED, VK_LOGIC_OP_OR_INVERTED>,
+		EnumValuePair<EnumType::NAND, VK_LOGIC_OP_NAND>,
+		EnumValuePair<EnumType::SET, VK_LOGIC_OP_SET>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ECompareOp, VkCompareOp>
+{
+	using EnumType = orhi::types::ECompareOp;
+	using type = std::tuple<
+		EnumValuePair<EnumType::NEVER, VK_COMPARE_OP_NEVER>,
+		EnumValuePair<EnumType::LESS, VK_COMPARE_OP_LESS>,
+		EnumValuePair<EnumType::EQUAL, VK_COMPARE_OP_EQUAL>,
+		EnumValuePair<EnumType::LESS_OR_EQUAL, VK_COMPARE_OP_LESS_OR_EQUAL>,
+		EnumValuePair<EnumType::GREATER, VK_COMPARE_OP_GREATER>,
+		EnumValuePair<EnumType::NOT_EQUAL, VK_COMPARE_OP_NOT_EQUAL>,
+		EnumValuePair<EnumType::GREATER_OR_EQUAL, VK_COMPARE_OP_GREATER_OR_EQUAL>,
+		EnumValuePair<EnumType::ALWAYS, VK_COMPARE_OP_ALWAYS>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EStencilOp, VkStencilOp>
+{
+	using EnumType = orhi::types::EStencilOp;
+	using type = std::tuple<
+		EnumValuePair<EnumType::KEEP, VK_STENCIL_OP_KEEP>,
+		EnumValuePair<EnumType::ZERO, VK_STENCIL_OP_ZERO>,
+		EnumValuePair<EnumType::REPLACE, VK_STENCIL_OP_REPLACE>,
+		EnumValuePair<EnumType::INCREMENT_AND_CLAMP, VK_STENCIL_OP_INCREMENT_AND_CLAMP>,
+		EnumValuePair<EnumType::DECREMENT_AND_CLAMP, VK_STENCIL_OP_DECREMENT_AND_CLAMP>,
+		EnumValuePair<EnumType::INVERT, VK_STENCIL_OP_INVERT>,
+		EnumValuePair<EnumType::INCREMENT_AND_WRAP, VK_STENCIL_OP_INCREMENT_AND_WRAP>,
+		EnumValuePair<EnumType::DECREMENT_AND_WRAP, VK_STENCIL_OP_DECREMENT_AND_WRAP>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EDynamicState, VkDynamicState>
+{
+	using EnumType = orhi::types::EDynamicState;
+	using type = std::tuple<
+		EnumValuePair<EnumType::VIEWPORT, VK_DYNAMIC_STATE_VIEWPORT>,
+		EnumValuePair<EnumType::SCISSOR, VK_DYNAMIC_STATE_SCISSOR>,
+		EnumValuePair<EnumType::LINE_WIDTH, VK_DYNAMIC_STATE_LINE_WIDTH>,
+		EnumValuePair<EnumType::DEPTH_BIAS, VK_DYNAMIC_STATE_DEPTH_BIAS>,
+		EnumValuePair<EnumType::BLEND_CONSTANTS, VK_DYNAMIC_STATE_BLEND_CONSTANTS>,
+		EnumValuePair<EnumType::DEPTH_BOUNDS, VK_DYNAMIC_STATE_DEPTH_BOUNDS>,
+		EnumValuePair<EnumType::STENCIL_COMPARE_MASK, VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK>,
+		EnumValuePair<EnumType::STENCIL_WRITE_MASK, VK_DYNAMIC_STATE_STENCIL_WRITE_MASK>,
+		EnumValuePair<EnumType::STENCIL_REFERENCE, VK_DYNAMIC_STATE_STENCIL_REFERENCE>,
+		EnumValuePair<EnumType::CULL_MODE, VK_DYNAMIC_STATE_CULL_MODE>,
+		EnumValuePair<EnumType::FRONT_FACE, VK_DYNAMIC_STATE_FRONT_FACE>,
+		EnumValuePair<EnumType::PRIMITIVE_TOPOLOGY, VK_DYNAMIC_STATE_PRIMITIVE_TOPOLOGY>,
+		EnumValuePair<EnumType::VIEWPORT_WITH_COUNT, VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT>,
+		EnumValuePair<EnumType::SCISSOR_WITH_COUNT, VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT>,
+		EnumValuePair<EnumType::VERTEX_INPUT_BINDING_STRIDE, VK_DYNAMIC_STATE_VERTEX_INPUT_BINDING_STRIDE>,
+		EnumValuePair<EnumType::DEPTH_TEST_ENABLE, VK_DYNAMIC_STATE_DEPTH_TEST_ENABLE>,
+		EnumValuePair<EnumType::DEPTH_WRITE_ENABLE, VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE>,
+		EnumValuePair<EnumType::DEPTH_COMPARE_OP, VK_DYNAMIC_STATE_DEPTH_COMPARE_OP>,
+		EnumValuePair<EnumType::DEPTH_BOUNDS_TEST_ENABLE, VK_DYNAMIC_STATE_DEPTH_BOUNDS_TEST_ENABLE>,
+		EnumValuePair<EnumType::STENCIL_TEST_ENABLE, VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE>,
+		EnumValuePair<EnumType::STENCIL_OP, VK_DYNAMIC_STATE_STENCIL_OP>,
+		EnumValuePair<EnumType::RASTERIZER_DISCARD_ENABLE, VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE>,
+		EnumValuePair<EnumType::DEPTH_BIAS_ENABLE, VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE>,
+		EnumValuePair<EnumType::PRIMITIVE_RESTART_ENABLE, VK_DYNAMIC_STATE_PRIMITIVE_RESTART_ENABLE>
 	>;
 };
 

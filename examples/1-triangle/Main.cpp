@@ -15,6 +15,7 @@
 #include <vector>
 #include <filesystem>
 #include <fstream>
+#include <array>
 
 #include <orhi/Backend.h>
 #include <orhi/RenderPass.h>
@@ -28,6 +29,17 @@
 #include <orhi/CommandBuffer.h>
 #include <orhi/Queue.h>
 #include <orhi/except/OutOfDateSwapChain.h>
+#include <orhi/types/EPrimitiveTopology.h>
+#include <orhi/types/EPolygonMode.h>
+#include <orhi/types/ECullModeFlags.h>
+#include <orhi/types/EFrontFace.h>
+#include <orhi/types/ESampleCountFlags.h>
+#include <orhi/types/ECompareOp.h>
+#include <orhi/types/ELogicOp.h>
+#include <orhi/types/EBlendFactor.h>
+#include <orhi/types/EBlendOp.h>
+#include <orhi/types/EColorComponentFlags.h>
+#include <orhi/types/EDynamicState.h>
 
 namespace
 {
@@ -100,7 +112,19 @@ int main()
 			{orhi::types::EShaderStageFlags::VERTEX_BIT, std::ref(*vertexShader)},
 			{orhi::types::EShaderStageFlags::FRAGMENT_BIT, std::ref(*fragmentShader)},
 		},
-		.renderPass = *renderPass
+		.renderPass = *renderPass,
+		.vertexAttributes = {},
+		.vertexBindings = {},
+		.descriptorSetLayouts = {},
+		.colorBlendState = {
+			.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>{}
+		},
+		.dynamicState = {
+			.dynamicStates = std::to_array<orhi::types::EDynamicState>({
+				orhi::types::EDynamicState::VIEWPORT,
+				orhi::types::EDynamicState::SCISSOR
+			})
+		}
 	});
 
 	// Swap chain and framebuffers
