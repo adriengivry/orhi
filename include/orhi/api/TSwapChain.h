@@ -26,12 +26,22 @@ namespace orhi::api
 		* @param p_surface
 		* @param p_windowSize
 		* @param p_desc
+		* @param p_oldSwapChain
 		*/
 		TSwapChain(
 			TDevice<Backend, DeviceContext>& p_device,
 			data::NativeHandle p_surface,
 			std::pair<uint32_t, uint32_t> p_windowSize,
-			const data::SwapChainDesc& p_desc
+			const data::SwapChainDesc& p_desc,
+			std::optional<std::reference_wrapper<TSwapChain<
+				Backend,
+				Context,
+				DeviceContext,
+				FramebufferContext,
+				RenderPassContext,
+				SemaphoreContext,
+				FenceContext
+			>>> p_oldSwapChain = std::nullopt
 		);
 
 		/**

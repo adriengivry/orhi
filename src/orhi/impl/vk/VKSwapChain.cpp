@@ -42,7 +42,8 @@ namespace orhi
 		Device& p_device,
 		data::NativeHandle p_surface,
 		std::pair<uint32_t, uint32_t> p_windowSize,
-		const data::SwapChainDesc& p_desc
+		const data::SwapChainDesc& p_desc,
+		std::optional<std::reference_wrapper<SwapChain>> p_oldSwapChain
 	) : m_context{
 		.device = p_device,
 		.desc = p_desc,
@@ -58,7 +59,7 @@ namespace orhi
 			.minImageCount = CalculateSwapChainImageCount(m_context.desc),
 			.imageFormat = utils::EnumToValue<VkFormat>(m_context.desc.format),
 			.imageColorSpace = utils::EnumToValue<VkColorSpaceKHR>(m_context.desc.colorSpace),
-			.imageExtent = { 
+			.imageExtent = {
 				m_context.extent.first,
 				m_context.extent.second
 			},
@@ -88,7 +89,10 @@ namespace orhi
 			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 			.presentMode = utils::EnumToValue<VkPresentModeKHR>(m_context.desc.presentMode),
 			.clipped = VK_TRUE,
-			.oldSwapchain = VK_NULL_HANDLE
+			.oldSwapchain =
+				p_oldSwapChain ?
+				p_oldSwapChain.value().get().GetNativeHandle().As<VkSwapchainKHR>() :
+				VK_NULL_HANDLE
 		};
 
 		VkResult result = vkCreateSwapchainKHR(

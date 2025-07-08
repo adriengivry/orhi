@@ -61,12 +61,17 @@ namespace
 		return buffer;
 	}
 
-	struct FrameData
+	struct FrameResources
 	{
 		orhi::CommandBuffer& commandBuffer;
 		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
-		std::unique_ptr<orhi::Semaphore> renderFinishedSemaphore;
 		std::unique_ptr<orhi::Fence> inFlightFence;
+	};
+
+	struct SwapImageResources
+	{
+		orhi::Framebuffer& framebuffer;
+		std::unique_ptr<orhi::Semaphore> renderFinishedSemaphore;
 	};
 }
 
@@ -120,17 +125,37 @@ int main()
 	std::vector<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	std::pair<uint32_t, uint32_t> windowSize;
+	std::vector<SwapImageResources> swapImagesResources;
 
 	auto recreateSwapChain = [&]{
-		while ((windowSize = GetWindowSize(window)).first == 0 || windowSize.second == 0)
+		do
 		{
+			windowSize = GetWindowSize(window);
 			glfwWaitEvents();
-		}
+		} while (windowSize.first == 0U || windowSize.second == 0U);
 
 		device.WaitIdle();
 		framebuffers.clear();
-		swapChain = std::make_unique<orhi::SwapChain>(device, backend.GetSurfaceHandle(), windowSize, optimalSwapChainDesc);
+		swapImagesResources.clear();
+
+		swapChain = std::make_unique<orhi::SwapChain>(
+			device,
+			backend.GetSurfaceHandle(),
+			windowSize,
+			optimalSwapChainDesc,
+			swapChain ? std::make_optional(std::ref(*swapChain)) : std::nullopt
+		);
+
 		framebuffers = swapChain->CreateFramebuffers(renderPass);
+
+		swapImagesResources.reserve(framebuffers.size());
+		for (uint32_t i = 0; i < framebuffers.size(); ++i)
+		{
+			swapImagesResources.emplace_back(
+				framebuffers[i],
+				std::make_unique<orhi::Semaphore>(device)
+			);
+		}
 	};
 
 	recreateSwapChain();
@@ -142,13 +167,12 @@ int main()
 	orhi::CommandPool commandPool{ device };
 	auto commandBuffers = commandPool.AllocateCommandBuffers(k_maxFramesInFlight);
 
-	std::vector<FrameData> frames;
-	frames.reserve(k_maxFramesInFlight);
+	std::vector<FrameResources> framesResources;
+	framesResources.reserve(k_maxFramesInFlight);
 	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
-		frames.emplace_back(
+		framesResources.emplace_back(
 			commandBuffers[i],
-			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Fence>(device, true)
 		);
@@ -157,21 +181,22 @@ int main()
 	uint32_t imageIndex = 0;
 	uint8_t frameIndex = 0;
 
-	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		auto& frame = frames[frameIndex];
-		frame.inFlightFence->Wait();
-		
-		imageIndex = swapChain->AcquireNextImage(*frame.imageAvailableSemaphore);
-		frame.inFlightFence->Reset();
+		auto& frameResources = framesResources[frameIndex];
 
-		auto& commandBuffer = frame.commandBuffer;
+		frameResources.inFlightFence->Wait();
+		imageIndex = swapChain->AcquireNextImage(*frameResources.imageAvailableSemaphore);
+		frameResources.inFlightFence->Reset();
+
+		auto& swapImageResources = swapImagesResources[imageIndex];
+
+		auto& commandBuffer = frameResources.commandBuffer;
 		commandBuffer.Reset();
 		commandBuffer.Begin();
-		commandBuffer.BeginRenderPass(renderPass, framebuffers[imageIndex], windowSize);
+		commandBuffer.BeginRenderPass(renderPass, swapImageResources.framebuffer, windowSize);
 		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline.GetNativeHandle());
 
 		commandBuffer.SetViewport({
@@ -192,15 +217,15 @@ int main()
 
 		device.GetGraphicsQueue().As<orhi::Queue*>()->Submit(
 			{ commandBuffer },
-			{ *frame.imageAvailableSemaphore },
-			{ *frame.renderFinishedSemaphore },
-			*frame.inFlightFence
+			{ *frameResources.imageAvailableSemaphore },
+			{ *swapImageResources.renderFinishedSemaphore },
+			*frameResources.inFlightFence
 		);
 
 		try
 		{
 			device.GetPresentQueue().As<orhi::Queue*>()->Present(
-				{ *frame.renderFinishedSemaphore },
+				{ *swapImageResources.renderFinishedSemaphore },
 				*swapChain,
 				imageIndex
 			);
@@ -213,6 +238,8 @@ int main()
 
 		frameIndex = (frameIndex + 1) % k_maxFramesInFlight;
 	}
+
+	device.WaitIdle();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

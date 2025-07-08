@@ -283,9 +283,9 @@ namespace
 	{
 		return VkPipelineViewportStateCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-			.viewportCount = static_cast<uint32_t>(p_viewports.size()),
+			.viewportCount = std::max(1U, static_cast<uint32_t>(p_viewports.size())),
 			.pViewports = p_viewports.empty() ? nullptr : p_viewports.data(),
-			.scissorCount = static_cast<uint32_t>(p_scissors.size()),
+			.scissorCount = std::max(1U, static_cast<uint32_t>(p_scissors.size())),
 			.pScissors = p_scissors.empty() ? nullptr : p_scissors.data()
 		};
 	}

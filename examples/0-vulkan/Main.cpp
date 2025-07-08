@@ -139,7 +139,7 @@ namespace
 		alignas(16) glm::mat4 proj;
 	};
 
-	struct FrameData
+	struct FrameResources
 	{
 		orhi::CommandBuffer& commandBuffer;
 		orhi::Buffer& ubo;
@@ -286,20 +286,21 @@ int main()
 	std::pair<uint32_t, uint32_t> windowSize = { 0, 0 };
 
 	auto recreateSwapChain = [&] {
-		for (windowSize = GetWindowSize(window); windowSize.first == 0 || windowSize.second == 0;)
+		do
 		{
+			windowSize = GetWindowSize(window);
 			glfwWaitEvents();
-		}
+		} while (windowSize.first == 0U || windowSize.second == 0U);
 
 		device.WaitIdle();
 		framebuffers.clear();
-		swapChain.reset();
 
 		swapChain = std::make_unique<orhi::SwapChain>(
 			device,
 			backend->GetSurfaceHandle(),
 			windowSize,
-			optimalSwapChainDesc
+			optimalSwapChainDesc,
+			swapChain ? std::make_optional(std::ref(*swapChain)) : std::nullopt
 		);
 
 		framebuffers = swapChain->CreateFramebuffers(*renderPass);
@@ -366,7 +367,7 @@ int main()
 	hostVertexBuffer->Deallocate();
 	hostIndexBuffer->Deallocate();
 
-	std::vector<FrameData> frameDataArray;
+	std::vector<FrameResources> frameDataArray;
 	frameDataArray.reserve(k_maxFramesInFlight);
 	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
@@ -387,7 +388,7 @@ int main()
 	{
 		glfwPollEvents();
 
-		FrameData& frameData = frameDataArray[currentFrameIndex];
+		FrameResources& frameData = frameDataArray[currentFrameIndex];
 
 		frameData.inFlightFence->Wait();
 
