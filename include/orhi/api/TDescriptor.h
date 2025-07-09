@@ -11,6 +11,7 @@
 #include <orhi/data/BufferMemoryRange.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/TextureViewDesc.h>
+#include <orhi/data/SamplerDesc.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
@@ -33,6 +34,16 @@ namespace orhi::api
 		TDescriptor(
 			TDevice<Backend, DeviceContext>& p_device,
 			const TextureViewDesc& p_desc
+		);
+
+		/**
+		* Creates a descriptor for a sampler
+		* @param p_device
+		* @param p_desc
+		*/
+		TDescriptor(
+			TDevice<Backend, DeviceContext>& p_device,
+			const data::SamplerDesc& p_desc
 		);
 
 		/**

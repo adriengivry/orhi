@@ -52,6 +52,45 @@ namespace orhi
 	}
 
 	template<>
+	Descriptor::TDescriptor(
+		Device& p_device,
+		const data::SamplerDesc& p_desc
+	) : m_context{
+		.device = p_device,
+		.handle = VK_NULL_HANDLE,
+		.type = EVulkanDescriptorType::SAMPLER
+	}
+	{
+		VkSamplerCreateInfo  samplerInfo{
+			.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+			.magFilter = VK_FILTER_LINEAR,
+			.minFilter = VK_FILTER_LINEAR,
+			.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
+			.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+			.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+			.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+			.mipLodBias = p_desc.mipLodBias,
+			.anisotropyEnable = p_desc.anisotropy,
+			.maxAnisotropy = p_desc.anisotropy ? 16.0f : 1.0f, // TODO: Retrieve this value properly from the physical device
+			.compareEnable = p_desc.compareEnable,
+			.compareOp = VK_COMPARE_OP_ALWAYS,
+			.minLod = p_desc.minLod,
+			.maxLod = p_desc.maxLod,
+			.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK,
+			.unnormalizedCoordinates = p_desc.unnormalizedCoordinates,
+		};
+
+		VkResult result = vkCreateSampler(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			&samplerInfo,
+			nullptr,
+			&reinterpret_cast<VkSampler&>(m_context.handle)
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create sampler!");
+	}
+
+	template<>
 	Descriptor::~TDescriptor()
 	{
 		switch (m_context.type)
@@ -60,6 +99,14 @@ namespace orhi
 			vkDestroyImageView(
 				m_context.device.GetNativeHandle().As<VkDevice>(),
 				m_context.handle.As<VkImageView>(),
+				nullptr
+			);
+			break;
+
+		case EVulkanDescriptorType::SAMPLER:
+			vkDestroySampler(
+				m_context.device.GetNativeHandle().As<VkDevice>(),
+				m_context.handle.As<VkSampler>(),
 				nullptr
 			);
 			break;
