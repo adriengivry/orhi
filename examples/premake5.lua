@@ -11,8 +11,17 @@ workspace "orhi-examples"
 			{ "vulkan", "Use Vulkan as the graphics API" },
 			{ "mock", "Use Mock as the graphics API" }
 		},
-		default = "opengl"
+		default = "vulkan"
 	}
+
+	-- Get Vulkan SDK path for shader compilation
+	vulkanSDK = os.getenv("VULKAN_SDK")
+	if not vulkanSDK then
+		print("WARNING: VULKAN_SDK environment variable not set. Shader compilation may fail.")
+		vulkanSDK = ""
+	else
+		print("Found Vulkan SDK at: " .. vulkanSDK)
+	end
 
 	filter { "options:gfxapi=vulkan" }
 		defines { "ORHI_SELECT_VULKAN" }
@@ -20,19 +29,35 @@ workspace "orhi-examples"
 	filter { "options:gfxapi=mock" }
 		defines { "ORHI_SELECT_MOCK" }
 
-	VULKAN_SDK = os.getenv("VK_SDK_PATH")
-
-	-- Check if VULKAN_SDK is set to a valid path
-	if not VULKAN_SDK or VULKAN_SDK == "" then
-		error("Couldn't find Vulkan SDK. Please make sure the Vulkan SDK is installed and the VK_SDK_PATH environment variable is set.")
-	end
-	
-	print("Vulkan SDK Path: " .. VULKAN_SDK)
-
-
 outputdir = "%{wks.location}/../bin/"
 objoutdir = "%{wks.location}/../obj/"
 depsdir = "%{wks.location}/deps/"
+
+-- Global shader compilation function
+function addShaderCompilation()
+	local shadersOutputDir = "%{prj.location}/assets/shaders/"
+	
+	-- Helper function to create shader compilation rules
+	local function addShaderRule(extension, shaderType)
+		filter("files:**." .. extension)
+			buildmessage("Compiling " .. shaderType .. " shader %{file.name}")
+			buildcommands {
+				"if not exist \"" .. shadersOutputDir .. "\" mkdir \"" .. shadersOutputDir .. "\"",
+				"\"" .. vulkanSDK .. "\\bin\\glslangValidator.exe\" -V \"%{file.relpath}\" -o \"" .. shadersOutputDir .. "%{file.basename}." .. extension .. ".spv\""
+			}
+			buildoutputs { shadersOutputDir .. "%{file.basename}." .. extension .. ".spv" }
+	end
+	
+	-- Add rules for all shader types
+	addShaderRule("vert", "vertex")
+	addShaderRule("frag", "fragment")
+	addShaderRule("comp", "compute")
+	addShaderRule("geom", "geometry")
+	addShaderRule("tesc", "tessellation control")
+	addShaderRule("tese", "tessellation evaluation")
+	
+	filter {} -- Reset filter
+end
 
 group "examples"
 	include "1-triangle"

@@ -21,6 +21,14 @@ project "orhi"
 	if _OPTIONS["compile-vulkan"] then
 		print("+ Vulkan backend selected for compilation")
 		defines { "ORHI_COMPILE_VULKAN" }
+		
+		-- Check for Vulkan SDK
+		local vulkanSDK = os.getenv("VULKAN_SDK")
+		if vulkanSDK then
+			print("+ Found Vulkan SDK at: " .. vulkanSDK)
+		else
+			error("VULKAN_SDK environment variable not set. Please install Vulkan SDK and set VULKAN_SDK environment variable.")
+		end
 	end
 
 	if _OPTIONS["compile-mock"] then
@@ -36,14 +44,24 @@ project "orhi"
 	}
 
 	includedirs {
-		"%{VULKAN_SDK}/include",
 		"include",
 		"src"
 	}
+	
+	-- Add Vulkan include directory if enabled
+	filter { "options:compile-vulkan" }
+		includedirs {
+			"%{os.getenv('VULKAN_SDK')}/include"
+		}
 
-	links {
-		"%{VULKAN_SDK}/lib/vulkan-1.lib"
-	}
+	-- Add Vulkan library if enabled
+	filter { "options:compile-vulkan" }
+		links {
+			"vulkan-1"
+		}
+		libdirs {
+			"%{os.getenv('VULKAN_SDK')}/lib"
+		}
 
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }

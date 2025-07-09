@@ -38,26 +38,8 @@ project "2-cube"
 		"{COPYDIR} %{prj.location}assets %{cfg.targetdir}/assets"
 	}
 
-	local shadersOutputDir = "%{prj.location}/assets/shaders/"
-	
-	-- Helper function to create shader compilation rules
-	local function addShaderRule(extension, shaderType)
-		filter("files:**." .. extension)
-			buildmessage("Compiling " .. shaderType .. " shader %{file.name}")
-			buildcommands {
-				"if not exist \"" .. shadersOutputDir .. "\" mkdir \"" .. shadersOutputDir .. "\"",
-				"\"%{VULKAN_SDK}\\bin\\glslangValidator.exe\" -V \"%{file.relpath}\" -o \"" .. shadersOutputDir .. "%{file.basename}." .. extension .. ".spv\""
-			}
-			buildoutputs { shadersOutputDir .. "%{file.basename}." .. extension .. ".spv" }
-	end
-	
-	-- Add rules for all shader types
-	addShaderRule("vert", "vertex")
-	addShaderRule("frag", "fragment")
-	addShaderRule("comp", "compute")
-	addShaderRule("geom", "geometry")
-	addShaderRule("tesc", "tessellation control")
-	addShaderRule("tese", "tessellation evaluation")
+	-- Add shader compilation rules
+	addShaderCompilation()
 
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }
