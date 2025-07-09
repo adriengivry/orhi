@@ -62,11 +62,13 @@ end
 group "examples"
 	include "1-triangle"
 	include "2-cube"
+	include "3-texture"
 group ""
 
 group "examples/deps"
 	include "deps/_glm"
 	include "deps/_glfw"
+	include "deps/_stb"
 group ""
 
 include "../"

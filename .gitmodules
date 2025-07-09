@@ -4,3 +4,6 @@
 [submodule "examples/deps/_glm/glm"]
 	path = examples/deps/_glm/glm
 	url = git@github.com:g-truc/glm.git
+[submodule "examples/deps/_stb/stb"]
+	path = examples/deps/_stb/stb
+	url = git@github.com:nothings/stb.git
