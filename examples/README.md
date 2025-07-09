@@ -2,8 +2,8 @@
 
 This directory contains practical examples demonstrating **OpenRHI** functionalities.
 
-> [!IMPORTANT] Submodules Required
-> Examples depend on [GLFW](https://github.com/glfw/glfw) and [GLM](https://github.com/g-truc/glm), which are included as Git submodules. Initialize submodules before building examples.
+> [!IMPORTANT]
+> **Dependencies Required:** Examples depend on [GLFW](https://github.com/glfw/glfw) and [GLM](https://github.com/g-truc/glm), which are included as Git submodules. Initialize submodules before building examples.
 
 All example projects use [Premake5](https://premake.github.io/) for cross-platform project generation.
 

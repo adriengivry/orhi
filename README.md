@@ -29,7 +29,7 @@ Write hardware-agnostic graphics code once, then deploy it seamlessly across mul
 | Metal | 🍎 | 📅 Planned  |
 | OpenGL | 🪟🐧 | ☠️ Deprecated — Moved to [BareGL](https://github.com/adriengivry/baregl) |
 
-> [!WARNING] Early Development Stage
+> [!WARNING]
 > **OpenRHI** is actively evolving as support for additional graphics backends is added. The [API](include/orhi/api/) may change to accommodate the unique requirements and design philosophies of each backend. Implementation details are also subject to refinement as the project works toward production-quality standards.
 
 ## Build Configuration
