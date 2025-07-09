@@ -12,6 +12,7 @@
 #include <orhi/impl/vk/Framebuffer.h>
 #include <orhi/impl/vk/Buffer.h>
 #include <orhi/impl/vk/DescriptorSet.h>
+#include <orhi/impl/vk/Texture.h>
 
 struct VkCommandBuffer_T;
 typedef VkCommandBuffer_T* VkCommandBuffer;
@@ -30,6 +31,7 @@ namespace orhi::impl::vk
 		RenderPassContext,
 		FramebufferContext,
 		BufferContext,
-		DescriptorSetContext
+		DescriptorSetContext,
+		TextureContext
 	>;
 }

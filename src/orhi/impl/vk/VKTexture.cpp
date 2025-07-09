@@ -32,6 +32,7 @@ namespace orhi
 			.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 			.flags = 0, // TODO: expose this setting
 			.imageType = utils::EnumToValue<VkImageType>(p_desc.type),
+			.format = utils::EnumToValue<VkFormat>(p_desc.format),
 			.extent = {
 				p_desc.extent.width,
 				p_desc.extent.height,
@@ -54,6 +55,10 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create image!");
+
+		m_context.format = p_desc.format;
+		m_context.layout = p_desc.initialLayout;
+		m_context.extent = p_desc.extent;
 	}
 
 	template<>
@@ -125,7 +130,11 @@ namespace orhi
 	template<>
 	void Texture::Deallocate()
 	{
-		// TODO
+		vkFreeMemory(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			m_context.memory,
+			nullptr
+		);
 	}
 
 	template<>
@@ -168,6 +177,30 @@ namespace orhi
 	uint64_t Texture::GetAllocatedBytes() const
 	{
 		return m_context.allocatedBytes;
+	}
+
+	template<>
+	void Texture::NotifyLayoutChange(types::ETextureLayout p_layout)
+	{
+		m_context.layout = p_layout;
+	}
+
+	template<>
+	types::EFormat Texture::GetFormat() const
+	{
+		return m_context.format;
+	}
+
+	template<>
+	types::ETextureLayout Texture::GetLayout() const
+	{
+		return m_context.layout;
+	}
+
+	template<>
+	const data::Extent3D& Texture::GetExtent() const
+	{
+		return m_context.extent;
 	}
 
 	template<>

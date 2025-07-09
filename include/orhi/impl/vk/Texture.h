@@ -8,6 +8,8 @@
 
 #include <orhi/api/TTexture.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/types/EFormat.h>
+#include <orhi/types/ETextureLayout.h>
 
 struct VkImage_T;
 typedef VkImage_T* VkImage;
@@ -22,6 +24,9 @@ namespace orhi::impl::vk
 		Device& device;
 		VkImage handle;
 		VkDeviceMemory memory;
+		types::EFormat format;
+		types::ETextureLayout layout;
+		data::Extent3D extent;
 		uint64_t allocatedBytes;
 	};
 

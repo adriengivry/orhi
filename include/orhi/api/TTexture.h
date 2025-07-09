@@ -12,6 +12,8 @@
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/TextureDesc.h>
 #include <orhi/types/EGraphicsBackend.h>
+#include <orhi/types/ETextureLayout.h>
+#include <orhi/types/EFormat.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
 
 namespace orhi::api
@@ -56,9 +58,30 @@ namespace orhi::api
 		void Upload(const void* p_data, std::optional<data::BufferMemoryRange> p_memoryRange = std::nullopt);
 
 		/**
+		* Notifies the texture that its layout changed. This should be called by the backend after each
+		* layout transition, and in most cases, shouldn't be used manually.
+		*/
+		void NotifyLayoutChange(types::ETextureLayout p_layout);
+
+		/**
 		* Returns allocated bytes
 		*/
 		uint64_t GetAllocatedBytes() const;
+
+		/**
+		* Returns the texture format 
+		*/
+		types::EFormat GetFormat() const;
+
+		/**
+		* Returns the texture layout
+		*/
+		types::ETextureLayout GetLayout() const;
+
+		/**
+		* Returns the texture extent 
+		*/
+		const data::Extent3D& GetExtent() const;
 
 		/**
 		* Returns the underlying object's native handle

@@ -25,6 +25,7 @@ namespace orhi::impl::vk
 	struct SemaphoreContext;
 	struct FenceContext;
 	struct CommandBufferContext;
+	struct TextureContext;
 
 	struct QueueContext
 	{
@@ -43,6 +44,7 @@ namespace orhi::impl::vk
 		SwapChainContext,
 		SemaphoreContext,
 		FenceContext,
-		CommandBufferContext
+		CommandBufferContext,
+		TextureContext
 	>;
 }

@@ -11,18 +11,21 @@
 #include <orhi/types/ECommandBufferUsageFlags.h>
 #include <orhi/types/EPipelineBindPoint.h>
 #include <orhi/types/EIndexType.h>
+#include <orhi/types/ETextureLayout.h>
 #include <orhi/api/TFramebuffer.h>
 #include <orhi/api/TRenderPass.h>
 #include <orhi/api/TBuffer.h>
+#include <orhi/api/TTexture.h>
 #include <orhi/api/TDescriptorSet.h>
 #include <orhi/api/TGraphicsPipeline.h>
 #include <orhi/data/Rect2D.h>
 #include <orhi/data/ViewportDesc.h>
 #include <orhi/data/BufferCopyDesc.h>
+#include <orhi/data/BufferTextureCopyDesc.h>
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext>
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext, class TextureContext>
 	class TCommandBuffer final
 	{
 	public:
@@ -72,6 +75,23 @@ namespace orhi::api
 			TBuffer<Backend, BufferContext, DeviceContext>& p_src,
 			TBuffer<Backend, BufferContext, DeviceContext>& p_dest,
 			std::span<const data::BufferCopyDesc> p_regions = {}
+		);
+
+		/**
+		* Copy buffer content from source buffer to destination texture
+		*/
+		void CopyBufferToTexture(
+			TBuffer<Backend, BufferContext, DeviceContext>& p_src,
+			TTexture<Backend, TextureContext, DeviceContext>& p_dest,
+			std::span<const data::BufferTextureCopyDesc> p_regions = {}
+		);
+
+		/**
+		* Transition a texture from one layout to another
+		*/
+		void TransitionTextureLayout(
+			TTexture<Backend, TextureContext, DeviceContext>& p_texture,
+			types::ETextureLayout p_layout
 		);
 
 		/**

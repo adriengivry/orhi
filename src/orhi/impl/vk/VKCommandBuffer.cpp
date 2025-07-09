@@ -137,6 +137,135 @@ namespace orhi
 	}
 
 	template<>
+	void CommandBuffer::CopyBufferToTexture(
+		Buffer& p_src,
+		Texture& p_dest,
+		std::span<const data::BufferTextureCopyDesc> p_regions
+	)
+	{
+		std::vector<VkBufferImageCopy> regions;
+
+		for (const auto& copyDesc : p_regions)
+		{
+			regions.push_back(VkBufferImageCopy{
+				.bufferOffset = copyDesc.bufferOffset,
+				.bufferRowLength = copyDesc.bufferRowLength,
+				.bufferImageHeight = copyDesc.bufferImageHeight,
+				.imageSubresource = {
+					.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+					.mipLevel = 0,
+					.baseArrayLayer = 0,
+					.layerCount = 1
+				},
+				.imageOffset = {
+					.x = copyDesc.imageOffset.x,
+					.y = copyDesc.imageOffset.y,
+					.z = copyDesc.imageOffset.z
+				},
+				.imageExtent = {
+					.width = copyDesc.imageExtent.width,
+					.height = copyDesc.imageExtent.height,
+					.depth = copyDesc.imageExtent.depth
+				}
+				});
+		}
+
+		if (regions.empty())
+		{
+			data::Extent3D extent = p_dest.GetExtent();
+
+			VkExtent3D vkExtent = {
+				extent.width,
+				extent.height,
+				extent.depth
+			};
+
+			regions.push_back(VkBufferImageCopy{
+				.bufferOffset = 0,
+				.bufferRowLength = 0,
+				.bufferImageHeight = 0,
+				.imageSubresource = {
+					.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+					.mipLevel = 0,
+					.baseArrayLayer = 0,
+					.layerCount = 1
+				},
+				.imageOffset = { 0, 0, 0 },
+				.imageExtent = vkExtent
+			});
+		}
+
+		vkCmdCopyBufferToImage(
+			m_context.handle,
+			p_src.GetNativeHandle().As<VkBuffer>(),
+			p_dest.GetNativeHandle().As<VkImage>(),
+			utils::EnumToValue<VkImageLayout>(p_dest.GetLayout()),
+			std::max(1U, static_cast<uint32_t>(p_regions.size())),
+			regions.data()
+		);
+	}
+
+	template<>
+	void CommandBuffer::TransitionTextureLayout(
+		Texture& p_texture,
+		types::ETextureLayout p_layout
+	)
+	{
+		types::ETextureLayout oldLayout = p_texture.GetLayout();
+
+		VkImageMemoryBarrier barrier = {
+			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			.srcAccessMask = 0,
+			.dstAccessMask = 0,
+			.oldLayout = utils::EnumToValue<VkImageLayout>(oldLayout),
+			.newLayout = utils::EnumToValue<VkImageLayout>(p_layout),
+			.image = p_texture.GetNativeHandle().As<VkImage>(),
+			.subresourceRange = {
+				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
+
+		VkPipelineStageFlags sourceStage;
+		VkPipelineStageFlags destinationStage;
+
+		if (oldLayout == types::ETextureLayout::UNDEFINED && p_layout == types::ETextureLayout::TRANSFER_DST_OPTIMAL)
+		{
+			barrier.srcAccessMask = 0;
+			barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (oldLayout == types::ETextureLayout::TRANSFER_DST_OPTIMAL && p_layout == types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL)
+		{
+			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
+		else
+		{
+			throw std::invalid_argument("unsupported layout transition!");
+		}
+
+		vkCmdPipelineBarrier(
+			m_context.handle,
+			sourceStage, destinationStage,
+			0, // No flags
+			0, nullptr, // No memory barriers
+			0, nullptr, // No buffer barriers
+			1, &barrier // Image barrier
+		);
+
+		p_texture.NotifyLayoutChange(p_layout);
+	}
+
+	template<>
 	void CommandBuffer::BindPipeline(
 		types::EPipelineBindPoint p_bindPoint,
 		data::NativeHandle p_pipeline

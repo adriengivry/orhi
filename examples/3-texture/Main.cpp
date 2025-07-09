@@ -18,6 +18,9 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
 #include <cassert>
 #include <vector>
 #include <filesystem>
@@ -39,6 +42,7 @@
 #include <orhi/DescriptorSet.h>
 #include <orhi/DescriptorSetLayout.h>
 #include <orhi/Queue.h>
+#include <orhi/Texture.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 
 namespace
@@ -190,6 +194,48 @@ int main()
 	);
 	indexBuffer->Upload(k_indices.data());
 
+	// Load texture data
+	int texWidth, texHeight, texChannels;
+	stbi_uc* pixels = stbi_load("assets/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+	uint64_t imageSize = texWidth * texHeight * 4;
+	if (!pixels)
+	{
+		throw std::runtime_error("failed to load texture image!");
+	}
+
+	// Create a buffer to hold the texture data
+	std::unique_ptr<orhi::Buffer> pixelBuffer = std::make_unique<orhi::Buffer>(
+		device,
+		orhi::data::BufferDesc{
+			.size = imageSize,
+			.usage = orhi::types::EBufferUsageFlags::TRANSFER_SRC_BIT
+		}
+	);
+	pixelBuffer->Allocate(
+		orhi::types::EMemoryPropertyFlags::HOST_VISIBLE_BIT |
+		orhi::types::EMemoryPropertyFlags::HOST_COHERENT_BIT
+	);
+	pixelBuffer->Upload(pixels);
+
+	// Free the loaded pixel data after uploading to the buffer
+	stbi_image_free(pixels);
+
+	orhi::Texture texture{
+		device,
+		orhi::data::TextureDesc{
+			.extent = {
+				static_cast<uint32_t>(texWidth),
+				static_cast<uint32_t>(texHeight),
+				1
+			},
+			.format = orhi::types::EFormat::R8G8B8A8_SRGB,
+			.usage = orhi::types::ETextureUsageFlags::SAMPLED_BIT | orhi::types::ETextureUsageFlags::TRANSFER_DST_BIT,
+		}
+	};
+	texture.Allocate(
+		orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT
+	);
+
 	// Create render pass and pipeline
 	orhi::RenderPass renderPass{ device, optimalSwapChainDesc.format };
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
@@ -264,6 +310,14 @@ int main()
 
 	orhi::CommandPool commandPool{ device };
 	auto commandBuffers = commandPool.AllocateCommandBuffers(k_maxFramesInFlight);
+	auto& transferBuffer = commandPool.AllocateCommandBuffers(1).front().get();
+
+	transferBuffer.Begin(orhi::types::ECommandBufferUsageFlags::ONE_TIME_SUBMIT_BIT);
+	transferBuffer.TransitionTextureLayout(texture, orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL);
+	transferBuffer.CopyBufferToTexture(*pixelBuffer, texture);
+	transferBuffer.TransitionTextureLayout(texture, orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL);
+	transferBuffer.End();
+	device.WaitIdle();
 
 	std::vector<FrameResources> framesResources;
 	framesResources.reserve(k_maxFramesInFlight);

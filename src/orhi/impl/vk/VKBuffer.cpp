@@ -114,7 +114,11 @@ namespace orhi
 	template<>
 	void Buffer::Deallocate()
 	{
-		// TODO
+		vkFreeMemory(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			m_context.memory,
+			nullptr
+		);
 	}
 
 	template<>

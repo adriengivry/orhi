@@ -29,6 +29,7 @@ namespace orhi::impl::vk
 		RenderPassContext,
 		FramebufferContext,
 		BufferContext,
-		DescriptorSetContext
+		DescriptorSetContext,
+		TextureContext
 	>;
 }
