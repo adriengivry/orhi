@@ -159,6 +159,15 @@ namespace orhi
 	template<>
 	SwapChain::~TSwapChain()
 	{
+		for (auto view : m_context.imageViews)
+		{
+			vkDestroyImageView(
+				m_context.device.GetNativeHandle().As<VkDevice>(),
+				view,
+				nullptr
+			);
+		}
+
 		vkDestroySwapchainKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			m_context.handle,

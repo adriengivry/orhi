@@ -16,7 +16,7 @@ namespace orhi::api
 	class TGraphicsPipeline final
 	{
 	public:
-		using Desc = const data::GraphicsPipelineDesc<
+		using Desc = data::GraphicsPipelineDesc<
 			Backend,
 			DeviceContext,
 			ShaderModuleContext,
