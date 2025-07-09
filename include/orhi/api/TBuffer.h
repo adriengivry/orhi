@@ -7,26 +7,28 @@
 #pragma once
 
 #include <optional>
-
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/types/EAccessSpecifier.h>
-#include <orhi/types/EBufferType.h>
+#include <orhi/api/TDevice.h>
+#include <orhi/data/BufferDesc.h>
+#include <orhi/data/NativeHandle.h>
 #include <orhi/data/BufferMemoryRange.h>
+#include <orhi/types/EGraphicsBackend.h>
+#include <orhi/types/EMemoryPropertyFlags.h>
 
 namespace orhi::api
 {
-	/**
-	* Represents a buffer, used to store data on the GPU
-	*/
-	template<types::EGraphicsBackend Backend, class BufferContext>
-	class TBuffer
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext>
+	class TBuffer final
 	{
 	public:
 		/**
 		* Creates a buffer
-		* @param p_type
+		* @param p_device
+		* @param p_desc
 		*/
-		TBuffer(types::EBufferType p_type);
+		TBuffer(
+			TDevice<Backend, DeviceContext>& p_device,
+			const data::BufferDesc& p_desc
+		);
 
 		/**
 		* Destroys the buffer
@@ -34,52 +36,36 @@ namespace orhi::api
 		~TBuffer();
 
 		/**
-		* Allocates memory for the buffer
-		* @param p_size
-		* @param p_usage
-		* @return The size of the allocated memory in bytes
+		* Returns true if the buffer is allocated
 		*/
-		uint64_t Allocate(uint64_t p_size, types::EAccessSpecifier p_usage = types::EAccessSpecifier::STATIC_DRAW);
+		bool IsAllocated() const;
 
 		/**
-		* Uploads data to the buffer
-		* @param p_data
-		* @param p_range
+		* Allocate memory for the buffer
 		*/
-		void Upload(const void* p_data, std::optional<data::BufferMemoryRange> p_range = std::nullopt);
+		void Allocate(types::EMemoryPropertyFlags p_properties);
 
 		/**
-		* Returns true if the buffer is valid (properly allocated)
+		* Deallocates memory for the buffer
 		*/
-		bool IsValid() const;
+		void Deallocate();
 
 		/**
-		* Returns true if the buffer is empty
+		* Uploads data to the allocated memory
 		*/
-		bool IsEmpty() const;
+		void Upload(const void* p_data, std::optional<data::BufferMemoryRange> p_memoryRange = std::nullopt);
 
 		/**
-		* Returns the size of the allocated buffer in bytes
+		* Returns allocated bytes
 		*/
-		uint64_t GetSize() const;
+		uint64_t GetAllocatedBytes() const;
 
 		/**
-		* Binds the buffer
-		* @param p_index (Optional) Index to bind the buffer to
+		* Returns the underlying object's native handle
 		*/
-		void Bind(std::optional<uint32_t> p_index = std::nullopt) const;
+		data::NativeHandle GetNativeHandle() const;
 
-		/**
-		* Unbinds the buffer
-		*/
-		void Unbind() const;
-
-		/**
-		* Returns the ID of the buffer
-		*/
-		uint32_t GetID() const;
-
-	protected:
-		BufferContext m_buffer;
+	private:
+		Context m_context;
 	};
 }

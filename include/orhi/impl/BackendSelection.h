@@ -14,8 +14,8 @@
 #define ORHI_BACKEND_TYPE(backend, type) orhi::impl::backend::type
 
 // Selection logic
-#if defined(ORHI_SELECT_OPENGL)
-#define ORHI_SELECTED_BACKEND gl
+#if defined(ORHI_SELECT_VULKAN)
+#define ORHI_SELECTED_BACKEND vk
 #elif defined(ORHI_SELECT_MOCK)
 #define ORHI_SELECTED_BACKEND mock
 #else

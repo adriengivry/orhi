@@ -2,15 +2,15 @@ project "orhi"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
-	targetdir (outputdir .. "%{cfg.buildcfg}/%{prj.name}")
-	objdir (objoutdir .. "%{cfg.buildcfg}/%{prj.name}")
+	targetdir ("bin/%{cfg.buildcfg}/%{prj.name}")
+	objdir ("obj/%{cfg.buildcfg}/%{prj.name}")
 
 	print("-------------------------------------------")
 	print("Generating orhi project...")
 
 	newoption {
-		trigger = "compile-opengl",
-		description = "Compile OpenGL backend",
+		trigger = "compile-vulkan",
+		description = "Compile Vulkan backend",
 	}
 
 	newoption {
@@ -18,9 +18,17 @@ project "orhi"
 		description = "Compile Mock backend",
 	}
 
-	if _OPTIONS["compile-opengl"] then
-		print("+ OpenGL backend selected for compilation")
-		defines { "ORHI_COMPILE_OPENGL" }
+	if _OPTIONS["compile-vulkan"] then
+		print("+ Vulkan backend selected for compilation")
+		defines { "ORHI_COMPILE_VULKAN" }
+		
+		-- Check for Vulkan SDK
+		local vulkanSDK = os.getenv("VULKAN_SDK")
+		if vulkanSDK then
+			print("+ Found Vulkan SDK at: " .. vulkanSDK)
+		else
+			error("VULKAN_SDK environment variable not set. Please install Vulkan SDK and set VULKAN_SDK environment variable.")
+		end
 	end
 
 	if _OPTIONS["compile-mock"] then
@@ -39,6 +47,21 @@ project "orhi"
 		"include",
 		"src"
 	}
+	
+	-- Add Vulkan include directory if enabled
+	filter { "options:compile-vulkan" }
+		includedirs {
+			"%{os.getenv('VULKAN_SDK')}/include"
+		}
+
+	-- Add Vulkan library if enabled
+	filter { "options:compile-vulkan" }
+		links {
+			"vulkan-1"
+		}
+		libdirs {
+			"%{os.getenv('VULKAN_SDK')}/lib"
+		}
 
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }

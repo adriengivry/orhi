@@ -7,13 +7,23 @@ project "1-triangle"
 	debugdir (outputdir .. "%{cfg.buildcfg}/%{prj.name}")
 	
 	files {
+		-- Source files
 		"**.h",
 		"**.cpp",
+		"**.lua",
+
+		-- Shader files
+		"**.vert",
+		"**.frag",
+		"**.comp",
+		"**.geom",
+		"**.tesc",
+		"**.tese"
 	}
 
 	includedirs {
-		depsdir .. "glm/include",
-		depsdir .. "glfw/include",
+		depsdir .. "_glm/glm",
+		depsdir .. "_glfw/glfw/include",
 		"%{wks.location}../../include",
 	}
 
@@ -21,7 +31,15 @@ project "1-triangle"
 		"glfw",
 		"glm",
 		"orhi"
-    }
+	}
+
+	-- Copy assets folder to output directory
+	postbuildcommands {
+		"{COPYDIR} %{prj.location}assets %{cfg.targetdir}/assets"
+	}
+
+	-- Add shader compilation rules
+	addShaderCompilation()
 
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }

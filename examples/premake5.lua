@@ -6,36 +6,67 @@ workspace "orhi-examples"
 	newoption {
 		trigger = "gfxapi",
 		value = "API",
-		description = "Define the graphics API to use (e.g., OpenGL, Mock)",
+		description = "Define the graphics API to use (e.g., Vulkan, Mock)",
 		allowed = {
-			{ "opengl", "Use OpenGL as the graphics API" },
+			{ "vulkan", "Use Vulkan as the graphics API" },
 			{ "mock", "Use Mock as the graphics API" }
 		},
-		default = "opengl"
+		default = "vulkan"
 	}
 
-	filter { "options:gfxapi=opengl" }
-		defines { "ORHI_SELECT_OPENGL" }
+	-- Get Vulkan SDK path for shader compilation
+	vulkanSDK = os.getenv("VULKAN_SDK")
+	if not vulkanSDK then
+		print("WARNING: VULKAN_SDK environment variable not set. Shader compilation may fail.")
+		vulkanSDK = ""
+	else
+		print("Found Vulkan SDK at: " .. vulkanSDK)
+	end
+
+	filter { "options:gfxapi=vulkan" }
+		defines { "ORHI_SELECT_VULKAN" }
 
 	filter { "options:gfxapi=mock" }
 		defines { "ORHI_SELECT_MOCK" }
 
 outputdir = "%{wks.location}/../bin/"
-objoutdir = "%{wks.location}/../bin-int/"
+objoutdir = "%{wks.location}/../obj/"
 depsdir = "%{wks.location}/deps/"
+
+-- Global shader compilation function
+function addShaderCompilation()
+	local shadersOutputDir = "%{prj.location}/assets/shaders/"
+	
+	-- Helper function to create shader compilation rules
+	local function addShaderRule(extension, shaderType)
+		filter("files:**." .. extension)
+			buildmessage("Compiling " .. shaderType .. " shader %{file.name}")
+			buildcommands {
+				"if not exist \"" .. shadersOutputDir .. "\" mkdir \"" .. shadersOutputDir .. "\"",
+				"\"" .. vulkanSDK .. "\\bin\\glslangValidator.exe\" -V \"%{file.relpath}\" -o \"" .. shadersOutputDir .. "%{file.basename}." .. extension .. ".spv\""
+			}
+			buildoutputs { shadersOutputDir .. "%{file.basename}." .. extension .. ".spv" }
+	end
+	
+	-- Add rules for all shader types
+	addShaderRule("vert", "vertex")
+	addShaderRule("frag", "fragment")
+	addShaderRule("comp", "compute")
+	addShaderRule("geom", "geometry")
+	addShaderRule("tesc", "tessellation control")
+	addShaderRule("tese", "tessellation evaluation")
+	
+	filter {} -- Reset filter
+end
 
 group "examples"
 	include "1-triangle"
 	include "2-cube"
-	include "3-framebuffer"
-	include "4-geometry"
-	include "5-compute"
-	include "6-tessellation"
 group ""
 
 group "examples/deps"
-	include "deps/glm"
-	include "deps/glfw"
+	include "deps/_glm"
+	include "deps/_glfw"
 group ""
 
 include "../"
