@@ -10,6 +10,7 @@
 
 #include <orhi/types/EDescriptorPoolCreateFlags.h>
 #include <orhi/types/EBufferUsageFlags.h>
+#include <orhi/types/ETextureUsageType.h>
 #include <orhi/types/EColorSpace.h>
 #include <orhi/types/ECommandBufferLevel.h>
 #include <orhi/types/ECommandBufferUsageFlags.h>
@@ -33,6 +34,9 @@
 #include <orhi/types/ECompareOp.h>
 #include <orhi/types/EStencilOp.h>
 #include <orhi/types/EDynamicState.h>
+#include <orhi/types/ETextureType.h>
+#include <orhi/types/ETextureTiling.h>
+#include <orhi/types/ETextureLayout.h>
 
 #include <orhi/utils/EnumMapper.h>
 #include <vulkan/vulkan.h>
@@ -73,6 +77,24 @@ struct orhi::utils::MappingFor<orhi::types::EBufferUsageFlags, VkBufferUsageFlag
 		EnumValuePair<EnumType::SHADER_DEVICE_ADDRESS_BIT_EXT, VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_EXT>,
 		EnumValuePair<EnumType::SHADER_DEVICE_ADDRESS_BIT_KHR, VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR>,
 		EnumValuePair<EnumType::ALL, VK_BUFFER_USAGE_FLAG_BITS_MAX_ENUM>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ETextureUsageFlags, VkImageUsageFlags>
+{
+	using EnumType = orhi::types::ETextureUsageFlags;
+	using type = std::tuple<
+		EnumValuePair<EnumType::NONE, 0>,
+		EnumValuePair<EnumType::TRANSFER_SRC_BIT, VK_IMAGE_USAGE_TRANSFER_SRC_BIT>,
+		EnumValuePair<EnumType::TRANSFER_DST_BIT, VK_IMAGE_USAGE_TRANSFER_DST_BIT>,
+		EnumValuePair<EnumType::SAMPLED_BIT, VK_IMAGE_USAGE_SAMPLED_BIT>,
+		EnumValuePair<EnumType::STORAGE_BIT, VK_IMAGE_USAGE_STORAGE_BIT>,
+		EnumValuePair<EnumType::COLOR_ATTACHMENT_BIT, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT>,
+		EnumValuePair<EnumType::DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT>,
+		EnumValuePair<EnumType::TRANSIENT_ATTACHMENT_BIT, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT>,
+		EnumValuePair<EnumType::INPUT_ATTACHMENT_BIT, VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT>,
+		EnumValuePair<EnumType::ALL, VK_IMAGE_USAGE_FLAG_BITS_MAX_ENUM>
 	>;
 };
 
@@ -730,6 +752,53 @@ struct orhi::utils::MappingFor<orhi::types::EDescriptorPoolCreateFlags, VkDescri
 		EnumValuePair<EnumType::ALLOW_OVERALLOCATION_POOLS_BIT_NV, VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV>,
 		EnumValuePair<EnumType::UPDATE_AFTER_BIND_BIT_EXT, VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT>,
 		EnumValuePair<EnumType::HOST_ONLY_BIT_VALVE, VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_VALVE>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ETextureType, VkImageType>
+{
+	using EnumType = orhi::types::ETextureType;
+	using type = std::tuple<
+		EnumValuePair<EnumType::TEXTURE_1D, VK_IMAGE_TYPE_1D>,
+		EnumValuePair<EnumType::TEXTURE_2D, VK_IMAGE_TYPE_2D>,
+		EnumValuePair<EnumType::TEXTURE_3D, VK_IMAGE_TYPE_3D>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ETextureTiling, VkImageTiling>
+{
+	using EnumType = orhi::types::ETextureTiling;
+	using type = std::tuple<
+		EnumValuePair<EnumType::OPTIMAL, VK_IMAGE_TILING_OPTIMAL>,
+		EnumValuePair<EnumType::LINEAR, VK_IMAGE_TILING_LINEAR>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ETextureLayout, VkImageLayout>
+{
+	using EnumType = orhi::types::ETextureLayout;
+	using type = std::tuple<
+		EnumValuePair<EnumType::UNDEFINED, VK_IMAGE_LAYOUT_UNDEFINED>,
+		EnumValuePair<EnumType::GENERAL, VK_IMAGE_LAYOUT_GENERAL>,
+		EnumValuePair<EnumType::COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL>,
+		EnumValuePair<EnumType::DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL>,
+		EnumValuePair<EnumType::DEPTH_STENCIL_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL>,
+		EnumValuePair<EnumType::SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL>,
+		EnumValuePair<EnumType::TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL>,
+		EnumValuePair<EnumType::TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL>,
+		EnumValuePair<EnumType::PREINITIALIZED, VK_IMAGE_LAYOUT_PREINITIALIZED>,
+		EnumValuePair<EnumType::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL>,
+		EnumValuePair<EnumType::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL>,
+		EnumValuePair<EnumType::DEPTH_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL>,
+		EnumValuePair<EnumType::DEPTH_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL>,
+		EnumValuePair<EnumType::STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL>,
+		EnumValuePair<EnumType::STENCIL_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL>,
+		EnumValuePair<EnumType::READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL>,
+		EnumValuePair<EnumType::ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL>,
+		EnumValuePair<EnumType::PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR>
 	>;
 };
 

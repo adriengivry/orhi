@@ -8,9 +8,9 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/Buffer.h>
-#include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/Texture.h>
 #include <orhi/impl/vk/details/MemoryUtils.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
@@ -18,9 +18,9 @@ using namespace orhi::impl::vk;
 namespace orhi
 {
 	template<>
-	Buffer::TBuffer(
+	Texture::TTexture(
 		Device& p_device,
-		const data::BufferDesc& p_desc
+		const data::TextureDesc& p_desc
 	) : m_context{
 		.device = p_device,
 		.handle = VK_NULL_HANDLE,
@@ -28,32 +28,43 @@ namespace orhi
 		.allocatedBytes = 0ULL
 	}
 	{
-		VkBufferCreateInfo bufferInfo{
-			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-			.size = p_desc.size,
-			.usage = utils::EnumToValue<VkBufferUsageFlags>(p_desc.usage),
-			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		VkImageCreateInfo createInfo{
+			.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+			.flags = 0, // TODO: expose this setting
+			.imageType = utils::EnumToValue<VkImageType>(p_desc.type),
+			.extent = {
+				p_desc.extent.width,
+				p_desc.extent.height,
+				p_desc.extent.depth
+			},
+			.mipLevels = p_desc.mipLevels,
+			.arrayLayers = p_desc.arrayLayers,
+			.samples = utils::EnumToValue<VkSampleCountFlagBits>(p_desc.samples),
+			.tiling = utils::EnumToValue<VkImageTiling>(p_desc.tiling),
+			.usage = utils::EnumToValue<VkImageUsageFlags>(p_desc.usage),
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+			.initialLayout = utils::EnumToValue<VkImageLayout>(p_desc.initialLayout),
 		};
 
-		VkResult result = vkCreateBuffer(
+		VkResult result = vkCreateImage(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			&bufferInfo,
+			&createInfo,
 			nullptr,
 			&m_context.handle
 		);
 
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create buffer!");
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create image!");
 	}
 
 	template<>
-	Buffer::~TBuffer()
+	Texture::~TTexture()
 	{
 		if (IsAllocated())
 		{
 			Deallocate();
 		}
 
-		vkDestroyBuffer(
+		vkDestroyImage(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			m_context.handle,
 			nullptr
@@ -61,7 +72,7 @@ namespace orhi
 	}
 
 	template<>
-	bool Buffer::IsAllocated() const
+	bool Texture::IsAllocated() const
 	{
 		return
 			m_context.memory != VK_NULL_HANDLE &&
@@ -69,12 +80,12 @@ namespace orhi
 	}
 
 	template<>
-	void Buffer::Allocate(types::EMemoryPropertyFlags p_properties)
+	void Texture::Allocate(types::EMemoryPropertyFlags p_properties)
 	{
-		ORHI_ASSERT(!IsAllocated(), "Buffer is already allocated");
+		ORHI_ASSERT(!IsAllocated(), "Texture is already allocated");
 
 		VkMemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(
+		vkGetImageMemoryRequirements(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			m_context.handle,
 			&memRequirements
@@ -99,9 +110,9 @@ namespace orhi
 			&m_context.memory
 		);
 
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to allocate buffer memory!");
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to allocate texture memory!");
 
-		vkBindBufferMemory(
+		vkBindImageMemory(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			m_context.handle,
 			m_context.memory,
@@ -112,22 +123,22 @@ namespace orhi
 	}
 
 	template<>
-	void Buffer::Deallocate()
+	void Texture::Deallocate()
 	{
 		// TODO
 	}
 
 	template<>
-	void Buffer::Upload(
+	void Texture::Upload(
 		const void* p_data,
 		std::optional<data::BufferMemoryRange> p_memoryRange
 	)
 	{
-		ORHI_ASSERT(IsAllocated(), "Uploading to unnallocated buffer");
+		ORHI_ASSERT(IsAllocated(), "Uploading to unnallocated image");
 
 		ORHI_ASSERT(
 			!p_memoryRange.has_value() || p_memoryRange->offset + p_memoryRange->size <= m_context.allocatedBytes,
-			"Uploading out of allocated buffer bounds"
+			"Uploading out of allocated image bounds"
 		);
 
 		const uint64_t offset = p_memoryRange.has_value() ? p_memoryRange->offset : 0;
@@ -143,7 +154,7 @@ namespace orhi
 			&destPtr
 		);
 
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to map buffer memory!");
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to map texture memory!");
 
 		std::memcpy(destPtr, p_data, size);
 
@@ -154,13 +165,13 @@ namespace orhi
 	}
 
 	template<>
-	uint64_t Buffer::GetAllocatedBytes() const
+	uint64_t Texture::GetAllocatedBytes() const
 	{
 		return m_context.allocatedBytes;
 	}
 
 	template<>
-	data::NativeHandle Buffer::GetNativeHandle() const
+	data::NativeHandle Texture::GetNativeHandle() const
 	{
 		return m_context.handle;
 	}

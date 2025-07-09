@@ -9,6 +9,8 @@
 #include <vector>
 #include <filesystem>
 #include <span>
+#include <orhi/data/NativeHandle.h>
+#include <vulkan/vulkan.h>
 
 namespace orhi::impl::vk::details
 {
@@ -40,5 +42,11 @@ namespace orhi::impl::vk::details
 			}
 			return output;
 		}
+
+		static uint32_t FindMemoryType(
+			VkPhysicalDevice p_physicalDevice,
+			uint32_t p_typeFilter,
+			VkMemoryPropertyFlags p_properties
+		);
 	};
 }

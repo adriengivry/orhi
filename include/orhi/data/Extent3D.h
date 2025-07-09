@@ -7,16 +7,17 @@
 #pragma once
 
 #include <cstdint>
+#include <tuple>
 
 namespace orhi::data
 {
 	/**
-	* Struct representing a range of memory in a buffer.
-	* TODO: Rename to MemoryRange
+	*
 	*/
-	struct BufferMemoryRange
+	struct Extent3D
 	{
-		uint64_t offset;
-		uint64_t size;
+		uint32_t width;
+		uint32_t height;
+		uint32_t depth;
 	};
 }
