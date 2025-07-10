@@ -37,6 +37,9 @@
 #include <orhi/types/ETextureType.h>
 #include <orhi/types/ETextureTiling.h>
 #include <orhi/types/ETextureLayout.h>
+#include <orhi/types/EFilter.h>
+#include <orhi/types/ESamplerAddressMode.h>
+#include <orhi/types/ESamplerMipmapMode.h>
 
 #include <orhi/utils/EnumMapper.h>
 #include <vulkan/vulkan.h>
@@ -799,6 +802,39 @@ struct orhi::utils::MappingFor<orhi::types::ETextureLayout, VkImageLayout>
 		EnumValuePair<EnumType::READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL>,
 		EnumValuePair<EnumType::ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL>,
 		EnumValuePair<EnumType::PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::EFilter, VkFilter>
+{
+	using EnumType = orhi::types::EFilter;
+	using type = std::tuple<
+		EnumValuePair<EnumType::NEAREST, VK_FILTER_NEAREST>,
+		EnumValuePair<EnumType::LINEAR, VK_FILTER_LINEAR>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ESamplerAddressMode, VkSamplerAddressMode>
+{
+	using EnumType = orhi::types::ESamplerAddressMode;
+	using type = std::tuple<
+		EnumValuePair<EnumType::REPEAT, VK_SAMPLER_ADDRESS_MODE_REPEAT>,
+		EnumValuePair<EnumType::MIRRORED_REPEAT, VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT>,
+		EnumValuePair<EnumType::CLAMP_TO_EDGE, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE>,
+		EnumValuePair<EnumType::CLAMP_TO_BORDER, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER>,
+		EnumValuePair<EnumType::MIRROR_CLAMP_TO_EDGE, VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ESamplerMipmapMode, VkSamplerMipmapMode>
+{
+	using EnumType = orhi::types::ESamplerMipmapMode;
+	using type = std::tuple<
+		EnumValuePair<EnumType::NEAREST, VK_SAMPLER_MIPMAP_MODE_NEAREST>,
+		EnumValuePair<EnumType::LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR>
 	>;
 };
 

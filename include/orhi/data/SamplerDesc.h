@@ -15,6 +15,10 @@
 #include <orhi/types/ETextureLayout.h>
 #include <orhi/types/ESampleCountFlags.h>
 #include <orhi/types/EGraphicsBackend.h>
+#include <orhi/types/EFilter.h>
+#include <orhi/types/ESamplerAddressMode.h>
+#include <orhi/types/ESamplerMipmapMode.h>
+#include <orhi/types/ECompareOp.h>
 #include <orhi/api/TTexture.h>
 
 namespace orhi::data
@@ -24,16 +28,16 @@ namespace orhi::data
 	*/
 	struct SamplerDesc
 	{
-		// Mag filter
-		// Min filter
-		// addressModeU
-		// addressModeV
-		// addressModeW
+		types::EFilter magFilter = types::EFilter::LINEAR;
+		types::EFilter minFilter = types::EFilter::LINEAR;
+		types::ESamplerAddressMode addressModeU = types::ESamplerAddressMode::REPEAT;
+		types::ESamplerAddressMode addressModeV = types::ESamplerAddressMode::REPEAT;
+		types::ESamplerAddressMode addressModeW = types::ESamplerAddressMode::REPEAT;
 		bool anisotropy = false;
 		bool unnormalizedCoordinates = false;
 		bool compareEnable = false;
-		// compare op
-		// mipmap mode
+		types::ECompareOp compareOp = types::ECompareOp::ALWAYS;
+		types::ESamplerMipmapMode mipmapMode = types::ESamplerMipmapMode::LINEAR;
 		float mipLodBias = 0.0f;
 		float minLod = 0.0f;
 		float maxLod = 0.0f;
