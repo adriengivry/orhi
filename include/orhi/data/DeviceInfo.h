@@ -16,5 +16,6 @@ namespace orhi::data
 	struct DeviceInfo
 	{
 		uint32_t id;
+		float maxSamplerAnisotropy;
 	};
 }

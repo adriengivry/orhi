@@ -26,8 +26,12 @@ using namespace orhi::impl::vk;
 namespace orhi
 {
 	template<>
-	Device::TDevice(const void* p_deviceCreationInfo) : m_context{
+	Device::TDevice(
+		const data::DeviceInfo& p_deviceInfo,
+		const void* p_deviceCreationInfo
+	) : m_context{
 		.physicalDevice = static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->physicalDevice,
+		.deviceInfo = p_deviceInfo,
 		.properties = std::make_unique<VkPhysicalDeviceProperties>(static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->properties),
 		.features = std::make_unique<VkPhysicalDeviceFeatures>(static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->features),
 		.queueFamilyIndices = std::make_unique<details::QueueFamilyIndices>(static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->queueFamilyIndices),
@@ -143,6 +147,12 @@ namespace orhi
 	void Device::WaitIdle() const
 	{
 		vkDeviceWaitIdle(m_context.device);
+	}
+
+	template<>
+	const data::DeviceInfo& Device::GetInfo() const
+	{
+		return m_context.deviceInfo;
 	}
 
 	template<>

@@ -10,6 +10,7 @@
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/QueuesDesc.h>
+#include <orhi/data/DeviceInfo.h>
 
 namespace orhi::api
 {
@@ -24,7 +25,10 @@ namespace orhi::api
 		* Creates the device (handled by the backend).
 		* TODO: Make private
 		*/
-		TDevice(const void* p_deviceCreationDesc);
+		TDevice(
+			const data::DeviceInfo& p_deviceInfo,
+			const void* p_creationInfo
+		);
 
 		/**
 		* Destroys the backend.
@@ -58,6 +62,11 @@ namespace orhi::api
 		* Wait idle
 		*/
 		void WaitIdle() const;
+
+		/**
+		* Returns the device info
+		*/
+		const data::DeviceInfo& GetInfo() const;
 
 		/**
 		* Returns the underlying object's native handle

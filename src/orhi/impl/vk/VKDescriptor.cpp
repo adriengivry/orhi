@@ -71,7 +71,7 @@ namespace orhi
 			.addressModeW = utils::EnumToValue<VkSamplerAddressMode>(p_desc.addressModeW),
 			.mipLodBias = p_desc.mipLodBias,
 			.anisotropyEnable = p_desc.anisotropy,
-			.maxAnisotropy = p_desc.anisotropy ? 16.0f : 1.0f, // TODO: Retrieve this value properly from the physical device
+			.maxAnisotropy = p_desc.anisotropy ? p_device.GetInfo().maxSamplerAnisotropy : 1.0f,
 			.compareEnable = p_desc.compareEnable,
 			.compareOp = utils::EnumToValue<VkCompareOp>(p_desc.compareOp),
 			.minLod = p_desc.minLod,

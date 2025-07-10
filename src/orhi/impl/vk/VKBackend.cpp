@@ -65,6 +65,11 @@ namespace
 			return false;
 		}
 
+		if (!p_device.features.samplerAnisotropy)
+		{
+			return false;
+		}
+
 		// A device isn't suitable if any of the required extension is unavailable
 		for (auto& extension : g_deviceRequestedExtensions)
 		{
@@ -86,12 +91,18 @@ namespace
 		return p_device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 	}
 
-	orhi::data::DeviceInfo GenerateDeviceInfo(VkPhysicalDevice device, VkSurfaceKHR p_surface)
+	orhi::data::DeviceInfo GenerateDeviceInfo(
+		VkPhysicalDevice device,
+		VkPhysicalDeviceProperties properties,
+		VkPhysicalDeviceFeatures features,
+		VkSurfaceKHR p_surface
+	)
 	{
 		static uint32_t deviceId = 0;
 
 		return {
-			.id = deviceId++
+			.id = deviceId++,
+			.maxSamplerAnisotropy = properties.limits.maxSamplerAnisotropy
 		};
 	}
 }
@@ -229,7 +240,12 @@ namespace orhi
 				.features = deviceFeatures,
 				.extensionManager = {},
 				.queueFamilyIndices = details::QueueFamilyIndices::Create(physicalDevice, m_context.surface),
-				.info = GenerateDeviceInfo(physicalDevice, m_context.surface),
+				.info = GenerateDeviceInfo(
+					physicalDevice,
+					deviceProperties,
+					deviceFeatures,
+					m_context.surface
+				),
 				.swapChainSupportDetails = {}
 			});
 
@@ -294,6 +310,7 @@ namespace orhi
 		};
 
 		return g_createdDevices.emplace_back(
+			selectedDevice.info,
 			&deviceCreationInfo
 		);
 	}

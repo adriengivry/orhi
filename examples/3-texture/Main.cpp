@@ -343,7 +343,9 @@ int main()
 
 	auto samplerDescriptor = std::make_unique<orhi::Descriptor>(
 		device,
-		orhi::data::SamplerDesc{}
+		orhi::data::SamplerDesc{
+			.anisotropy = true
+		}
 	);
 
 	// Create a descriptor pool to allocate descriptor sets

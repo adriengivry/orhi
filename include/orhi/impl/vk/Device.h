@@ -10,6 +10,7 @@
 #include <vector>
 #include <orhi/api/TDevice.h>
 #include <orhi/impl/vk/Queue.h>
+#include <orhi/data/DeviceInfo.h>
 
 struct VkPhysicalDevice_T;
 typedef VkPhysicalDevice_T* VkPhysicalDevice;
@@ -35,6 +36,7 @@ namespace orhi::impl::vk
 	{
 		VkDevice device = nullptr;
 		VkPhysicalDevice physicalDevice = nullptr;
+		data::DeviceInfo deviceInfo;
 		std::unique_ptr<Queue> graphicsQueue;
 		std::unique_ptr<Queue> presentQueue;
 		std::unique_ptr<VkPhysicalDeviceProperties> properties;
