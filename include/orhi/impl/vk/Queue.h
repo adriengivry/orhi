@@ -16,18 +16,6 @@ typedef VkQueue_T* VkQueue;
 
 namespace orhi::impl::vk
 {
-	struct DeviceContext;
-	struct RenderPassContext;
-	struct FramebufferContext;
-	struct BufferContext;
-	struct DescriptorSetContext;
-	struct SwapChainContext;
-	struct SemaphoreContext;
-	struct FenceContext;
-	struct CommandBufferContext;
-	struct TextureContext;
-	struct DescriptorContext;
-
 	struct QueueContext
 	{
 		VkDevice device;
@@ -36,17 +24,17 @@ namespace orhi::impl::vk
 
 	using Queue = api::TQueue<
 		types::EGraphicsBackend::VULKAN,
-		QueueContext,
-		DeviceContext,
-		RenderPassContext,
-		FramebufferContext,
-		BufferContext,
-		DescriptorSetContext,
-		SwapChainContext,
-		SemaphoreContext,
-		FenceContext,
-		CommandBufferContext,
-		TextureContext,
-		DescriptorContext
+		struct QueueContext,
+		struct DeviceContext,
+		struct RenderPassContext,
+		struct FramebufferContext,
+		struct BufferContext,
+		struct DescriptorSetContext,
+		struct SwapChainContext,
+		struct SemaphoreContext,
+		struct FenceContext,
+		struct CommandBufferContext,
+		struct TextureContext,
+		struct DescriptorContext
 	>;
 }

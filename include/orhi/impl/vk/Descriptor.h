@@ -30,5 +30,10 @@ namespace orhi::impl::vk
 		EVulkanDescriptorType type;
 	};
 
-	using Descriptor = api::TDescriptor<types::EGraphicsBackend::VULKAN, DescriptorContext, DeviceContext, TextureContext>;
+	using Descriptor = api::TDescriptor<
+		types::EGraphicsBackend::VULKAN,
+		struct DescriptorContext,
+		struct DeviceContext,
+		struct TextureContext
+	>;
 }

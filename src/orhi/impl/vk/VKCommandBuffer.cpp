@@ -8,7 +8,12 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
+#include <orhi/impl/vk/Buffer.h>
 #include <orhi/impl/vk/CommandBuffer.h>
+#include <orhi/impl/vk/DescriptorSet.h>
+#include <orhi/impl/vk/Framebuffer.h>
+#include <orhi/impl/vk/RenderPass.h>
+#include <orhi/impl/vk/Texture.h>
 #include <orhi/impl/vk/details/MemoryUtils.h>
 #include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>

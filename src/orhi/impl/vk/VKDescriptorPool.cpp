@@ -9,6 +9,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/DescriptorPool.h>
+#include <orhi/impl/vk/DescriptorSetLayout.h>
 #include <orhi/impl/vk/details/Types.h>
 #include <orhi/utils/EnumMapper.h>
 #include <vulkan/vulkan.h>

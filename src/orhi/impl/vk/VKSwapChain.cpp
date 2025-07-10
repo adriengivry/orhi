@@ -10,6 +10,9 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/SwapChain.h>
+#include <orhi/impl/vk/RenderPass.h>
+#include <orhi/impl/vk/Semaphore.h>
+#include <orhi/impl/vk/Fence.h>
 #include <orhi/impl/vk/details/Types.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 #include <vulkan/vulkan.h>

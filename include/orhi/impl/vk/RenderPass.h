@@ -20,5 +20,9 @@ namespace orhi::impl::vk
 		VkRenderPass handle;
 	};
 
-	using RenderPass = api::TRenderPass<types::EGraphicsBackend::VULKAN, RenderPassContext, DeviceContext>;
+	using RenderPass = api::TRenderPass<
+		types::EGraphicsBackend::VULKAN,
+		struct RenderPassContext,
+		struct DeviceContext
+	>;
 }

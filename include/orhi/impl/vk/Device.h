@@ -46,5 +46,8 @@ namespace orhi::impl::vk
 		std::vector<const char*> extensions;
 	};
 
-	using Device = api::TDevice<types::EGraphicsBackend::VULKAN, DeviceContext>;
+	using Device = api::TDevice<
+		types::EGraphicsBackend::VULKAN,
+		struct DeviceContext
+	>;
 }

@@ -8,7 +8,6 @@
 
 #include <memory>
 #include <orhi/api/TBackend.h>
-#include <orhi/impl/vk/Device.h>
 
 struct VkInstance_T;
 typedef VkInstance_T* VkInstance;
@@ -33,5 +32,11 @@ namespace orhi::impl::vk
 		VkQueue presentQueue;
 	};
 
-	using Backend = api::TBackend<types::EGraphicsBackend::VULKAN, BackendContext, DeviceContext>;
+	struct DeviceContext;
+
+	using Backend = api::TBackend<
+		types::EGraphicsBackend::VULKAN,
+		struct BackendContext,
+		struct DeviceContext
+	>;
 }

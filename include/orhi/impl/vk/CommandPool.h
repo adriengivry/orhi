@@ -8,6 +8,7 @@
 
 #include <orhi/api/TCommandPool.h>
 #include <orhi/impl/vk/CommandBuffer.h>
+#include <orhi/impl/vk/Device.h>
 
 struct VkCommandPool_T;
 typedef VkCommandPool_T* VkCommandPool;
@@ -21,18 +22,16 @@ namespace orhi::impl::vk
 		std::list<CommandBuffer> commandBuffers;
 	};
 
-	struct DescriptorContext;
-
 	using CommandPool = api::TCommandPool<
 		types::EGraphicsBackend::VULKAN,
-		CommandPoolContext,
-		DeviceContext,
-		CommandBufferContext,
-		RenderPassContext,
-		FramebufferContext,
-		BufferContext,
-		DescriptorSetContext,
-		TextureContext,
-		DescriptorContext
+		struct CommandPoolContext,
+		struct DeviceContext,
+		struct CommandBufferContext,
+		struct RenderPassContext,
+		struct FramebufferContext,
+		struct BufferContext,
+		struct DescriptorSetContext,
+		struct TextureContext,
+		struct DescriptorContext
 	>;
 }

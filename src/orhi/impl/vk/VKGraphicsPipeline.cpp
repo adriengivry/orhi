@@ -10,6 +10,9 @@
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/GraphicsPipeline.h>
 #include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/ShaderModule.h>
+#include <orhi/impl/vk/RenderPass.h>
+#include <orhi/impl/vk/DescriptorSetLayout.h>
 #include <orhi/data/VertexInputStateDesc.h>
 #include <orhi/data/InputAssemblyStateDesc.h>
 #include <orhi/data/TessellationStateDesc.h>

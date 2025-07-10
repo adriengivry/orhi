@@ -13,6 +13,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/Backend.h>
+#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/details/ExtensionManager.h>
 #include <orhi/impl/vk/details/ValidationLayerManager.h>
 #include <orhi/impl/vk/details/DebugMessenger.h>

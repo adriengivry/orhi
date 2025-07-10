@@ -8,7 +8,6 @@
 
 #include <orhi/api/TFramebuffer.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/RenderPass.h>
 
 struct VkFramebuffer_T;
 typedef VkFramebuffer_T* VkFramebuffer;
@@ -23,8 +22,8 @@ namespace orhi::impl::vk
 
 	using Framebuffer = api::TFramebuffer<
 		types::EGraphicsBackend::VULKAN,
-		FramebufferContext,
-		DeviceContext,
-		RenderPassContext
+		struct FramebufferContext,
+		struct DeviceContext,
+		struct RenderPassContext
 	>;
 }

@@ -20,5 +20,9 @@ namespace orhi::impl::vk
 		VkDescriptorSetLayout handle;
 	};
 
-	using DescriptorSetLayout = api::TDescriptorSetLayout<types::EGraphicsBackend::VULKAN, DescriptorSetLayoutContext, DeviceContext>;
+	using DescriptorSetLayout = api::TDescriptorSetLayout<
+		types::EGraphicsBackend::VULKAN,
+		struct DescriptorSetLayoutContext,
+		struct DeviceContext
+	>;
 }

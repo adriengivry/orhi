@@ -11,6 +11,7 @@
 #include <orhi/impl/vk/DescriptorSet.h>
 #include <orhi/impl/vk/details/Types.h>
 #include <orhi/impl/vk/Descriptor.h>
+#include <orhi/impl/vk/Buffer.h>
 #include <orhi/utils/EnumMapper.h>
 #include <vulkan/vulkan.h>
 #include <variant>

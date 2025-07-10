@@ -20,5 +20,9 @@ namespace orhi::impl::vk
 		VkSemaphore handle;
 	};
 
-	using Semaphore = api::TSemaphore<types::EGraphicsBackend::VULKAN, SemaphoreContext, DeviceContext>;
+	using Semaphore = api::TSemaphore<
+		types::EGraphicsBackend::VULKAN,
+		struct SemaphoreContext,
+		struct DeviceContext
+	>;
 }

@@ -25,5 +25,9 @@ namespace orhi::impl::vk
 		uint64_t allocatedBytes;
 	};
 
-	using Buffer = api::TBuffer<types::EGraphicsBackend::VULKAN, BufferContext, DeviceContext>;
+	using Buffer = api::TBuffer<
+		types::EGraphicsBackend::VULKAN,
+		struct BufferContext,
+		struct DeviceContext
+	>;
 }

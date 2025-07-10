@@ -8,9 +8,6 @@
 
 #include <orhi/api/TGraphicsPipeline.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/ShaderModule.h>
-#include <orhi/impl/vk/RenderPass.h>
-#include <orhi/impl/vk/DescriptorSetLayout.h>
 
 struct VkPipeline_T;
 typedef VkPipeline_T* VkPipeline;
@@ -29,10 +26,10 @@ namespace orhi::impl::vk
 
 	using GraphicsPipeline = api::TGraphicsPipeline<
 		types::EGraphicsBackend::VULKAN,
-		GraphicsPipelineContext,
-		DeviceContext,
-		ShaderModuleContext,
-		RenderPassContext,
-		DescriptorSetLayoutContext
+		struct GraphicsPipelineContext,
+		struct DeviceContext,
+		struct ShaderModuleContext,
+		struct RenderPassContext,
+		struct DescriptorSetLayoutContext
 	>;
 }

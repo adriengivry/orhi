@@ -9,9 +9,6 @@
 #include <orhi/api/TSwapChain.h>
 #include <orhi/impl/vk/Framebuffer.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/RenderPass.h>
-#include <orhi/impl/vk/Semaphore.h>
-#include <orhi/impl/vk/Fence.h>
 #include <orhi/data/SwapChainDesc.h>
 
 struct VkSwapchainKHR_T;
@@ -37,11 +34,11 @@ namespace orhi::impl::vk
 
 	using SwapChain = api::TSwapChain<
 		types::EGraphicsBackend::VULKAN,
-		SwapChainContext,
-		DeviceContext,
-		FramebufferContext,
-		RenderPassContext,
-		SemaphoreContext,
-		FenceContext
+		struct SwapChainContext,
+		struct DeviceContext,
+		struct FramebufferContext,
+		struct RenderPassContext,
+		struct SemaphoreContext,
+		struct FenceContext
 	>;
 }

@@ -20,5 +20,9 @@ namespace orhi::impl::vk
 		VkFence handle;
 	};
 
-	using Fence = api::TFence<types::EGraphicsBackend::VULKAN, FenceContext, DeviceContext>;
+	using Fence = api::TFence<
+		types::EGraphicsBackend::VULKAN,
+		struct FenceContext,
+		struct DeviceContext
+	>;
 }
