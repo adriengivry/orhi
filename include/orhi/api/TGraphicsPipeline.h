@@ -12,7 +12,14 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class ShaderModuleContext, class RenderPassContext, class DescriptorSetLayoutContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class GraphicsPipelineContext,
+		class DeviceContext,
+		class ShaderModuleContext,
+		class RenderPassContext,
+		class DescriptorSetLayoutContext
+	>
 	class TGraphicsPipeline final
 	{
 	public:
@@ -48,6 +55,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		GraphicsPipelineContext m_context;
 	};
 }

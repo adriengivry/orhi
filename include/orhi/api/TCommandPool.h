@@ -12,7 +12,18 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class CommandBufferContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext, class TextureContext, class DescriptorContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class CommandPoolContext,
+		class DeviceContext,
+		class CommandBufferContext,
+		class RenderPassContext,
+		class FramebufferContext,
+		class BufferContext,
+		class DescriptorSetContext,
+		class TextureContext,
+		class DescriptorContext
+	>
 	class TCommandPool final
 	{
 	public:
@@ -42,6 +53,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		CommandPoolContext m_context;
 	};
 }

@@ -11,7 +11,12 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class RenderPassContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class FramebufferContext,
+		class DeviceContext,
+		class RenderPassContext
+	>
 	class TFramebuffer final
 	{
 	public:
@@ -40,6 +45,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		FramebufferContext m_context;
 	};
 }

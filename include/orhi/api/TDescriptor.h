@@ -16,7 +16,12 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class TextureContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class DescriptorContext,
+		class DeviceContext,
+		class TextureContext
+	>
 	class TDescriptor final
 	{
 	public:
@@ -57,6 +62,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		DescriptorContext m_context;
 	};
 }

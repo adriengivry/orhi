@@ -380,8 +380,15 @@ int main()
 	for (size_t i = 0; i < k_maxFramesInFlight; i++)
 	{
 		descriptorSets[i].get().Write(
-			orhi::types::EDescriptorType::UNIFORM_BUFFER,
-			std::to_array({ std::ref(ubos[i]) })
+			{
+				{
+					0,
+					orhi::data::BufferDescriptorWriteInfo{
+						.bufferDescriptor = ubos[i],
+						.descriptorType = orhi::types::EDescriptorType::UNIFORM_BUFFER
+					}
+				}
+			}
 		);
 	}
 

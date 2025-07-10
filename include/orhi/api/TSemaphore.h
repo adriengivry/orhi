@@ -12,7 +12,11 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class SemaphoreContext,
+		class DeviceContext
+	>
 	class TSemaphore final
 	{
 	public:
@@ -38,6 +42,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		SemaphoreContext m_context;
 	};
 }

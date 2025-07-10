@@ -20,7 +20,11 @@ namespace orhi::api
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class BackendContext,
+		class DeviceContext
+	>
 	class TBackend final
 	{
 	public:
@@ -57,6 +61,6 @@ namespace orhi::api
 		data::NativeHandle GetSurfaceHandle() const;
 
 	private:
-		Context m_context;
+		BackendContext m_context;
 	};
 }

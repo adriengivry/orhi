@@ -16,7 +16,15 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class FramebufferContext, class RenderPassContext, class SemaphoreContext, class FenceContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class SwapChainContext,
+		class DeviceContext,
+		class FramebufferContext,
+		class RenderPassContext,
+		class SemaphoreContext,
+		class FenceContext
+	>
 	class TSwapChain final
 	{
 	public:
@@ -35,7 +43,7 @@ namespace orhi::api
 			const data::SwapChainDesc& p_desc,
 			std::optional<std::reference_wrapper<TSwapChain<
 				Backend,
-				Context,
+				SwapChainContext,
 				DeviceContext,
 				FramebufferContext,
 				RenderPassContext,
@@ -72,6 +80,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		SwapChainContext m_context;
 	};
 }

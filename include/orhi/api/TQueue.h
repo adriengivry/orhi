@@ -13,7 +13,21 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext, class SwapChainContext, class SemaphoreContext, class FenceContext, class CommandBufferContext, class TextureContext, class DescriptorContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class QueueContext,
+		class DeviceContext,
+		class RenderPassContext,
+		class FramebufferContext,
+		class BufferContext,
+		class DescriptorSetContext,
+		class SwapChainContext,
+		class SemaphoreContext,
+		class FenceContext,
+		class CommandBufferContext,
+		class TextureContext,
+		class DescriptorContext
+	>
 	class TQueue final
 	{
 	public:
@@ -56,6 +70,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		QueueContext m_context;
 	};
 }

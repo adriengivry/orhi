@@ -12,7 +12,11 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class RenderPassContext,
+		class DeviceContext
+	>
 	class TRenderPass final
 	{
 	public:
@@ -37,6 +41,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		RenderPassContext m_context;
 	};
 }

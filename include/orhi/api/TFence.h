@@ -12,7 +12,11 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext>
+	template<
+		types::EGraphicsBackend Backend,
+		class FenceContext,
+		class DeviceContext
+	>
 	class TFence final
 	{
 	public:
@@ -43,6 +47,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		Context m_context;
+		FenceContext m_context;
 	};
 }
