@@ -10,7 +10,10 @@
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/DescriptorSet.h>
 #include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/Descriptor.h>
+#include <orhi/utils/EnumMapper.h>
 #include <vulkan/vulkan.h>
+#include <variant>
 
 using namespace orhi::impl::vk;
 
@@ -37,43 +40,81 @@ namespace orhi
 
 	template<>
 	void DescriptorSet::Write(
-		types::EDescriptorType p_type,
-		std::span<const std::reference_wrapper<Buffer>> p_buffers
+		const std::unordered_map<uint32_t, DescriptorWriteDesc>& p_writeDescs
 	)
 	{
+		std::vector<VkWriteDescriptorSet> descriptorWrites;
 		std::vector<VkDescriptorBufferInfo> bufferInfos;
-		bufferInfos.reserve(p_buffers.size());
+		std::vector<VkDescriptorImageInfo> imageInfos;
+		
+		descriptorWrites.reserve(p_writeDescs.size());
+		bufferInfos.reserve(p_writeDescs.size()); // Pessimistic allocation
+		imageInfos.reserve(p_writeDescs.size()); // Pessimistic allocation
 
-		for (auto& buffer : p_buffers)
+		for (const auto& [binding, writeDesc] : p_writeDescs)
 		{
-			VkDescriptorBufferInfo bufferInfo{
-				.buffer = buffer.get().GetNativeHandle().As<VkBuffer>(),
-				.offset = 0,
-				.range = VK_WHOLE_SIZE
-			};
+			std::visit([&](const auto& desc) {
+				using T = std::decay_t<decltype(desc)>;
+				
+				if constexpr (std::is_same_v<T, data::BufferDescriptorWriteInfo<types::EGraphicsBackend::VULKAN, BufferContext, DeviceContext>>)
+				{
+					// Handle buffer descriptor
+					VkDescriptorBufferInfo bufferInfo{
+						.buffer = desc.bufferDescriptor.GetNativeHandle().As<VkBuffer>(),
+						.offset = 0,
+						.range = VK_WHOLE_SIZE
+					};
+					bufferInfos.push_back(bufferInfo);
 
-			bufferInfos.push_back(bufferInfo);
+					VkWriteDescriptorSet descriptorWrite{
+						.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+						.dstSet = m_context.handle,
+						.dstBinding = binding,
+						.dstArrayElement = 0,
+						.descriptorCount = 1,
+						.descriptorType = utils::EnumToValue<VkDescriptorType>(desc.descriptorType),
+						.pImageInfo = nullptr,
+						.pBufferInfo = &bufferInfos.back(),
+						.pTexelBufferView = nullptr
+					};
+					descriptorWrites.push_back(descriptorWrite);
+				}
+				else if constexpr (std::is_same_v<T, data::TextureSamplerDescriptorWriteInfo<types::EGraphicsBackend::VULKAN, DescriptorContext, DeviceContext, TextureContext>>)
+				{
+					// Handle texture/sampler descriptor
+					VkDescriptorImageInfo imageInfo{
+						.sampler = desc.samplerDescriptor.GetNativeHandle().As<VkSampler>(),
+						.imageView = desc.textureDescriptor.GetNativeHandle().As<VkImageView>(),
+						.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL // Default layout, could be made configurable
+					};
+					imageInfos.push_back(imageInfo);
+
+					VkWriteDescriptorSet descriptorWrite{
+						.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+						.dstSet = m_context.handle,
+						.dstBinding = binding,
+						.dstArrayElement = 0,
+						.descriptorCount = 1,
+						.descriptorType = utils::EnumToValue<VkDescriptorType>(desc.descriptorType),
+						.pImageInfo = &imageInfos.back(),
+						.pBufferInfo = nullptr,
+						.pTexelBufferView = nullptr
+					};
+					descriptorWrites.push_back(descriptorWrite);
+				}
+			}, writeDesc);
 		}
 
-		VkWriteDescriptorSet descriptorWrite{
-			.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-			.dstSet = m_context.handle,
-			.dstBinding = 0,
-			.dstArrayElement = 0,
-			.descriptorCount = static_cast<uint32_t>(bufferInfos.size()),
-			.descriptorType = utils::EnumToValue<VkDescriptorType>(p_type),
-			.pImageInfo = nullptr, // Optional
-			.pBufferInfo = bufferInfos.data(),
-			.pTexelBufferView = nullptr, // Optional
-		};
-
-		vkUpdateDescriptorSets(
-			m_context.device.GetNativeHandle().As<VkDevice>(),
-			1,
-			&descriptorWrite,
-			0,
-			nullptr
-		);
+		if (!descriptorWrites.empty())
+		{
+			vkUpdateDescriptorSets(
+				m_context.device.GetNativeHandle().As<VkDevice>(),
+				static_cast<uint32_t>(descriptorWrites.size()),
+				descriptorWrites.data(),
+				0,
+				nullptr
+			);
+		}
 	}
 
 	template<>

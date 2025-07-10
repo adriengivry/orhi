@@ -25,12 +25,17 @@ namespace orhi::impl::vk
 		std::list<DescriptorSet> descriptorSets;
 	};
 
+	struct DescriptorContext;
+	struct TextureContext;
+
 	using DescriptorPool = api::TDescriptorPool<
 		types::EGraphicsBackend::VULKAN,
 		DescriptorPoolContext,
 		DeviceContext,
 		DescriptorSetContext,
 		DescriptorSetLayoutContext,
-		BufferContext
+		BufferContext,
+		DescriptorContext,
+		TextureContext
 	>;
 }

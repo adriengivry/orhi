@@ -25,7 +25,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext, class TextureContext>
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext, class TextureContext, class DescriptorContext>
 	class TCommandBuffer final
 	{
 	public:
@@ -123,7 +123,7 @@ namespace orhi::api
 		* Bind descriptor sets
 		*/
 		void BindDescriptorSets(
-			std::span<const std::reference_wrapper<TDescriptorSet<Backend, DescriptorSetContext, DeviceContext, BufferContext>>> p_descriptorSets,
+			std::span<const std::reference_wrapper<TDescriptorSet<Backend, DescriptorSetContext, DeviceContext, BufferContext, DescriptorContext, TextureContext>>> p_descriptorSets,
 			data::NativeHandle p_pipelineLayout
 		);
 

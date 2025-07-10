@@ -24,6 +24,8 @@ namespace orhi::impl::vk
 		VkCommandBuffer handle;
 	};
 
+	struct DescriptorContext;
+
 	using CommandBuffer = api::TCommandBuffer<
 		types::EGraphicsBackend::VULKAN,
 		CommandBufferContext,
@@ -32,6 +34,7 @@ namespace orhi::impl::vk
 		FramebufferContext,
 		BufferContext,
 		DescriptorSetContext,
-		TextureContext
+		TextureContext,
+		DescriptorContext
 	>;
 }

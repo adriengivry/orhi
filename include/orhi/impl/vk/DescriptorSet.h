@@ -9,6 +9,7 @@
 #include <orhi/api/TDescriptorSet.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/Buffer.h>
+#include <orhi/impl/vk/Texture.h>
 
 struct VkDescriptorSet_T;
 typedef VkDescriptorSet_T* VkDescriptorSet;
@@ -21,5 +22,14 @@ namespace orhi::impl::vk
 		VkDescriptorSet handle;
 	};
 
-	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, DescriptorSetContext, DeviceContext, BufferContext>;
+	struct DescriptorContext;
+
+	using DescriptorSet = api::TDescriptorSet<
+		types::EGraphicsBackend::VULKAN,
+		DescriptorSetContext,
+		DeviceContext,
+		BufferContext,
+		DescriptorContext,
+		TextureContext
+	>;
 }

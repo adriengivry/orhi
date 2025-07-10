@@ -14,7 +14,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class DescriptorSetContext, class DescriptorSetLayoutContext, class BufferContext>
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class DescriptorSetContext, class DescriptorSetLayoutContext, class BufferContext, class DescriptorContext, class TextureContext>
 	class TDescriptorPool final
 	{
 	public:
@@ -34,7 +34,7 @@ namespace orhi::api
 		/**
 		* Allocates descriptor sets
 		*/
-		std::vector<std::reference_wrapper<TDescriptorSet<Backend, DescriptorSetContext, DeviceContext, BufferContext>>> AllocateDescriptorSets(
+		std::vector<std::reference_wrapper<TDescriptorSet<Backend, DescriptorSetContext, DeviceContext, BufferContext, DescriptorContext, TextureContext>>> AllocateDescriptorSets(
 			const TDescriptorSetLayout<Backend, DescriptorSetLayoutContext, DeviceContext>& p_layout,
 			uint32_t p_count
 		);

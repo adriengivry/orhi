@@ -43,6 +43,7 @@
 #include <orhi/DescriptorSetLayout.h>
 #include <orhi/Queue.h>
 #include <orhi/Texture.h>
+#include <orhi/Descriptor.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 
 namespace
@@ -79,6 +80,7 @@ namespace
 	struct FrameResources
 	{
 		orhi::CommandBuffer& commandBuffer;
+		orhi::DescriptorSet& descriptorSet;
 		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
 		std::unique_ptr<orhi::Fence> inFlightFence;
 	};
@@ -241,6 +243,17 @@ int main()
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
 
+	auto descriptorSetLayout = std::make_unique<orhi::DescriptorSetLayout>(
+		device,
+		std::initializer_list<orhi::data::DescriptorBinding>{
+			{
+				.binding = 0,
+				.type = orhi::types::EDescriptorType::COMBINED_IMAGE_SAMPLER,
+				.stageFlags = orhi::types::EShaderStageFlags::FRAGMENT_BIT
+			}
+		}
+	);
+
 	orhi::GraphicsPipeline pipeline{
 		device,
 		orhi::GraphicsPipeline::Desc{
@@ -249,6 +262,7 @@ int main()
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
 			.renderPass = renderPass,
+			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)}),
 			.vertexInputState{
 				.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
 				.vertexAttributes = VertexInputDescription<Vertex>::GetAttributeDescriptions()
@@ -317,7 +331,54 @@ int main()
 	transferBuffer.CopyBufferToTexture(*pixelBuffer, texture);
 	transferBuffer.TransitionTextureLayout(texture, orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL);
 	transferBuffer.End();
+	device.GetGraphicsQueue().As<orhi::Queue*>()->Submit({ transferBuffer });
 	device.WaitIdle();
+
+	auto textureDescriptor = std::make_unique<orhi::Descriptor>(
+		device,
+		orhi::Descriptor::TextureViewDesc{
+			.texture = texture
+		}
+	);
+
+	auto samplerDescriptor = std::make_unique<orhi::Descriptor>(
+		device,
+		orhi::data::SamplerDesc{}
+	);
+
+	// Create a descriptor pool to allocate descriptor sets
+	auto descriptorPool = std::make_unique<orhi::DescriptorPool>(
+		device,
+		orhi::data::DescriptorPoolDesc{
+			.flags = orhi::types::EDescriptorPoolCreateFlags::NONE,
+			.maxSets = k_maxFramesInFlight,
+			.poolSizes = {
+				{ orhi::types::EDescriptorType::COMBINED_IMAGE_SAMPLER, k_maxFramesInFlight }
+			}
+		}
+	);
+
+	// Create a descriptor set for each frame
+	auto descriptorSets = descriptorPool->AllocateDescriptorSets(
+		*descriptorSetLayout,
+		k_maxFramesInFlight
+	);
+
+	// Update each descriptor set 
+	for (size_t i = 0; i < k_maxFramesInFlight; i++)
+	{
+		descriptorSets[i].get().Write({
+			{
+				0,
+				{
+					orhi::data::TextureSamplerDescriptorWriteInfo{
+						.textureDescriptor = *textureDescriptor,
+						.samplerDescriptor = *samplerDescriptor
+					}
+				}
+			}
+		});
+	}
 
 	std::vector<FrameResources> framesResources;
 	framesResources.reserve(k_maxFramesInFlight);
@@ -325,6 +386,7 @@ int main()
 	{
 		framesResources.emplace_back(
 			commandBuffers[i],
+			descriptorSets[i],
 			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Fence>(device, true)
 		);
@@ -350,6 +412,11 @@ int main()
 		commandBuffer.Begin();
 		commandBuffer.BeginRenderPass(renderPass, swapImageResources.framebuffer, windowSize);
 		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline.GetNativeHandle());
+
+		commandBuffer.BindDescriptorSets(
+			std::to_array({ std::ref(frameResources.descriptorSet) }),
+			pipeline.GetLayoutHandle()
+		);
 
 		commandBuffer.SetViewport({
 			.x = 0.0f, .y = 0.0f,

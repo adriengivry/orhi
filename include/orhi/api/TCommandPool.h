@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class CommandBufferContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext, class TextureContext>
+	template<types::EGraphicsBackend Backend, class Context, class DeviceContext, class CommandBufferContext, class RenderPassContext, class FramebufferContext, class BufferContext, class DescriptorSetContext, class TextureContext, class DescriptorContext>
 	class TCommandPool final
 	{
 	public:
@@ -31,7 +31,7 @@ namespace orhi::api
 		/**
 		* Allocates a command buffer from the command pool
 		*/
-		std::vector<std::reference_wrapper<TCommandBuffer<Backend, CommandBufferContext, DeviceContext, RenderPassContext, FramebufferContext, BufferContext, DescriptorSetContext, TextureContext>>> AllocateCommandBuffers(
+		std::vector<std::reference_wrapper<TCommandBuffer<Backend, CommandBufferContext, DeviceContext, RenderPassContext, FramebufferContext, BufferContext, DescriptorSetContext, TextureContext, DescriptorContext>>> AllocateCommandBuffers(
 			uint32_t p_count,
 			types::ECommandBufferLevel p_level = types::ECommandBufferLevel::PRIMARY
 		);

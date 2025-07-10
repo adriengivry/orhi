@@ -21,6 +21,8 @@ namespace orhi::impl::vk
 		std::list<CommandBuffer> commandBuffers;
 	};
 
+	struct DescriptorContext;
+
 	using CommandPool = api::TCommandPool<
 		types::EGraphicsBackend::VULKAN,
 		CommandPoolContext,
@@ -30,6 +32,7 @@ namespace orhi::impl::vk
 		FramebufferContext,
 		BufferContext,
 		DescriptorSetContext,
-		TextureContext
+		TextureContext,
+		DescriptorContext
 	>;
 }
