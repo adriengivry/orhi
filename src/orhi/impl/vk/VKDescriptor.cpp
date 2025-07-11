@@ -20,7 +20,7 @@ namespace orhi
 	template<>
 	Descriptor::TDescriptor(
 		Device& p_device,
-		const TextureViewDesc& p_desc
+		const data::TextureViewDesc<types::EGraphicsBackend::VULKAN, CTX_SIG_FWD>& p_desc
 	) : m_context{
 		.device = p_device,
 		.handle = VK_NULL_HANDLE,
@@ -119,5 +119,7 @@ namespace orhi
 		return m_context.handle;
 	}
 }
+
+CTX_SIG_REG(TDescriptor, VULKAN, vk);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

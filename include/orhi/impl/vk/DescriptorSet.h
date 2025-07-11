@@ -20,12 +20,5 @@ namespace orhi::impl::vk
 		VkDescriptorSet handle;
 	};
 
-	using DescriptorSet = api::TDescriptorSet<
-		types::EGraphicsBackend::VULKAN,
-		struct DescriptorSetContext,
-		struct DeviceContext,
-		struct BufferContext,
-		struct DescriptorContext,
-		struct TextureContext
-	>;
+	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }

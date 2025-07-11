@@ -74,4 +74,6 @@ namespace orhi
 	}
 }
 
+CTX_SIG_REG(TFence, VULKAN, vk);
+
 #endif // #if defined(ORHI_COMPILE_VULKAN)

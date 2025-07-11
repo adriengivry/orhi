@@ -11,27 +11,16 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class FramebufferContext,
-		class DeviceContext,
-		class RenderPassContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TFramebuffer final
 	{
 	public:
-		using Desc = data::FramebufferDesc<
-			Backend,
-			DeviceContext,
-			RenderPassContext
-		>;
-
 		/**
 		* Creates a framebuffer
 		*/
 		TFramebuffer(
-			TDevice<Backend, DeviceContext>& p_device,
-			const Desc& p_desc
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			const data::FramebufferDesc<Backend, CTX_SIG_FWD>& p_desc
 		);
 
 		/**

@@ -16,29 +16,18 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class DescriptorContext,
-		class DeviceContext,
-		class TextureContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TDescriptor final
 	{
 	public:
-		using TextureViewDesc = data::TextureViewDesc<
-			Backend,
-			TextureContext,
-			DeviceContext
-		>;
-
 		/**
 		* Creates a descriptor for a texture
 		* @param p_device
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<Backend, DeviceContext>& p_device,
-			const TextureViewDesc& p_desc
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			const data::TextureViewDesc<Backend, CTX_SIG_FWD>& p_desc
 		);
 
 		/**
@@ -47,7 +36,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			const data::SamplerDesc& p_desc
 		);
 

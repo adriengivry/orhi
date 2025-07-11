@@ -22,20 +22,11 @@
 #include <orhi/data/ViewportDesc.h>
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
+#include <orhi/utils/ContextRegistry.h>
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class CommandBufferContext,
-		class DeviceContext,
-		class RenderPassContext,
-		class FramebufferContext,
-		class BufferContext,
-		class DescriptorSetContext,
-		class TextureContext,
-		class DescriptorContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TCommandBuffer final
 	{
 	public:
@@ -68,8 +59,8 @@ namespace orhi::api
 		* Begin a render pass
 		*/
 		void BeginRenderPass(
-			TRenderPass<Backend, RenderPassContext, DeviceContext>& p_renderPass,
-			TFramebuffer<Backend, FramebufferContext, DeviceContext, RenderPassContext>& p_framebuffer,
+			TRenderPass<Backend, CTX_SIG_FWD>& p_renderPass,
+			TFramebuffer<Backend, CTX_SIG_FWD>& p_framebuffer,
 			std::pair<uint32_t, uint32_t> p_extent
 		);
 
@@ -82,8 +73,8 @@ namespace orhi::api
 		* Copy buffer content from source to destination
 		*/
 		void CopyBuffer(
-			TBuffer<Backend, BufferContext, DeviceContext>& p_src,
-			TBuffer<Backend, BufferContext, DeviceContext>& p_dest,
+			TBuffer<Backend, CTX_SIG_FWD>& p_src,
+			TBuffer<Backend, CTX_SIG_FWD>& p_dest,
 			std::span<const data::BufferCopyDesc> p_regions = {}
 		);
 
@@ -91,8 +82,8 @@ namespace orhi::api
 		* Copy buffer content from source buffer to destination texture
 		*/
 		void CopyBufferToTexture(
-			TBuffer<Backend, BufferContext, DeviceContext>& p_src,
-			TTexture<Backend, TextureContext, DeviceContext>& p_dest,
+			TBuffer<Backend, CTX_SIG_FWD>& p_src,
+			TTexture<Backend, CTX_SIG_FWD>& p_dest,
 			std::span<const data::BufferTextureCopyDesc> p_regions = {}
 		);
 
@@ -100,7 +91,7 @@ namespace orhi::api
 		* Transition a texture from one layout to another
 		*/
 		void TransitionTextureLayout(
-			TTexture<Backend, TextureContext, DeviceContext>& p_texture,
+			TTexture<Backend, CTX_SIG_FWD>& p_texture,
 			types::ETextureLayout p_layout
 		);
 
@@ -116,7 +107,7 @@ namespace orhi::api
 		* Bind index buffer
 		*/
 		void BindIndexBuffer(
-			const TBuffer<Backend, BufferContext, DeviceContext>& p_indexBuffer,
+			const TBuffer<Backend, CTX_SIG_FWD>& p_indexBuffer,
 			uint64_t p_offset = 0,
 			types::EIndexType p_indexType = types::EIndexType::UINT32
 		);
@@ -125,7 +116,7 @@ namespace orhi::api
 		* Bind vertex buffers
 		*/
 		void BindVertexBuffers(
-			std::span<const std::reference_wrapper<TBuffer<Backend, BufferContext, DeviceContext>>> p_buffers,
+			std::span<const std::reference_wrapper<TBuffer<Backend, CTX_SIG_FWD>>> p_buffers,
 			std::span<const uint64_t> p_offsets
 		);
 
@@ -133,7 +124,7 @@ namespace orhi::api
 		* Bind descriptor sets
 		*/
 		void BindDescriptorSets(
-			std::span<const std::reference_wrapper<TDescriptorSet<Backend, DescriptorSetContext, DeviceContext, BufferContext, DescriptorContext, TextureContext>>> p_descriptorSets,
+			std::span<const std::reference_wrapper<TDescriptorSet<Backend, CTX_SIG_FWD>>> p_descriptorSets,
 			data::NativeHandle p_pipelineLayout
 		);
 

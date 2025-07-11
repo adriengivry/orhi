@@ -20,9 +20,5 @@ namespace orhi::impl::vk
 		VkShaderModule handle;
 	};
 
-	using ShaderModule = api::TShaderModule<
-		types::EGraphicsBackend::VULKAN,
-		struct ShaderModuleContext,
-		struct DeviceContext
-	>;
+	using ShaderModule = api::TShaderModule<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }

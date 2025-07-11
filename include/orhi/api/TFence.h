@@ -12,18 +12,14 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class FenceContext,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TFence final
 	{
 	public:
 		/**
 		* Creates a fence
 		*/
-		TFence(TDevice<Backend, DeviceContext>& p_device, bool p_createSignaled = false);
+		TFence(TDevice<Backend, CTX_SIG_FWD>& p_device, bool p_createSignaled = false);
 
 		/**
 		* Destroys the fence

@@ -32,13 +32,5 @@ namespace orhi::impl::vk
 		std::pair<uint32_t, uint32_t> extent;
 	};
 
-	using SwapChain = api::TSwapChain<
-		types::EGraphicsBackend::VULKAN,
-		struct SwapChainContext,
-		struct DeviceContext,
-		struct FramebufferContext,
-		struct RenderPassContext,
-		struct SemaphoreContext,
-		struct FenceContext
-	>;
+	using SwapChain = api::TSwapChain<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }

@@ -14,17 +14,14 @@
 #include <orhi/data/BackendDesc.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/data/NativeHandle.h>
+#include <orhi/utils/ContextRegistry.h>
 
 namespace orhi::api
 {
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<
-		types::EGraphicsBackend Backend,
-		class BackendContext,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TBackend final
 	{
 	public:
@@ -48,7 +45,7 @@ namespace orhi::api
 		* Create a logical device from the selected device ID
 		* @param p_deviceId
 		*/
-		TDevice<Backend, DeviceContext>& CreateDevice(uint32_t p_deviceId);
+		TDevice<Backend, CTX_SIG_FWD>& CreateDevice(uint32_t p_deviceId);
 
 		/**
 		* Returns the underlying object's native handle

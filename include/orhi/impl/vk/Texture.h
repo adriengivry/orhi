@@ -30,9 +30,5 @@ namespace orhi::impl::vk
 		uint64_t allocatedBytes;
 	};
 
-	using Texture = api::TTexture<
-		types::EGraphicsBackend::VULKAN,
-		struct TextureContext,
-		struct DeviceContext
-	>;
+	using Texture = api::TTexture<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }

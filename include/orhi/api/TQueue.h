@@ -13,21 +13,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class QueueContext,
-		class DeviceContext,
-		class RenderPassContext,
-		class FramebufferContext,
-		class BufferContext,
-		class DescriptorSetContext,
-		class SwapChainContext,
-		class SemaphoreContext,
-		class FenceContext,
-		class CommandBufferContext,
-		class TextureContext,
-		class DescriptorContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TQueue final
 	{
 	public:
@@ -49,18 +35,18 @@ namespace orhi::api
 		* Submit the queue
 		*/
 		void Submit(
-			std::initializer_list<std::reference_wrapper<TCommandBuffer<Backend, CommandBufferContext, DeviceContext, RenderPassContext, FramebufferContext, BufferContext, DescriptorSetContext, TextureContext, DescriptorContext>>> p_commandBuffers,
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_waitSemaphores = {},
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_signalSemaphores = {},
-			std::optional<std::reference_wrapper<TFence<Backend, FenceContext, DeviceContext>>> p_fence = std::nullopt
+			std::initializer_list<std::reference_wrapper<TCommandBuffer<Backend, CTX_SIG_FWD>>> p_commandBuffers,
+			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_waitSemaphores = {},
+			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_signalSemaphores = {},
+			std::optional<std::reference_wrapper<TFence<Backend, CTX_SIG_FWD>>> p_fence = std::nullopt
 		);
 
 		/**
 		* Present the queue
 		*/
 		void Present(
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_waitSemaphores,
-			TSwapChain<Backend, SwapChainContext, DeviceContext, FramebufferContext, RenderPassContext, SemaphoreContext, FenceContext>& p_swapChain,
+			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_waitSemaphores,
+			TSwapChain<Backend, CTX_SIG_FWD>& p_swapChain,
 			uint32_t p_swapChainIndice
 		);
 

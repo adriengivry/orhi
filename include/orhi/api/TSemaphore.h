@@ -12,18 +12,14 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class SemaphoreContext,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TSemaphore final
 	{
 	public:
 		/**
 		* Creates a semaphore
 		*/
-		TSemaphore(TDevice<Backend, DeviceContext>& p_device);
+		TSemaphore(TDevice<Backend, CTX_SIG_FWD>& p_device);
 
 		/**
 		* Destroys the semaphore

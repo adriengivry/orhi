@@ -44,6 +44,7 @@
 #include <orhi/Queue.h>
 #include <orhi/Texture.h>
 #include <orhi/Descriptor.h>
+#include <orhi/Device.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 
 namespace
@@ -256,7 +257,7 @@ int main()
 
 	orhi::GraphicsPipeline pipeline{
 		device,
-		orhi::GraphicsPipeline::Desc{
+		{
 			.stages = {
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
@@ -336,7 +337,7 @@ int main()
 
 	auto textureDescriptor = std::make_unique<orhi::Descriptor>(
 		device,
-		orhi::Descriptor::TextureViewDesc{
+		orhi::data::TextureViewDesc{
 			.texture = texture
 		}
 	);

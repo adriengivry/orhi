@@ -216,7 +216,7 @@ namespace orhi
 		{
 			framebuffers.emplace_back(
 				m_context.device,
-				Framebuffer::Desc{
+				data::FramebufferDesc<types::EGraphicsBackend::VULKAN, CTX_SIG_FWD>{
 					.attachments = std::to_array({ data::NativeHandle{m_context.imageViews[i]} }),
 					.renderPass = p_renderPass,
 					.extent = {
@@ -236,5 +236,7 @@ namespace orhi
 		return m_context.handle;
 	}
 }
+
+CTX_SIG_REG(TSwapChain, VULKAN, vk);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

@@ -16,30 +16,15 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class DescriptorSetContext,
-		class DeviceContext,
-		class BufferContext,
-		class DescriptorContext,
-		class TextureContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TDescriptorSet final
 	{
 	public:
-		using DescriptorWriteDesc = data::DescriptorWriteDesc<
-			Backend,
-			DescriptorContext,
-			DeviceContext,
-			TextureContext,
-			BufferContext
-		>;
-
 		/**
 		* Creates a descriptor set
 		*/
 		TDescriptorSet(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			data::NativeHandle p_handle
 		);
 
@@ -52,7 +37,7 @@ namespace orhi::api
 		* Attaches a list of buffers and images to the descriptor set.
 		*/
 		void Write(
-			const std::unordered_map<uint32_t, DescriptorWriteDesc>& p_writeDescs
+			const std::unordered_map<uint32_t, data::DescriptorWriteDesc<Backend, CTX_SIG_FWD>>& p_writeDescs
 		);
 
 		/**

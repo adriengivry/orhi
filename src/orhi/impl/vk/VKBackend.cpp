@@ -329,4 +329,6 @@ namespace orhi
 	}
 }
 
+CTX_SIG_REG(TBackend, VULKAN, vk);
+
 #endif // #if defined(ORHI_COMPILE_VULKAN)

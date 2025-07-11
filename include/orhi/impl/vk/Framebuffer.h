@@ -20,10 +20,5 @@ namespace orhi::impl::vk
 		VkFramebuffer handle;
 	};
 
-	using Framebuffer = api::TFramebuffer<
-		types::EGraphicsBackend::VULKAN,
-		struct FramebufferContext,
-		struct DeviceContext,
-		struct RenderPassContext
-	>;
+	using Framebuffer = api::TFramebuffer<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }

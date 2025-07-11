@@ -15,28 +15,28 @@
 
 namespace orhi::data
 {
-	template<types::EGraphicsBackend Backend, class DescriptorContext, class DeviceContext, class TextureContext>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	struct TextureSamplerDescriptorWriteInfo
 	{
-		using Descriptor = api::TDescriptor<Backend, DescriptorContext, DeviceContext, TextureContext>;
+		using Descriptor = api::TDescriptor<Backend, CTX_SIG_FWD>;
 
 		Descriptor& textureDescriptor;
 		Descriptor& samplerDescriptor;
 		types::EDescriptorType descriptorType = types::EDescriptorType::COMBINED_IMAGE_SAMPLER;
 	};
 
-	template<types::EGraphicsBackend Backend, class BufferContext, class DeviceContext>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	struct BufferDescriptorWriteInfo
 	{
-		using Buffer = api::TBuffer<Backend, BufferContext, DeviceContext>;
+		using Buffer = api::TBuffer<Backend, CTX_SIG_FWD>;
 
 		Buffer& bufferDescriptor;
 		types::EDescriptorType descriptorType = types::EDescriptorType::UNIFORM_BUFFER;
 	};
 
-	template<types::EGraphicsBackend Backend, class DescriptorContext, class DeviceContext, class TextureContext, class BufferContext>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	using DescriptorWriteDesc = std::variant<
-		TextureSamplerDescriptorWriteInfo<Backend, DescriptorContext, DeviceContext, TextureContext>,
-		BufferDescriptorWriteInfo<Backend, BufferContext, DeviceContext>
+		TextureSamplerDescriptorWriteInfo<Backend, CTX_SIG_FWD>,
+		BufferDescriptorWriteInfo<Backend, CTX_SIG_FWD>
 	>;
 }

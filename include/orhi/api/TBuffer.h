@@ -13,14 +13,11 @@
 #include <orhi/data/BufferMemoryRange.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
+#include <orhi/utils/ContextRegistry.h>
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class BufferContext,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TBuffer final
 	{
 	public:
@@ -30,7 +27,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TBuffer(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			const data::BufferDesc& p_desc
 		);
 

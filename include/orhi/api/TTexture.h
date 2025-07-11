@@ -18,11 +18,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class TextureContext,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TTexture final
 	{
 	public:
@@ -32,7 +28,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TTexture(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			const data::TextureDesc& p_desc
 		);
 

@@ -22,16 +22,5 @@ namespace orhi::impl::vk
 		std::list<CommandBuffer> commandBuffers;
 	};
 
-	using CommandPool = api::TCommandPool<
-		types::EGraphicsBackend::VULKAN,
-		struct CommandPoolContext,
-		struct DeviceContext,
-		struct CommandBufferContext,
-		struct RenderPassContext,
-		struct FramebufferContext,
-		struct BufferContext,
-		struct DescriptorSetContext,
-		struct TextureContext,
-		struct DescriptorContext
-	>;
+	using CommandPool = api::TCommandPool<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }

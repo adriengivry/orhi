@@ -12,31 +12,16 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class GraphicsPipelineContext,
-		class DeviceContext,
-		class ShaderModuleContext,
-		class RenderPassContext,
-		class DescriptorSetLayoutContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TGraphicsPipeline final
 	{
 	public:
-		using Desc = data::GraphicsPipelineDesc<
-			Backend,
-			DeviceContext,
-			ShaderModuleContext,
-			RenderPassContext,
-			DescriptorSetLayoutContext
-		>;
-
 		/**
 		* Creates a graphics pipeline
 		*/
 		TGraphicsPipeline(
-			TDevice<Backend, DeviceContext>& p_device,
-			const Desc& p_desc
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			const data::GraphicsPipelineDesc<Backend, CTX_SIG_FWD>& p_desc
 		);
 
 		/**

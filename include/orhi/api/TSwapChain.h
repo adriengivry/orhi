@@ -16,15 +16,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class SwapChainContext,
-		class DeviceContext,
-		class FramebufferContext,
-		class RenderPassContext,
-		class SemaphoreContext,
-		class FenceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TSwapChain final
 	{
 	public:
@@ -37,19 +29,11 @@ namespace orhi::api
 		* @param p_oldSwapChain
 		*/
 		TSwapChain(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			data::NativeHandle p_surface,
 			std::pair<uint32_t, uint32_t> p_windowSize,
 			const data::SwapChainDesc& p_desc,
-			std::optional<std::reference_wrapper<TSwapChain<
-				Backend,
-				SwapChainContext,
-				DeviceContext,
-				FramebufferContext,
-				RenderPassContext,
-				SemaphoreContext,
-				FenceContext
-			>>> p_oldSwapChain = std::nullopt
+			std::optional<std::reference_wrapper<TSwapChain<Backend, CTX_SIG_FWD>>> p_oldSwapChain = std::nullopt
 		);
 
 		/**
@@ -60,8 +44,8 @@ namespace orhi::api
 		/**
 		* Create framebuffers for each image in the swap chain, for a given render pass
 		*/
-		std::vector<orhi::api::TFramebuffer<Backend, FramebufferContext, DeviceContext, RenderPassContext>> CreateFramebuffers(
-			TRenderPass<Backend, RenderPassContext, DeviceContext>& p_renderPass
+		std::vector<orhi::api::TFramebuffer<Backend, CTX_SIG_FWD>> CreateFramebuffers(
+			TRenderPass<Backend, CTX_SIG_FWD>& p_renderPass
 		);
 
 		/**
@@ -69,8 +53,8 @@ namespace orhi::api
 		* @note throw an exception if the swapchain is out of date
 		*/
 		uint32_t AcquireNextImage(
-			std::optional<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_semaphore = std::nullopt,
-			std::optional<std::reference_wrapper<TFence<Backend, FenceContext, DeviceContext>>> p_fence = std::nullopt,
+			std::optional<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_semaphore = std::nullopt,
+			std::optional<std::reference_wrapper<TFence<Backend, CTX_SIG_FWD>>> p_fence = std::nullopt,
 			std::optional<uint64_t> p_timeout = std::nullopt
 		);
 

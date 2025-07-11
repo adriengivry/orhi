@@ -12,11 +12,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class RenderPassContext,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TRenderPass final
 	{
 	public:
@@ -26,7 +22,7 @@ namespace orhi::api
 		* @param p_format
 		*/
 		TRenderPass(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			types::EFormat p_format
 		);
 

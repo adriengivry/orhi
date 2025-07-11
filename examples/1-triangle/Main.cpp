@@ -103,7 +103,7 @@ int main()
 	
 	orhi::GraphicsPipeline pipeline{
 		device,
-		orhi::GraphicsPipeline::Desc{
+		{
 			.stages = {
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },

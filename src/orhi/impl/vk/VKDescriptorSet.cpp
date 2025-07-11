@@ -41,7 +41,7 @@ namespace orhi
 
 	template<>
 	void DescriptorSet::Write(
-		const std::unordered_map<uint32_t, DescriptorWriteDesc>& p_writeDescs
+		const std::unordered_map<uint32_t, data::DescriptorWriteDesc<types::EGraphicsBackend::VULKAN, CTX_SIG_FWD>>& p_writeDescs
 	)
 	{
 		std::vector<VkWriteDescriptorSet> descriptorWrites;
@@ -57,7 +57,7 @@ namespace orhi
 			std::visit([&](const auto& desc) {
 				using T = std::decay_t<decltype(desc)>;
 				
-				if constexpr (std::is_same_v<T, data::BufferDescriptorWriteInfo<types::EGraphicsBackend::VULKAN, BufferContext, DeviceContext>>)
+				if constexpr (std::is_same_v<T, data::BufferDescriptorWriteInfo<types::EGraphicsBackend::VULKAN, CTX_SIG_FWD>>)
 				{
 					// Handle buffer descriptor
 					VkDescriptorBufferInfo bufferInfo{
@@ -80,7 +80,7 @@ namespace orhi
 					};
 					descriptorWrites.push_back(descriptorWrite);
 				}
-				else if constexpr (std::is_same_v<T, data::TextureSamplerDescriptorWriteInfo<types::EGraphicsBackend::VULKAN, DescriptorContext, DeviceContext, TextureContext>>)
+				else if constexpr (std::is_same_v<T, data::TextureSamplerDescriptorWriteInfo<types::EGraphicsBackend::VULKAN, CTX_SIG_FWD>>)
 				{
 					// Handle texture/sampler descriptor
 					VkDescriptorImageInfo imageInfo{
@@ -124,5 +124,7 @@ namespace orhi
 		return m_context.handle;
 	}
 }
+
+CTX_SIG_REG(TDescriptorSet, VULKAN, vk);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

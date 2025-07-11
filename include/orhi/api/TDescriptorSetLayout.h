@@ -12,11 +12,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class DescriptorSetLayoutContext,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TDescriptorSetLayout final
 	{
 	public:
@@ -25,7 +21,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TDescriptorSetLayout(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			std::initializer_list<data::DescriptorBinding> p_bindings
 		);
 

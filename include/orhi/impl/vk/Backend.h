@@ -34,9 +34,5 @@ namespace orhi::impl::vk
 
 	struct DeviceContext;
 
-	using Backend = api::TBackend<
-		types::EGraphicsBackend::VULKAN,
-		struct BackendContext,
-		struct DeviceContext
-	>;
+	using Backend = api::TBackend<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }

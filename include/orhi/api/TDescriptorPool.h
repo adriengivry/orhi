@@ -14,16 +14,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class DescriptorPoolContext,
-		class DeviceContext,
-		class DescriptorSetContext,
-		class DescriptorSetLayoutContext,
-		class BufferContext,
-		class DescriptorContext,
-		class TextureContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TDescriptorPool final
 	{
 	public:
@@ -31,7 +22,7 @@ namespace orhi::api
 		* Creates a descriptor pool
 		*/
 		TDescriptorPool(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<Backend, CTX_SIG_FWD>& p_device,
 			const data::DescriptorPoolDesc& p_desc
 		);
 
@@ -43,8 +34,8 @@ namespace orhi::api
 		/**
 		* Allocates descriptor sets
 		*/
-		std::vector<std::reference_wrapper<TDescriptorSet<Backend, DescriptorSetContext, DeviceContext, BufferContext, DescriptorContext, TextureContext>>> AllocateDescriptorSets(
-			const TDescriptorSetLayout<Backend, DescriptorSetLayoutContext, DeviceContext>& p_layout,
+		std::vector<std::reference_wrapper<TDescriptorSet<Backend, CTX_SIG_FWD>>> AllocateDescriptorSets(
+			const TDescriptorSetLayout<Backend, CTX_SIG_FWD>& p_layout,
 			uint32_t p_count
 		);
 

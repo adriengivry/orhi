@@ -11,16 +11,14 @@
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/QueuesDesc.h>
 #include <orhi/data/DeviceInfo.h>
+#include <orhi/utils/ContextRegistry.h>
 
 namespace orhi::api
 {
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<
-		types::EGraphicsBackend Backend,
-		class DeviceContext
-	>
+	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
 	class TDevice final
 	{
 	public:

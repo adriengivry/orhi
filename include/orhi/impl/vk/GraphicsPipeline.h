@@ -24,12 +24,5 @@ namespace orhi::impl::vk
 		VkPipeline handle;
 	};
 
-	using GraphicsPipeline = api::TGraphicsPipeline<
-		types::EGraphicsBackend::VULKAN,
-		struct GraphicsPipelineContext,
-		struct DeviceContext,
-		struct ShaderModuleContext,
-		struct RenderPassContext,
-		struct DescriptorSetLayoutContext
-	>;
+	using GraphicsPipeline = api::TGraphicsPipeline<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
 }
