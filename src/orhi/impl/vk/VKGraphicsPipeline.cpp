@@ -307,7 +307,7 @@ namespace orhi
 	template<>
 	GraphicsPipeline::TGraphicsPipeline(
 		Device& p_device,
-		const data::GraphicsPipelineDesc<ContextRegistry>& p_desc
+		const data::GraphicsPipelineDesc<BackendTraits>& p_desc
 	) : m_context{
 		.device = p_device,
 		.layout = VK_NULL_HANDLE,
@@ -423,6 +423,6 @@ namespace orhi
 	}
 }
 
-template class orhi::api::TGraphicsPipeline<orhi::impl::vk::ContextRegistry>;
+template class orhi::api::TGraphicsPipeline<orhi::impl::vk::BackendTraits>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

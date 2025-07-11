@@ -8,7 +8,7 @@
 
 #include <orhi/api/TTexture.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
 
@@ -31,5 +31,5 @@ namespace orhi::impl::vk
 		uint64_t allocatedBytes;
 	};
 
-	using Texture = api::TTexture<ContextRegistry>;
+	using Texture = api::TTexture<BackendTraits>;
 }

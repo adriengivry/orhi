@@ -41,7 +41,7 @@ namespace orhi
 
 	template<>
 	void DescriptorSet::Write(
-		const std::unordered_map<uint32_t, data::DescriptorWriteDesc<ContextRegistry>>& p_writeDescs
+		const std::unordered_map<uint32_t, data::DescriptorWriteDesc<BackendTraits>>& p_writeDescs
 	)
 	{
 		std::vector<VkWriteDescriptorSet> descriptorWrites;
@@ -55,7 +55,7 @@ namespace orhi
 		for (const auto& [binding, writeDesc] : p_writeDescs)
 		{
 			std::visit([&](const auto& desc) {
-				using T = std::decay_t<decltype(desc)>;						if constexpr (std::is_same_v<T, data::BufferDescriptorWriteInfo<ContextRegistry>>)
+				using T = std::decay_t<decltype(desc)>;						if constexpr (std::is_same_v<T, data::BufferDescriptorWriteInfo<BackendTraits>>)
 				{
 					// Handle buffer descriptor
 					VkDescriptorBufferInfo bufferInfo{
@@ -77,7 +77,7 @@ namespace orhi
 						.pTexelBufferView = nullptr
 					};
 					descriptorWrites.push_back(descriptorWrite);
-				}						else if constexpr (std::is_same_v<T, data::TextureSamplerDescriptorWriteInfo<ContextRegistry>>)
+				}						else if constexpr (std::is_same_v<T, data::TextureSamplerDescriptorWriteInfo<BackendTraits>>)
 				{
 					// Handle texture/sampler descriptor
 					VkDescriptorImageInfo imageInfo{
@@ -122,6 +122,6 @@ namespace orhi
 	}
 }
 
-template class orhi::api::TDescriptorSet<orhi::impl::vk::ContextRegistry>;
+template class orhi::api::TDescriptorSet<orhi::impl::vk::BackendTraits>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

@@ -13,7 +13,7 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TQueue final
 	{
 	public:
@@ -35,18 +35,18 @@ namespace orhi::api
 		* Submit the queue
 		*/
 		void Submit(
-			std::initializer_list<std::reference_wrapper<TCommandBuffer<ContextRegistry>>> p_commandBuffers,
-			std::initializer_list<std::reference_wrapper<TSemaphore<ContextRegistry>>> p_waitSemaphores = {},
-			std::initializer_list<std::reference_wrapper<TSemaphore<ContextRegistry>>> p_signalSemaphores = {},
-			std::optional<std::reference_wrapper<TFence<ContextRegistry>>> p_fence = std::nullopt
+			std::initializer_list<std::reference_wrapper<TCommandBuffer<BackendTraits>>> p_commandBuffers,
+			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_waitSemaphores = {},
+			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_signalSemaphores = {},
+			std::optional<std::reference_wrapper<TFence<BackendTraits>>> p_fence = std::nullopt
 		);
 
 		/**
 		* Present the queue
 		*/
 		void Present(
-			std::initializer_list<std::reference_wrapper<TSemaphore<ContextRegistry>>> p_waitSemaphores,
-			TSwapChain<ContextRegistry>& p_swapChain,
+			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_waitSemaphores,
+			TSwapChain<BackendTraits>& p_swapChain,
 			uint32_t p_swapChainIndice
 		);
 
@@ -56,6 +56,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::QueueContext m_context;
+		BackendTraits::QueueContext m_context;
 	};
 }

@@ -9,7 +9,7 @@
 #include <orhi/api/TDescriptorPool.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/DescriptorSet.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 #include <list>
 
 struct VkDescriptorPool_T;
@@ -24,5 +24,5 @@ namespace orhi::impl::vk
 		std::list<DescriptorSet> descriptorSets;
 	};
 
-	using DescriptorPool = api::TDescriptorPool<ContextRegistry>;
+	using DescriptorPool = api::TDescriptorPool<BackendTraits>;
 }

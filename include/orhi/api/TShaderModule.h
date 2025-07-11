@@ -13,7 +13,7 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TShaderModule final
 	{
 	public:
@@ -22,7 +22,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TShaderModule(
-			TDevice<ContextRegistry>& p_device,
+			TDevice<BackendTraits>& p_device,
 			const std::span<const std::byte> p_source
 		);
 
@@ -37,6 +37,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::ShaderModuleContext m_context;
+		BackendTraits::ShaderModuleContext m_context;
 	};
 }

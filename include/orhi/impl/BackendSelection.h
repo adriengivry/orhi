@@ -9,7 +9,7 @@
 #define STRINGIFY_DETAIL(x) #x
 #define STRINGIFY(x) STRINGIFY_DETAIL(x)
 
-// Backend registry macros
+// Backend macros
 #define ORHI_BACKEND_HEADER(backend, filename) STRINGIFY(orhi/impl/backend/filename.h)
 #define ORHI_BACKEND_TYPE(backend, type) orhi::impl::backend::type
 

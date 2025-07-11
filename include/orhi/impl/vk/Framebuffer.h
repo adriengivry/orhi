@@ -8,7 +8,7 @@
 
 #include <orhi/api/TFramebuffer.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkFramebuffer_T;
 typedef VkFramebuffer_T* VkFramebuffer;
@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkFramebuffer handle;
 	};
 
-	using Framebuffer = api::TFramebuffer<ContextRegistry>;
+	using Framebuffer = api::TFramebuffer<BackendTraits>;
 }

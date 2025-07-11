@@ -22,10 +22,10 @@ namespace orhi::data
 	/**
 	*
 	*/
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	struct TextureViewDesc
 	{
-		api::TTexture<ContextRegistry>& texture;
+		api::TTexture<BackendTraits>& texture;
 		types::EFormat format = types::EFormat::R8G8B8A8_SRGB;
 		types::ETextureType type = types::ETextureType::TEXTURE_2D;
 		uint32_t mipLevels = 1;

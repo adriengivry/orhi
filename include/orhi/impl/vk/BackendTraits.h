@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/api/TContextRegistry.h>
+#include <orhi/api/TBackendTraits.h>
 
 namespace orhi::impl::vk
 {
@@ -29,7 +29,7 @@ namespace orhi::impl::vk
 	struct SwapChainContext;
 	struct TextureContext;
 
-	using ContextRegistry = orhi::api::TContextRegistry<
+	using BackendTraits = orhi::api::TBackendTraits<
 		orhi::types::EGraphicsBackend::VULKAN,
 		BackendContext,
 		BufferContext,

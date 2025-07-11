@@ -16,11 +16,11 @@ namespace orhi::data
 	/**
 	*
 	*/
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	struct FramebufferDesc
 	{
 		std::span<const NativeHandle> attachments;
-		api::TRenderPass<ContextRegistry>& renderPass;
+		api::TRenderPass<BackendTraits>& renderPass;
 		std::pair<uint32_t, uint32_t> extent;
 	};
 }

@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TCommandPool final
 	{
 	public:
@@ -20,7 +20,7 @@ namespace orhi::api
 		* Creates a command pool
 		*/
 		TCommandPool(
-			TDevice<ContextRegistry>& p_device
+			TDevice<BackendTraits>& p_device
 		);
 
 		/**
@@ -31,7 +31,7 @@ namespace orhi::api
 		/**
 		* Allocates a command buffer from the command pool
 		*/
-		std::vector<std::reference_wrapper<TCommandBuffer<ContextRegistry>>> AllocateCommandBuffers(
+		std::vector<std::reference_wrapper<TCommandBuffer<BackendTraits>>> AllocateCommandBuffers(
 			uint32_t p_count,
 			types::ECommandBufferLevel p_level = types::ECommandBufferLevel::PRIMARY
 		);
@@ -42,6 +42,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::CommandPoolContext m_context;
+		BackendTraits::CommandPoolContext m_context;
 	};
 }

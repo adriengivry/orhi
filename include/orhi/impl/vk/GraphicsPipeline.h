@@ -8,7 +8,7 @@
 
 #include <orhi/api/TGraphicsPipeline.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkPipeline_T;
 typedef VkPipeline_T* VkPipeline;
@@ -25,5 +25,5 @@ namespace orhi::impl::vk
 		VkPipeline handle;
 	};
 
-	using GraphicsPipeline = api::TGraphicsPipeline<ContextRegistry>;
+	using GraphicsPipeline = api::TGraphicsPipeline<BackendTraits>;
 }

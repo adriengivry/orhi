@@ -12,14 +12,14 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TSemaphore final
 	{
 	public:
 		/**
 		* Creates a semaphore
 		*/
-		TSemaphore(TDevice<ContextRegistry>& p_device);
+		TSemaphore(TDevice<BackendTraits>& p_device);
 
 		/**
 		* Destroys the semaphore
@@ -38,6 +38,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::SemaphoreContext m_context;
+		BackendTraits::SemaphoreContext m_context;
 	};
 }

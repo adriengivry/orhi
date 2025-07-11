@@ -8,7 +8,7 @@
 
 #include <orhi/api/TBuffer.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkBuffer_T;
 typedef VkBuffer_T* VkBuffer;
@@ -26,5 +26,5 @@ namespace orhi::impl::vk
 		uint64_t allocatedBytes;
 	};
 
-	using Buffer = api::TBuffer<ContextRegistry>;
+	using Buffer = api::TBuffer<BackendTraits>;
 }

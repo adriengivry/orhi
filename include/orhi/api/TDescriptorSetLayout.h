@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TDescriptorSetLayout final
 	{
 	public:
@@ -21,7 +21,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TDescriptorSetLayout(
-			TDevice<ContextRegistry>& p_device,
+			TDevice<BackendTraits>& p_device,
 			std::initializer_list<data::DescriptorBinding> p_bindings
 		);
 
@@ -36,6 +36,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::DescriptorSetLayoutContext m_context;
+		BackendTraits::DescriptorSetLayoutContext m_context;
 	};
 }

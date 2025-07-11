@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/api/TQueue.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkDevice_T;
 typedef VkDevice_T* VkDevice;
@@ -23,5 +23,5 @@ namespace orhi::impl::vk
 		VkQueue handle;
 	};
 
-	using Queue = api::TQueue<ContextRegistry>;
+	using Queue = api::TQueue<BackendTraits>;
 }

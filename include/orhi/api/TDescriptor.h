@@ -16,7 +16,7 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TDescriptor final
 	{
 	public:
@@ -26,8 +26,8 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<ContextRegistry>& p_device,
-			const data::TextureViewDesc<ContextRegistry>& p_desc
+			TDevice<BackendTraits>& p_device,
+			const data::TextureViewDesc<BackendTraits>& p_desc
 		);
 
 		/**
@@ -36,7 +36,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<ContextRegistry>& p_device,
+			TDevice<BackendTraits>& p_device,
 			const data::SamplerDesc& p_desc
 		);
 
@@ -51,6 +51,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::DescriptorContext m_context;
+		BackendTraits::DescriptorContext m_context;
 	};
 }

@@ -210,6 +210,6 @@ namespace orhi
 	}
 }
 
-template class orhi::api::TTexture<orhi::impl::vk::ContextRegistry>;
+template class orhi::api::TTexture<orhi::impl::vk::BackendTraits>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

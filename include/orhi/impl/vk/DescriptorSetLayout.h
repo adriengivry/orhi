@@ -8,7 +8,7 @@
 
 #include <orhi/api/TDescriptorSetLayout.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkDescriptorSetLayout_T;
 typedef VkDescriptorSetLayout_T* VkDescriptorSetLayout;
@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkDescriptorSetLayout handle;
 	};
 
-	using DescriptorSetLayout = api::TDescriptorSetLayout<ContextRegistry>;
+	using DescriptorSetLayout = api::TDescriptorSetLayout<BackendTraits>;
 }

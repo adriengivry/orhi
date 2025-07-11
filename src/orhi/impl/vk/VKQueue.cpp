@@ -115,6 +115,6 @@ namespace orhi
 	}
 }
 
-template class orhi::api::TQueue<orhi::impl::vk::ContextRegistry>;
+template class orhi::api::TQueue<orhi::impl::vk::BackendTraits>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

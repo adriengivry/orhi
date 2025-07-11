@@ -8,7 +8,7 @@
 
 #include <memory>
 #include <orhi/api/TBackend.h>
-#include <orhi/impl/vk/ContextRegistry.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkInstance_T;
 typedef VkInstance_T* VkInstance;
@@ -35,6 +35,5 @@ namespace orhi::impl::vk
 
 	struct DeviceContext;
 
-	// Updated type alias using ContextRegistry only
-	using Backend = api::TBackend<ContextRegistry>;
+	using Backend = api::TBackend<BackendTraits>;
 }

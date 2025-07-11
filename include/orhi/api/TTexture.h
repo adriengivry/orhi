@@ -18,7 +18,7 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TTexture final
 	{
 	public:
@@ -28,7 +28,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TTexture(
-			TDevice<ContextRegistry>& p_device,
+			TDevice<BackendTraits>& p_device,
 			const data::TextureDesc& p_desc
 		);
 
@@ -89,6 +89,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::TextureContext m_context;
+		BackendTraits::TextureContext m_context;
 	};
 }

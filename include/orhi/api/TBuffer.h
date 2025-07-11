@@ -13,11 +13,11 @@
 #include <orhi/data/BufferMemoryRange.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
-#include <orhi/api/TContextRegistry.h>
+#include <orhi/api/TBackendTraits.h>
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TBuffer final
 	{
 	public:
@@ -27,7 +27,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TBuffer(
-			TDevice<ContextRegistry>& p_device,
+			TDevice<BackendTraits>& p_device,
 			const data::BufferDesc& p_desc
 		);
 
@@ -67,6 +67,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::BufferContext m_context;
+		BackendTraits::BufferContext m_context;
 	};
 }

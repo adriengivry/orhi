@@ -11,7 +11,7 @@
 
 namespace orhi::api
 {
-	template<typename ContextRegistry>
+	template<typename BackendTraits>
 	class TFramebuffer final
 	{
 	public:
@@ -19,8 +19,8 @@ namespace orhi::api
 		* Creates a framebuffer
 		*/
 		TFramebuffer(
-			TDevice<ContextRegistry>& p_device,
-			const data::FramebufferDesc<ContextRegistry>& p_desc
+			TDevice<BackendTraits>& p_device,
+			const data::FramebufferDesc<BackendTraits>& p_desc
 		);
 
 		/**
@@ -34,6 +34,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ContextRegistry::FramebufferContext m_context;
+		BackendTraits::FramebufferContext m_context;
 	};
 }
