@@ -35,23 +35,25 @@ type TextureContext
 // Explicit template instantiation
 #define CTX_SIG_REG(name, backend, ns) \
 template class orhi::api::name< \
-	orhi::types::EGraphicsBackend::backend, \
-	orhi::impl::ns::BackendContext, \
-	orhi::impl::ns::BufferContext, \
-	orhi::impl::ns::CommandBufferContext, \
-	orhi::impl::ns::CommandPoolContext, \
-	orhi::impl::ns::DescriptorContext, \
-	orhi::impl::ns::DescriptorPoolContext, \
-	orhi::impl::ns::DescriptorSetContext, \
-	orhi::impl::ns::DescriptorSetLayoutContext, \
-	orhi::impl::ns::DeviceContext, \
-	orhi::impl::ns::FenceContext, \
-	orhi::impl::ns::FramebufferContext, \
-	orhi::impl::ns::GraphicsPipelineContext, \
-	orhi::impl::ns::QueueContext, \
-	orhi::impl::ns::RenderPassContext, \
-	orhi::impl::ns::SemaphoreContext, \
-	orhi::impl::ns::ShaderModuleContext, \
-	orhi::impl::ns::SwapChainContext, \
-	orhi::impl::ns::TextureContext \
+	backend, \
+	ns::BackendContext, \
+	ns::BufferContext, \
+	ns::CommandBufferContext, \
+	ns::CommandPoolContext, \
+	ns::DescriptorContext, \
+	ns::DescriptorPoolContext, \
+	ns::DescriptorSetContext, \
+	ns::DescriptorSetLayoutContext, \
+	ns::DeviceContext, \
+	ns::FenceContext, \
+	ns::FramebufferContext, \
+	ns::GraphicsPipelineContext, \
+	ns::QueueContext, \
+	ns::RenderPassContext, \
+	ns::SemaphoreContext, \
+	ns::ShaderModuleContext, \
+	ns::SwapChainContext, \
+	ns::TextureContext \
 >
+
+#define CTX_SIG_REG_VK(name) CTX_SIG_REG(name, orhi::types::EGraphicsBackend::VULKAN, orhi::impl::vk)

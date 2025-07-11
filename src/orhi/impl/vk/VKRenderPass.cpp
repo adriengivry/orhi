@@ -96,6 +96,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG(TRenderPass, VULKAN, vk);
+CTX_SIG_REG_VK(TRenderPass);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

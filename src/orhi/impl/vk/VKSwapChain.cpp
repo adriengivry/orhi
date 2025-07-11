@@ -237,6 +237,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG(TSwapChain, VULKAN, vk);
+CTX_SIG_REG_VK(TSwapChain);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

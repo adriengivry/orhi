@@ -120,6 +120,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG(TDescriptorPool, VULKAN, vk);
+CTX_SIG_REG_VK(TDescriptorPool);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

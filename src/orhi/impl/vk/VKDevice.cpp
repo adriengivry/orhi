@@ -168,6 +168,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG(TDevice, VULKAN, vk);
+CTX_SIG_REG_VK(TDevice);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

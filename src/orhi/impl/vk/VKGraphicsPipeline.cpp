@@ -423,6 +423,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG(TGraphicsPipeline, VULKAN, vk);
+CTX_SIG_REG_VK(TGraphicsPipeline);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

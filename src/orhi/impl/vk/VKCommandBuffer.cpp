@@ -414,6 +414,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG(TCommandBuffer, VULKAN, vk);
+CTX_SIG_REG_VK(TCommandBuffer);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)
