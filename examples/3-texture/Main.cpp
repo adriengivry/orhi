@@ -332,7 +332,7 @@ int main()
 	transferBuffer.CopyBufferToTexture(*pixelBuffer, texture);
 	transferBuffer.TransitionTextureLayout(texture, orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL);
 	transferBuffer.End();
-	device.GetGraphicsQueue().As<orhi::Queue*>()->Submit({ transferBuffer });
+	device.GetGraphicsQueue().Submit({ transferBuffer });
 	device.WaitIdle();
 
 	auto textureDescriptor = std::make_unique<orhi::Descriptor>(
@@ -414,7 +414,7 @@ int main()
 		commandBuffer.Reset();
 		commandBuffer.Begin();
 		commandBuffer.BeginRenderPass(renderPass, swapImageResources.framebuffer, windowSize);
-		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline.GetNativeHandle());
+		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline);
 
 		commandBuffer.BindDescriptorSets(
 			std::to_array({ std::ref(frameResources.descriptorSet) }),
@@ -447,7 +447,7 @@ int main()
 		commandBuffer.EndRenderPass();
 		commandBuffer.End();
 
-		device.GetGraphicsQueue().As<orhi::Queue*>()->Submit(
+		device.GetGraphicsQueue().Submit(
 			{ commandBuffer },
 			{ *frameResources.imageAvailableSemaphore },
 			{ *swapImageResources.renderFinishedSemaphore },
@@ -456,7 +456,7 @@ int main()
 
 		try
 		{
-			device.GetPresentQueue().As<orhi::Queue*>()->Present(
+			device.GetPresentQueue().Present(
 				{ *swapImageResources.renderFinishedSemaphore },
 				*swapChain,
 				imageIndex

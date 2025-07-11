@@ -14,6 +14,7 @@
 #include <orhi/impl/vk/Framebuffer.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Texture.h>
+#include <orhi/impl/vk/GraphicsPipeline.h>
 #include <orhi/impl/vk/details/MemoryUtils.h>
 #include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>
@@ -273,13 +274,13 @@ namespace orhi
 	template<>
 	void CommandBuffer::BindPipeline(
 		types::EPipelineBindPoint p_bindPoint,
-		data::NativeHandle p_pipeline
+		GraphicsPipeline& p_pipeline
 	)
 	{
 		vkCmdBindPipeline(
 			m_context.handle,
 			utils::EnumToValue<VkPipelineBindPoint>(p_bindPoint),
-			p_pipeline.As<VkPipeline>()
+			p_pipeline.GetNativeHandle().As<VkPipeline>()
 		);
 	}
 

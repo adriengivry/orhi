@@ -6,13 +6,18 @@
 
 #pragma once
 
-#include <orhi/types/EGraphicsBackend.h>
 #include <orhi/data/NativeHandle.h>
-#include <orhi/api/TSwapChain.h>
-#include <orhi/api/TCommandBuffer.h>
+#include <orhi/types/EGraphicsBackend.h>
+
+#include <optional>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TCommandBuffer;
+	template<typename BackendTraits> class TFence;
+	template<typename BackendTraits> class TSemaphore;
+	template<typename BackendTraits> class TSwapChain;
+
 	template<typename BackendTraits>
 	class TQueue final
 	{

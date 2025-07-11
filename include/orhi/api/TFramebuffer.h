@@ -11,6 +11,8 @@
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TFramebuffer final
 	{

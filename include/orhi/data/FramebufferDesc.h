@@ -8,8 +8,14 @@
 
 #include <cstdint>
 #include <span>
+
+#include <orhi/data/NativeHandle.h>
 #include <orhi/types/EGraphicsBackend.h>
-#include <orhi/api/TRenderPass.h>
+
+namespace orhi::api
+{
+	template<typename BackendTraits> class TRenderPass;
+}
 
 namespace orhi::data
 {

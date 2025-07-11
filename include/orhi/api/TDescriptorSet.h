@@ -6,16 +6,17 @@
 
 #pragma once
 
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/types/EDescriptorType.h>
-#include <orhi/api/TBuffer.h>
-#include <orhi/api/TDevice.h>
-#include <orhi/data/NativeHandle.h>
 #include <orhi/data/DescriptorWriteDesc.h>
+#include <orhi/data/NativeHandle.h>
+#include <orhi/types/EDescriptorType.h>
+#include <orhi/types/EGraphicsBackend.h>
 #include <unordered_map>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TBuffer;
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TDescriptorSet final
 	{

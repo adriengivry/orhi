@@ -7,17 +7,18 @@
 #pragma once
 
 #include <optional>
-#include <orhi/api/TDevice.h>
 #include <orhi/data/BufferMemoryRange.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/TextureDesc.h>
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/types/ETextureLayout.h>
 #include <orhi/types/EFormat.h>
+#include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
+#include <orhi/types/ETextureLayout.h>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TTexture final
 	{

@@ -6,26 +6,29 @@
 
 #pragma once
 
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/data/NativeHandle.h>
-#include <orhi/types/ECommandBufferUsageFlags.h>
-#include <orhi/types/EPipelineBindPoint.h>
-#include <orhi/types/EIndexType.h>
-#include <orhi/types/ETextureLayout.h>
-#include <orhi/api/TFramebuffer.h>
-#include <orhi/api/TRenderPass.h>
-#include <orhi/api/TBuffer.h>
-#include <orhi/api/TTexture.h>
-#include <orhi/api/TDescriptorSet.h>
-#include <orhi/api/TGraphicsPipeline.h>
-#include <orhi/data/Rect2D.h>
-#include <orhi/data/ViewportDesc.h>
+#include <orhi/api/TBackendTraits.h>
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
-#include <orhi/api/TBackendTraits.h>
+#include <orhi/data/NativeHandle.h>
+#include <orhi/data/Rect2D.h>
+#include <orhi/data/ViewportDesc.h>
+#include <orhi/types/ECommandBufferUsageFlags.h>
+#include <orhi/types/EGraphicsBackend.h>
+#include <orhi/types/EIndexType.h>
+#include <orhi/types/EPipelineBindPoint.h>
+#include <orhi/types/ETextureLayout.h>
+
+#include <span>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TBuffer;
+	template<typename BackendTraits> class TDescriptorSet;
+	template<typename BackendTraits> class TFramebuffer;
+	template<typename BackendTraits> class TGraphicsPipeline;
+	template<typename BackendTraits> class TRenderPass;
+	template<typename BackendTraits> class TTexture;
+
 	template<typename BackendTraits>
 	class TCommandBuffer final
 	{
@@ -100,7 +103,7 @@ namespace orhi::api
 		*/
 		void BindPipeline(
 			types::EPipelineBindPoint p_bindPoint,
-			data::NativeHandle p_pipeline
+			TGraphicsPipeline<BackendTraits>& p_pipeline
 		);
 
 		/**

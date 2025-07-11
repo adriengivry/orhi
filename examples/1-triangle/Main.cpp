@@ -197,7 +197,7 @@ int main()
 		commandBuffer.Reset();
 		commandBuffer.Begin();
 		commandBuffer.BeginRenderPass(renderPass, swapImageResources.framebuffer, windowSize);
-		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline.GetNativeHandle());
+		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline);
 
 		commandBuffer.SetViewport({
 			.x = 0.0f, .y = 0.0f,
@@ -215,7 +215,7 @@ int main()
 		commandBuffer.EndRenderPass();
 		commandBuffer.End();
 
-		device.GetGraphicsQueue().As<orhi::Queue*>()->Submit(
+		device.GetGraphicsQueue().Submit(
 			{ commandBuffer },
 			{ *frameResources.imageAvailableSemaphore },
 			{ *swapImageResources.renderFinishedSemaphore },
@@ -224,7 +224,7 @@ int main()
 
 		try
 		{
-			device.GetPresentQueue().As<orhi::Queue*>()->Present(
+			device.GetPresentQueue().Present(
 				{ *swapImageResources.renderFinishedSemaphore },
 				*swapChain,
 				imageIndex

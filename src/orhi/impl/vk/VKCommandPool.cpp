@@ -8,6 +8,7 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
+#include <orhi/impl/vk/CommandBuffer.h>
 #include <orhi/impl/vk/CommandPool.h>
 #include <orhi/impl/vk/details/Types.h>
 #include <vulkan/vulkan.h>

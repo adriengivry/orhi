@@ -8,10 +8,11 @@
 
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/data/GraphicsPipelineDesc.h>
-#include <orhi/api/TDevice.h>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TGraphicsPipeline final
 	{

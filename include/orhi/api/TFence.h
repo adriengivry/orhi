@@ -6,12 +6,14 @@
 
 #pragma once
 
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/api/TDevice.h>
 #include <optional>
+#include <orhi/data/NativeHandle.h>
+#include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TFence final
 	{

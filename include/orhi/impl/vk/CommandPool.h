@@ -11,6 +11,8 @@
 #include <orhi/impl/vk/CommandBuffer.h>
 #include <orhi/impl/vk/Device.h>
 
+#include <list>
+
 struct VkCommandPool_T;
 typedef VkCommandPool_T* VkCommandPool;
 

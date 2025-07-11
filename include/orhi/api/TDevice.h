@@ -15,6 +15,8 @@
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TQueue;
+
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
@@ -40,13 +42,13 @@ namespace orhi::api
 		* Returns the graphics queue associated with this logical device
 		* @note doesn't return a native handle, but an actual handle
 		*/
-		data::NativeHandle GetGraphicsQueue() const;
+		TQueue<BackendTraits> GetGraphicsQueue() const;
 
 		/**
 		* Returns the present queue associated with this logical device
 		* @note doesn't return a native handle, but an actual handle
 		*/
-		data::NativeHandle GetPresentQueue() const;
+		TQueue<BackendTraits> GetPresentQueue() const;
 
 		/**
 		* Returns information about the swap chain

@@ -6,14 +6,18 @@
 
 #pragma once
 
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/api/TDescriptorSetLayout.h>
-#include <orhi/api/TDescriptorSet.h>
 #include <orhi/data/DescriptorPoolDesc.h>
+#include <orhi/data/NativeHandle.h>
+#include <orhi/types/EGraphicsBackend.h>
+
 #include <vector>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDescriptorSet;
+	template<typename BackendTraits> class TDescriptorSetLayout;
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TDescriptorPool final
 	{

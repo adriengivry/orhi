@@ -6,16 +6,21 @@
 
 #pragma once
 
+#include <orhi/data/NativeHandle.h>
+#include <orhi/data/SwapChainDesc.h>
 #include <orhi/types/EGraphicsBackend.h>
-#include <orhi/api/TFramebuffer.h>
-#include <orhi/api/TRenderPass.h>
-#include <orhi/api/TSemaphore.h>
-#include <orhi/api/TFence.h>
+
 #include <vector>
 #include <optional>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDevice;
+	template<typename BackendTraits> class TFence;
+	template<typename BackendTraits> class TFramebuffer;
+	template<typename BackendTraits> class TRenderPass;
+	template<typename BackendTraits> class TSemaphore;
+
 	template<typename BackendTraits>
 	class TSwapChain final
 	{

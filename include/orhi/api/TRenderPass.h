@@ -6,12 +6,14 @@
 
 #pragma once
 
+#include <orhi/data/NativeHandle.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EFormat.h>
-#include <orhi/api/TDevice.h>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TRenderPass final
 	{

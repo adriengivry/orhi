@@ -6,12 +6,16 @@
 
 #pragma once
 
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/api/TCommandBuffer.h>
 #include <orhi/types/ECommandBufferLevel.h>
+#include <orhi/types/EGraphicsBackend.h>
+
+#include <vector>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TCommandBuffer;
+	template<typename BackendTraits> class TDevice;
+
 	template<typename BackendTraits>
 	class TCommandPool final
 	{

@@ -105,14 +105,14 @@ namespace orhi
 		);
 	}
 
-	data::NativeHandle Device::GetGraphicsQueue() const
+	Queue Device::GetGraphicsQueue() const
 	{
-		return m_context.graphicsQueue.get();
+		return *m_context.graphicsQueue;
 	}
 
-	data::NativeHandle Device::GetPresentQueue() const
+	Queue Device::GetPresentQueue() const
 	{
-		return m_context.presentQueue.get();
+		return *m_context.presentQueue;
 	}
 
 	template<>
