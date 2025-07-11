@@ -11,7 +11,7 @@
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/QueuesDesc.h>
 #include <orhi/data/DeviceInfo.h>
-#include <orhi/utils/ContextRegistry.h>
+#include <orhi/api/TContextRegistry.h>
 
 namespace orhi::api
 {

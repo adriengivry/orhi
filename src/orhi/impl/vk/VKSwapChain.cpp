@@ -216,7 +216,7 @@ namespace orhi
 		{
 			framebuffers.emplace_back(
 				m_context.device,
-				data::FramebufferDesc<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>{
+				data::FramebufferDesc<types::EGraphicsBackend::VULKAN, ContextRegistry>{
 					.attachments = std::to_array({ data::NativeHandle{m_context.imageViews[i]} }),
 					.renderPass = p_renderPass,
 					.extent = {

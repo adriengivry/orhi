@@ -8,7 +8,7 @@
 
 #include <orhi/api/TDescriptorSetLayout.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/VulkanContextRegistry.h>
+#include <orhi/impl/vk/ContextRegistry.h>
 
 struct VkDescriptorSetLayout_T;
 typedef VkDescriptorSetLayout_T* VkDescriptorSetLayout;
@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkDescriptorSetLayout handle;
 	};
 
-	using DescriptorSetLayout = api::TDescriptorSetLayout<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
+	using DescriptorSetLayout = api::TDescriptorSetLayout<types::EGraphicsBackend::VULKAN, ContextRegistry>;
 }

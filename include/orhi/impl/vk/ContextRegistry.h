@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/utils/ContextRegistry.h>
+#include <orhi/api/TContextRegistry.h>
 
 namespace orhi::impl::vk
 {
@@ -29,7 +29,7 @@ namespace orhi::impl::vk
 	struct SwapChainContext;
 	struct TextureContext;
 
-	using VulkanContextRegistry = orhi::utils::ContextRegistry<
+	using ContextRegistry = orhi::api::TContextRegistry<
 		BackendContext,
 		BufferContext,
 		CommandBufferContext,

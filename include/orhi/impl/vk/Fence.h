@@ -8,7 +8,7 @@
 
 #include <orhi/api/TFence.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/VulkanContextRegistry.h>
+#include <orhi/impl/vk/ContextRegistry.h>
 
 struct VkFence_T;
 typedef VkFence_T* VkFence;
@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkFence handle;
 	};
 
-	using Fence = api::TFence<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
+	using Fence = api::TFence<types::EGraphicsBackend::VULKAN, ContextRegistry>;
 }

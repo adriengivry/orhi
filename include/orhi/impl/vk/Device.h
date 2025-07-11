@@ -11,7 +11,7 @@
 #include <orhi/api/TDevice.h>
 #include <orhi/impl/vk/Queue.h>
 #include <orhi/data/DeviceInfo.h>
-#include <orhi/impl/vk/VulkanContextRegistry.h>
+#include <orhi/impl/vk/ContextRegistry.h>
 
 struct VkPhysicalDevice_T;
 typedef VkPhysicalDevice_T* VkPhysicalDevice;
@@ -47,5 +47,5 @@ namespace orhi::impl::vk
 		std::vector<const char*> extensions;
 	};
 
-	using Device = api::TDevice<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
+	using Device = api::TDevice<types::EGraphicsBackend::VULKAN, ContextRegistry>;
 }

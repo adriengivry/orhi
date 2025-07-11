@@ -13,7 +13,7 @@
 #include <orhi/data/BufferMemoryRange.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
-#include <orhi/utils/ContextRegistry.h>
+#include <orhi/api/TContextRegistry.h>
 
 namespace orhi::api
 {

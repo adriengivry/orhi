@@ -307,7 +307,7 @@ namespace orhi
 	template<>
 	GraphicsPipeline::TGraphicsPipeline(
 		Device& p_device,
-		const data::GraphicsPipelineDesc<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>& p_desc
+		const data::GraphicsPipelineDesc<types::EGraphicsBackend::VULKAN, ContextRegistry>& p_desc
 	) : m_context{
 		.device = p_device,
 		.layout = VK_NULL_HANDLE,

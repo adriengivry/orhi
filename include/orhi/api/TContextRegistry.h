@@ -7,11 +7,10 @@
 
 #include <type_traits>
 
-namespace orhi::utils
+namespace orhi::api
 {
 	/**
 	* Registry structure that agglomerates all context types for a specific backend.
-	* This replaces the need to pass all individual context types as template parameters.
 	*/
 	template<typename TBackendContext, typename TBufferContext, typename TCommandBufferContext, 
 		typename TCommandPoolContext, typename TDescriptorContext, typename TDescriptorPoolContext,
@@ -19,7 +18,7 @@ namespace orhi::utils
 		typename TFenceContext, typename TFramebufferContext, typename TGraphicsPipelineContext,
 		typename TQueueContext, typename TRenderPassContext, typename TSemaphoreContext,
 		typename TShaderModuleContext, typename TSwapChainContext, typename TTextureContext>
-	struct ContextRegistry
+	struct TContextRegistry
 	{
 		using BackendContext = TBackendContext;
 		using BufferContext = TBufferContext;
@@ -45,4 +44,4 @@ namespace orhi::utils
 #define CTX_REG_INST(name, backend, registry) \
 template class orhi::api::name<backend, registry>
 
-#define CTX_REG_INST_VK(name) CTX_REG_INST(name, orhi::types::EGraphicsBackend::VULKAN, orhi::impl::vk::VulkanContextRegistry)
+#define CTX_REG_INST_VK(name) CTX_REG_INST(name, orhi::types::EGraphicsBackend::VULKAN, orhi::impl::vk::ContextRegistry)

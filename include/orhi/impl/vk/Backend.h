@@ -8,7 +8,7 @@
 
 #include <memory>
 #include <orhi/api/TBackend.h>
-#include <orhi/impl/vk/VulkanContextRegistry.h>
+#include <orhi/impl/vk/ContextRegistry.h>
 
 struct VkInstance_T;
 typedef VkInstance_T* VkInstance;
@@ -36,8 +36,8 @@ namespace orhi::impl::vk
 	struct DeviceContext;
 
 	// Legacy type alias (deprecated)
-	using Backend = api::TBackend<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
+	using Backend = api::TBackend<types::EGraphicsBackend::VULKAN, ContextRegistry>;
 	
 	// New type alias using ContextRegistry
-	using BackendNew = api::TBackend<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
+	using BackendNew = api::TBackend<types::EGraphicsBackend::VULKAN, ContextRegistry>;
 }

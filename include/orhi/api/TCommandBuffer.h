@@ -22,7 +22,7 @@
 #include <orhi/data/ViewportDesc.h>
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
-#include <orhi/utils/ContextRegistry.h>
+#include <orhi/api/TContextRegistry.h>
 
 namespace orhi::api
 {

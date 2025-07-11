@@ -14,7 +14,7 @@
 #include <orhi/data/BackendDesc.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/data/NativeHandle.h>
-#include <orhi/utils/ContextRegistry.h>
+#include <orhi/api/TContextRegistry.h>
 
 namespace orhi::api
 {

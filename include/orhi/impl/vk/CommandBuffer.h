@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/api/TCommandBuffer.h>
-#include <orhi/impl/vk/VulkanContextRegistry.h>
+#include <orhi/impl/vk/ContextRegistry.h>
 
 struct VkCommandBuffer_T;
 typedef VkCommandBuffer_T* VkCommandBuffer;
@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkCommandBuffer handle;
 	};
 
-	using CommandBuffer = api::TCommandBuffer<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
+	using CommandBuffer = api::TCommandBuffer<types::EGraphicsBackend::VULKAN, ContextRegistry>;
 }

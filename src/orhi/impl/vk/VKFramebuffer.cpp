@@ -18,7 +18,7 @@ namespace orhi
 	template<>
 	Framebuffer::TFramebuffer(
 		Device& p_device,
-		const data::FramebufferDesc<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>& p_desc
+		const data::FramebufferDesc<types::EGraphicsBackend::VULKAN, ContextRegistry>& p_desc
 	) :
 		m_context{
 			.device = p_device,
