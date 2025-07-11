@@ -120,6 +120,4 @@ namespace orhi
 	}
 }
 
-CTX_REG_INST_VK(TDescriptor);
-
 #endif // #if defined(ORHI_COMPILE_VULKAN)

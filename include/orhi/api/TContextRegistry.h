@@ -40,8 +40,3 @@ namespace orhi::api
 		using TextureContext = TTextureContext;
 	};
 }
-
-#define CTX_REG_INST(name, backend, registry) \
-template class orhi::api::name<backend, registry>
-
-#define CTX_REG_INST_VK(name) CTX_REG_INST(name, orhi::types::EGraphicsBackend::VULKAN, orhi::impl::vk::ContextRegistry)

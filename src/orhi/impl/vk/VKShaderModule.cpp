@@ -57,6 +57,4 @@ namespace orhi
 	}
 }
 
-CTX_REG_INST_VK(TShaderModule);
-
 #endif // #if defined(ORHI_COMPILE_VULKAN)

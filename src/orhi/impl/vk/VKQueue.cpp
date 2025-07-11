@@ -115,6 +115,4 @@ namespace orhi
 	}
 }
 
-CTX_REG_INST_VK(TQueue);
-
 #endif // #if defined(ORHI_COMPILE_VULKAN)

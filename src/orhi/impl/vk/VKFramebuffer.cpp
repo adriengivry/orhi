@@ -64,6 +64,4 @@ namespace orhi
 	}
 }
 
-CTX_REG_INST_VK(TFramebuffer);
-
 #endif // #if defined(ORHI_COMPILE_VULKAN)
