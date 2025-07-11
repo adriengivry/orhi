@@ -62,9 +62,10 @@ Every file must include the following header:
 ### Includes
 | | |
 |-|-|
-| I.1 | Includes are in lexicographic order with lowercase precedence (e.g. `aa`, `aA`, `Aa`, `AA`). |
-| I.2 | Included file paths are fully specialized (`project/namespace/File.h`). |
-| I.3 | Include statements use brackets (`<>`) over quotation marks (`""`). |
+| I.1 | Includes are ordered by category:<br>&nbsp;&nbsp;&nbsp;&nbsp;1. Main Header (for .cpp file implementing .h)<br>&nbsp;&nbsp;&nbsp;&nbsp;2. Project/Local Headers<br>&nbsp;&nbsp;&nbsp;&nbsp;3. Third-Party Library Headers<br>&nbsp;&nbsp;&nbsp;&nbsp;4. System/Standard Library Headers |
+| I.2 | Includes in the same group are in lexicographic order, with lowercase precedence (e.g. `aa`, `aA`, `Aa`, `AA`). |
+| I.3 | Included file paths are fully specialized (`project/namespace/File.h`). |
+| I.4 | Include statements use brackets (`<>`) over quotation marks (`""`). |
 
 ### Documentation
 | | |
