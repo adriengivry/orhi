@@ -11,7 +11,11 @@
 namespace orhi::data
 {
 	/**
-	* Multisample state descriptor
+	* @brief Multisample state descriptor for graphics pipelines
+	* 
+	* Defines the multisampling configuration for anti-aliasing, including
+	* sample count, sample shading, and alpha-to-coverage operations.
+	* Used to improve rendering quality by reducing aliasing artifacts.
 	*/
 	struct MultisampleStateDesc
 	{

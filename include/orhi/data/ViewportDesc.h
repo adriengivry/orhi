@@ -9,7 +9,11 @@
 namespace orhi::data
 {
 	/**
-	*
+	* @brief Viewport descriptor defining the viewport transformation
+	* 
+	* Specifies the viewport transformation parameters including position,
+	* size, and depth range. Controls how normalized device coordinates
+	* are mapped to screen coordinates during rendering.
 	*/
 	struct ViewportDesc
 	{

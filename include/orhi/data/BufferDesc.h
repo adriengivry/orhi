@@ -8,12 +8,14 @@
 
 #include <orhi/types/EBufferUsageFlags.h>
 
-#include <cstdint>
-
 namespace orhi::data
 {
 	/**
+	* @brief Descriptor for buffer creation
 	* 
+	* Specifies the properties of a buffer to be created, including its size
+	* and usage flags that determine how the buffer can be used (vertex data,
+	* index data, uniform data, etc.).
 	*/
 	struct BufferDesc
 	{

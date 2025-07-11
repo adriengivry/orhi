@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	*
+	* @brief Descriptor types enumeration for descriptor set bindings
+	* 
+	* Defines the types of resources that can be bound to descriptor sets,
+	* including textures, samplers, buffers, and specialized descriptors.
+	* Each type determines how the resource is accessed by shaders.
 	*/
 	enum class EDescriptorType
 	{

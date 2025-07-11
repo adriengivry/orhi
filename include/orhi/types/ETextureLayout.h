@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of texture layout
+	* @brief Texture layout enumeration for image memory organization
+	* 
+	* Defines how texture data is organized in memory for different usage
+	* patterns and operations. Layout transitions are required when changing
+	* how a texture is accessed by different pipeline stages.
 	*/
 	enum class ETextureLayout : uint32_t
 	{

@@ -9,12 +9,14 @@
 #include <orhi/data/Extent3D.h>
 #include <orhi/data/Offset3D.h>
 
-#include <cstdint>
-
 namespace orhi::data
 {
 	/**
-	*
+	* @brief Descriptor for buffer-to-texture copy operations
+	* 
+	* Defines the parameters for copying image data from a buffer to a texture,
+	* including buffer layout information (offset, row length, image height)
+	* and texture region information (offset and extent).
 	*/
 	struct BufferTextureCopyDesc
 	{

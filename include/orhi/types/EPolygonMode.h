@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Polygon mode enumeration for rasterization
+	* @brief Polygon rasterization mode enumeration
+	* 
+	* Defines how polygons are rasterized during the rendering pipeline,
+	* including filled polygons, wireframe rendering, and point rendering.
+	* Used to control the visual representation of geometric primitives.
 	*/
 	enum class EPolygonMode : uint32_t
 	{

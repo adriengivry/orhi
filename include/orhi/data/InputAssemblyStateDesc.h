@@ -11,7 +11,10 @@
 namespace orhi::data
 {
 	/**
-	* Input assembly state descriptor
+	* @brief Input assembly state descriptor for graphics pipelines
+	* 
+	* Defines how vertex data is assembled into primitives (points, lines, triangles)
+	* and whether primitive restart is enabled for indexed drawing operations.
 	*/
 	struct InputAssemblyStateDesc
 	{

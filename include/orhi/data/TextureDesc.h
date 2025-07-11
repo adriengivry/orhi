@@ -19,7 +19,11 @@
 namespace orhi::data
 {
 	/**
-	*
+	* @brief Descriptor for texture creation
+	* 
+	* Specifies the properties of a texture to be created, including dimensions,
+	* format, type (1D/2D/3D), tiling mode, usage flags, and multisampling.
+	* Defines how the texture will be stored and accessed on the GPU.
 	*/
 	struct TextureDesc
 	{

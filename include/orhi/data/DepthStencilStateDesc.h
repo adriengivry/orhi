@@ -12,7 +12,10 @@
 namespace orhi::data
 {
 	/**
-	* Stencil operation state descriptor
+	* @brief Stencil operation state descriptor
+	* 
+	* Defines the stencil operations to perform when stencil tests fail or pass,
+	* including the comparison operation and reference values for stencil testing.
 	*/
 	struct StencilOpStateDesc
 	{
@@ -26,7 +29,11 @@ namespace orhi::data
 	};
 
 	/**
-	* Depth stencil state descriptor
+	* @brief Depth and stencil state descriptor for graphics pipelines
+	* 
+	* Defines the depth and stencil testing configuration for a graphics pipeline,
+	* including depth comparison operations, stencil operations, and depth bounds testing.
+	* Controls how fragments are tested against existing depth and stencil values.
 	*/
 	struct DepthStencilStateDesc
 	{

@@ -25,7 +25,11 @@
 namespace orhi::data
 {
 	/**
-	*
+	* @brief Descriptor for texture sampler creation
+	* 
+	* Defines the sampling configuration for textures, including filtering modes,
+	* address modes for texture coordinate wrapping, anisotropic filtering,
+	* and comparison operations for shadow mapping.
 	*/
 	struct SamplerDesc
 	{

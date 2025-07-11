@@ -11,7 +11,10 @@
 namespace orhi::data
 {
 	/**
-	* Struct containing information about a physical device
+	* @brief Information about a physical graphics device
+	* 
+	* Contains identifying information and capabilities of a physical graphics
+	* device (GPU) that can be used to create logical devices for rendering operations.
 	*/
 	struct DeviceInfo
 	{

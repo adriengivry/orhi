@@ -28,37 +28,53 @@ namespace orhi::api
 	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TTexture;
 
+	/**
+	* @brief A command buffer for recording and submitting GPU commands
+	* 
+	* TCommandBuffer provides a cross-platform abstraction for recording graphics and compute commands
+	* that will be executed on the GPU. Commands are recorded between Begin() and End() calls, and
+	* can include render passes, resource bindings, draw calls, and memory operations.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TCommandBuffer final
 	{
 	public:
 		/**
-		* Creates a command buffer
+		* @brief Creates a command buffer from a native handle
+		* @param p_handle Native handle to the underlying command buffer object
 		*/
 		TCommandBuffer(data::NativeHandle p_handle);
 
 		/**
-		* Destroys the command buffer
+		* @brief Destroys the command buffer and releases associated resources
 		*/
 		~TCommandBuffer();
 
 		/**
-		* Resets the command buffer
+		* @brief Resets the command buffer to its initial state
+		* @note All previously recorded commands are discarded
 		*/
 		void Reset();
 
 		/**
-		* Begin recording commands
+		* @brief Begins recording commands to the command buffer
+		* @param p_flags Usage flags controlling how the command buffer will be used
 		*/
 		void Begin(types::ECommandBufferUsageFlags p_flags = types::ECommandBufferUsageFlags::NONE);
 
 		/**
-		* Finish recording commands
+		* @brief Finishes recording commands to the command buffer
+		* @note After calling End(), no more commands can be recorded until Reset() and Begin() are called again
 		*/
 		void End();
 
 		/**
-		* Begin a render pass
+		* @brief Begins a render pass for rendering operations
+		* @param p_renderPass The render pass to begin
+		* @param p_framebuffer The framebuffer to render to
+		* @param p_extent The rendering extent as a pair of width and height
 		*/
 		void BeginRenderPass(
 			TRenderPass<BackendTraits>& p_renderPass,
@@ -67,12 +83,16 @@ namespace orhi::api
 		);
 
 		/**
-		* End a render pass
+		* @brief Ends the current render pass
+		* @note Must be called after BeginRenderPass() and all rendering commands
 		*/
 		void EndRenderPass();
 
 		/**
-		* Copy buffer content from source to destination
+		* @brief Copies data between two buffers
+		* @param p_src Source buffer to copy from
+		* @param p_dest Destination buffer to copy to
+		* @param p_regions Array of copy regions specifying source offset, destination offset, and size; if empty, copies entire buffer
 		*/
 		void CopyBuffer(
 			TBuffer<BackendTraits>& p_src,
@@ -81,7 +101,10 @@ namespace orhi::api
 		);
 
 		/**
-		* Copy buffer content from source buffer to destination texture
+		* @brief Copies data from a buffer to a texture
+		* @param p_src Source buffer containing the image data
+		* @param p_dest Destination texture to copy to
+		* @param p_regions Array of copy regions specifying buffer offset, texture subresource, and extent; if empty, copies entire buffer to texture
 		*/
 		void CopyBufferToTexture(
 			TBuffer<BackendTraits>& p_src,
@@ -90,7 +113,9 @@ namespace orhi::api
 		);
 
 		/**
-		* Transition a texture from one layout to another
+		* @brief Transitions a texture from one layout to another
+		* @param p_texture The texture to transition
+		* @param p_layout The target layout to transition to
 		*/
 		void TransitionTextureLayout(
 			TTexture<BackendTraits>& p_texture,
@@ -98,7 +123,9 @@ namespace orhi::api
 		);
 
 		/**
-		* Bind a graphics pipeline
+		* @brief Binds a graphics pipeline for subsequent rendering operations
+		* @param p_bindPoint The pipeline bind point (graphics or compute)
+		* @param p_pipeline The graphics pipeline to bind
 		*/
 		void BindPipeline(
 			types::EPipelineBindPoint p_bindPoint,
@@ -106,7 +133,10 @@ namespace orhi::api
 		);
 
 		/**
-		* Bind index buffer
+		* @brief Binds an index buffer for indexed drawing operations
+		* @param p_indexBuffer The buffer containing index data
+		* @param p_offset Byte offset into the index buffer
+		* @param p_indexType The data type of the indices
 		*/
 		void BindIndexBuffer(
 			const TBuffer<BackendTraits>& p_indexBuffer,
@@ -115,7 +145,9 @@ namespace orhi::api
 		);
 
 		/**
-		* Bind vertex buffers
+		* @brief Binds vertex buffers for vertex data input
+		* @param p_buffers Array of vertex buffers to bind
+		* @param p_offsets Array of byte offsets into each vertex buffer
 		*/
 		void BindVertexBuffers(
 			std::span<const std::reference_wrapper<TBuffer<BackendTraits>>> p_buffers,
@@ -123,7 +155,9 @@ namespace orhi::api
 		);
 
 		/**
-		* Bind descriptor sets
+		* @brief Binds descriptor sets containing shader resources
+		* @param p_descriptorSets Array of descriptor sets to bind
+		* @param p_pipelineLayout Native handle to the pipeline layout
 		*/
 		void BindDescriptorSets(
 			std::span<const std::reference_wrapper<TDescriptorSet<BackendTraits>>> p_descriptorSets,
@@ -131,27 +165,34 @@ namespace orhi::api
 		);
 
 		/**
-		* Set viewport
+		* @brief Sets the viewport for rendering operations
+		* @param p_viewport Viewport descriptor specifying position, size, and depth range
 		*/
 		void SetViewport(const data::ViewportDesc& p_viewport);
 
 		/**
-		* Set scissor
+		* @brief Sets the scissor rectangle for rendering operations
+		* @param p_scissor Rectangle descriptor specifying the scissor test area
 		*/
 		void SetScissor(const data::Rect2D& p_scissor);
 
 		/**
-		* Submit a draw command
+		* @brief Submits a non-indexed draw command
+		* @param p_vertexCount Number of vertices to draw
+		* @param p_instanceCount Number of instances to draw
 		*/
 		void Draw(uint32_t p_vertexCount, uint32_t p_instanceCount = 1);
 
 		/**
-		* Submit an indexed draw command
+		* @brief Submits an indexed draw command
+		* @param p_indexCount Number of indices to draw
+		* @param p_instanceCount Number of instances to draw
 		*/
 		void DrawIndexed(uint32_t p_indexCount, uint32_t p_instanceCount = 1);
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying command buffer object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

@@ -12,7 +12,11 @@
 namespace orhi::data
 {
 	/**
-	*
+	* @brief 3D offset representing X, Y, and Z coordinates
+	* 
+	* Defines a 3D position or displacement in terms of X, Y, and Z coordinates.
+	* Commonly used for specifying starting positions in textures, copy operations,
+	* and other 3D spatial operations.
 	*/
 	struct Offset3D
 	{

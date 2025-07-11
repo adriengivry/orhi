@@ -16,13 +16,23 @@ namespace orhi::api
 {
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A descriptor set layout defining the structure of descriptor sets
+	* 
+	* TDescriptorSetLayout defines the types, binding points, and shader stages
+	* for descriptors within a descriptor set. It serves as a template for
+	* creating compatible descriptor sets and pipeline layouts.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TDescriptorSetLayout final
 	{
 	public:
 		/**
-		* Creates a shader module
-		* @param p_device
+		* @brief Creates a descriptor set layout with the specified bindings
+		* @param p_device Reference to the device that will own this descriptor set layout
+		* @param p_bindings List of descriptor bindings defining the layout structure
 		*/
 		TDescriptorSetLayout(
 			TDevice<BackendTraits>& p_device,
@@ -30,12 +40,13 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the shader module
+		* @brief Destroys the descriptor set layout and releases associated resources
 		*/
 		~TDescriptorSetLayout();
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying descriptor set layout object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

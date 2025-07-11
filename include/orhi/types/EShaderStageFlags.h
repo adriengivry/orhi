@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	*
+	* @brief Shader stage flags enumeration for resource binding and access
+	* 
+	* Defines which shader stages can access specific resources such as
+	* descriptors, push constants, and pipeline barriers. Multiple stages
+	* can be combined to specify resource visibility across pipeline stages.
 	*/
 	enum class EShaderStageFlags : uint32_t
 	{

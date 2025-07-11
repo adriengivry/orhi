@@ -8,12 +8,14 @@
 
 #include <orhi/types/EDescriptorType.h>
 
-#include <cstdint>
-
 namespace orhi::data
 {
 	/**
-	* Descriptor pool size specification
+	* @brief Descriptor pool size specification
+	* 
+	* Specifies the type and count of descriptors available in a descriptor pool.
+	* Used to define how many descriptors of each type can be allocated from
+	* the pool when creating descriptor sets.
 	*/
 	struct DescriptorPoolSize
 	{

@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Cull mode flags enumeration for rasterization
+	* @brief Face culling mode flags enumeration for rasterization
+	* 
+	* Defines which polygon faces should be culled (discarded) during
+	* rasterization based on their winding order. Used to optimize
+	* rendering by skipping back-facing or front-facing triangles.
 	*/
 	enum class ECullModeFlags : uint32_t
 	{

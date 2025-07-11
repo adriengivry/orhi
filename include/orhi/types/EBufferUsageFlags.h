@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of buffer usage
+	* @brief Buffer usage flags enumeration
+	* 
+	* Defines how a buffer will be used during its lifetime, including
+	* vertex data, index data, uniform data, storage operations, and
+	* transfer operations. Multiple flags can be combined using bitwise OR.
 	*/
 	enum class EBufferUsageFlags : uint32_t
 	{

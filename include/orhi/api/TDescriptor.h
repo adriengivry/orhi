@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/data/BufferMemoryRange.h>
+#include <orhi/data/MemoryRange.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/SamplerDesc.h>
 #include <orhi/data/TextureViewDesc.h>
@@ -18,14 +18,22 @@ namespace orhi::api
 {
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A descriptor representing a shader resource (texture view or sampler)
+	* 
+	* TDescriptor encapsulates individual shader resources that can be bound to descriptor sets.
+	* Descriptors can represent texture views, samplers, or other shader-accessible resources.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TDescriptor final
 	{
 	public:
 		/**
-		* Creates a descriptor for a texture
-		* @param p_device
-		* @param p_desc
+		* @brief Creates a descriptor for a texture view
+		* @param p_device Reference to the device that will own this descriptor
+		* @param p_desc Texture view descriptor specifying the texture and view parameters
 		*/
 		TDescriptor(
 			TDevice<BackendTraits>& p_device,
@@ -33,9 +41,9 @@ namespace orhi::api
 		);
 
 		/**
-		* Creates a descriptor for a sampler
-		* @param p_device
-		* @param p_desc
+		* @brief Creates a descriptor for a sampler
+		* @param p_device Reference to the device that will own this descriptor
+		* @param p_desc Sampler descriptor specifying filtering and addressing modes
 		*/
 		TDescriptor(
 			TDevice<BackendTraits>& p_device,
@@ -43,12 +51,13 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the descriptor
+		* @brief Destroys the descriptor and releases associated resources
 		*/
 		~TDescriptor();
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying descriptor object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

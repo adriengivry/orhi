@@ -17,15 +17,23 @@ namespace orhi::api
 	template<typename BackendTraits> class TQueue;
 
 	/**
-	* Backend class that wraps the selected graphics API's context.
+	* @brief A logical device representing a connection to a graphics adapter
+	* 
+	* TDevice encapsulates a logical device that provides access to GPU functionality.
+	* It manages queues, memory allocation, and is required to create other graphics
+	* objects like buffers, textures, pipelines, etc.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
 	class TDevice final
 	{
 	public:
 		/**
-		* Creates the device (handled by the backend).
-		* TODO: Make private
+		* @brief Creates a logical device (internal use - handled by the backend)
+		* @param p_deviceInfo Information about the physical device
+		* @param p_creationInfo Backend-specific creation parameters
+		* @todo Make this constructor private
 		*/
 		TDevice(
 			const data::DeviceInfo& p_deviceInfo,
@@ -33,50 +41,56 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the backend.
+		* @brief Destroys the logical device and releases all associated resources
 		*/
 		~TDevice();
 
 		/**
-		* Returns the graphics queue associated with this logical device
-		* @note doesn't return a native handle, but an actual handle
+		* @brief Gets the graphics queue for rendering operations
+		* @return Graphics queue object for submitting rendering commands
 		*/
 		TQueue<BackendTraits> GetGraphicsQueue() const;
 
 		/**
-		* Returns the present queue associated with this logical device
-		* @note doesn't return a native handle, but an actual handle
+		* @brief Gets the present queue for displaying rendered images
+		* @return Present queue object for presenting to the swap chain
 		*/
 		TQueue<BackendTraits> GetPresentQueue() const;
 
 		/**
-		* Returns information about the swap chain
-		* @param p_windowSize
+		* @brief Gets optimal swap chain configuration for the specified window size
+		* @param p_windowSize Window dimensions as a pair of width and height
+		* @return Optimal swap chain descriptor with recommended settings
 		*/
 		data::SwapChainDesc GetOptimalSwapChainDesc(std::pair<uint32_t, uint32_t> p_windowSize);
 
 		/**
-		* Returns information about available queues for this device
+		* @brief Gets information about available queue families
+		* @return Descriptor containing available queue families and their properties
 		*/
 		data::QueuesDesc GetQueuesDesc() const;
 
 		/**
-		* Wait idle
+		* @brief Waits for all operations on the device to complete
+		* @note Blocks the calling thread until the device is idle
 		*/
 		void WaitIdle() const;
 
 		/**
-		* Returns the device info
+		* @brief Gets information about the physical device
+		* @return Device information including capabilities, limits, and properties
 		*/
 		const data::DeviceInfo& GetInfo() const;
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying logical device object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 
 		/**
-		* Returns the adapter's native handle
+		* @brief Gets the native handle to the physical adapter
+		* @return Native handle to the underlying physical adapter/device
 		*/
 		data::NativeHandle GetAdapterNativeHandle() const;
 

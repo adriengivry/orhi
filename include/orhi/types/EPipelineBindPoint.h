@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	*
+	* @brief Pipeline bind point enumeration for descriptor binding
+	* 
+	* Defines the different pipeline stages where descriptor sets and
+	* pipelines can be bound, determining how resources are accessed
+	* by different types of rendering operations.
 	*/
 	enum class EPipelineBindPoint
 	{

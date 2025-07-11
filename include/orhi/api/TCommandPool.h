@@ -17,24 +17,37 @@ namespace orhi::api
 	template<typename BackendTraits> class TCommandBuffer;
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A command pool for allocating command buffers
+	* 
+	* TCommandPool manages the allocation and deallocation of command buffers.
+	* Command buffers allocated from the same pool share memory and are intended
+	* to be used on the same queue family.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TCommandPool final
 	{
 	public:
 		/**
-		* Creates a command pool
+		* @brief Creates a command pool for the specified device
+		* @param p_device Reference to the device that will own this command pool
 		*/
 		TCommandPool(
 			TDevice<BackendTraits>& p_device
 		);
 
 		/**
-		* Destroys the command pool
+		* @brief Destroys the command pool and all associated command buffers
 		*/
 		~TCommandPool();
 
 		/**
-		* Allocates a command buffer from the command pool
+		* @brief Allocates command buffers from this pool
+		* @param p_count Number of command buffers to allocate
+		* @param p_level Command buffer level (primary or secondary)
+		* @return Vector of references to the allocated command buffers
 		*/
 		std::vector<std::reference_wrapper<TCommandBuffer<BackendTraits>>> AllocateCommandBuffers(
 			uint32_t p_count,
@@ -42,7 +55,8 @@ namespace orhi::api
 		);
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying command pool object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

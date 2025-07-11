@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/data/BufferMemoryRange.h>
+#include <orhi/data/MemoryRange.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/TextureDesc.h>
 #include <orhi/types/EFormat.h>
@@ -20,14 +20,23 @@ namespace orhi::api
 {
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A texture object for storing image data on the GPU
+	* 
+	* TTexture represents a multi-dimensional array of image data that can be
+	* used for rendering, as render targets, or for compute operations. Textures
+	* must be allocated before use and can be uploaded with image data from the CPU.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TTexture final
 	{
 	public:
 		/**
-		* Creates a texture
-		* @param p_device
-		* @param p_desc
+		* @brief Creates a texture with the specified properties
+		* @param p_device Reference to the device that will own this texture
+		* @param p_desc Texture descriptor specifying dimensions, format, usage, and other properties
 		*/
 		TTexture(
 			TDevice<BackendTraits>& p_device,
@@ -35,58 +44,69 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the texture
+		* @brief Destroys the texture and releases associated resources
 		*/
 		~TTexture();
 
 		/**
-		* Returns true if the texture is allocated
+		* @brief Checks if the texture has allocated memory
+		* @return True if the texture has allocated memory, false otherwise
 		*/
 		bool IsAllocated() const;
 
 		/**
-		* Allocate memory for the texture
+		* @brief Allocates memory for the texture with specified properties
+		* @param p_properties Memory property flags specifying the type of memory to allocate
 		*/
 		void Allocate(types::EMemoryPropertyFlags p_properties);
 
 		/**
-		* Deallocates memory for the texture
+		* @brief Deallocates the texture's memory
+		* @note The texture object remains valid but cannot be used until reallocated
 		*/
 		void Deallocate();
 
 		/**
-		* Uploads data to the allocated memory
+		* @brief Uploads image data to the allocated texture memory
+		* @param p_data Pointer to the source image data to upload
+		* @param p_memoryRange Optional memory range specifying offset and size; if not provided, the entire texture is used
 		*/
-		void Upload(const void* p_data, std::optional<data::BufferMemoryRange> p_memoryRange = std::nullopt);
+		void Upload(const void* p_data, std::optional<data::MemoryRange> p_memoryRange = std::nullopt);
 
 		/**
-		* Notifies the texture that its layout changed. This should be called by the backend after each
-		* layout transition, and in most cases, shouldn't be used manually.
+		* @brief Notifies the texture that its layout has changed (internal use)
+		* @param p_layout The new texture layout
+		* @note This should be called by the backend after layout transitions and typically shouldn't be used manually
 		*/
 		void NotifyLayoutChange(types::ETextureLayout p_layout);
 
 		/**
-		* Returns allocated bytes
+		* @brief Gets the number of bytes currently allocated for this texture
+		* @return The number of allocated bytes
 		*/
 		uint64_t GetAllocatedBytes() const;
 
 		/**
-		* Returns the texture format 
+		* @brief Gets the pixel format of the texture
+		* @return The texture's pixel format
 		*/
 		types::EFormat GetFormat() const;
 
 		/**
-		* Returns the texture layout
+		* @brief Gets the current layout of the texture
+		* @return The texture's current layout state
 		*/
 		types::ETextureLayout GetLayout() const;
 
 		/**
-		* Returns the texture extent 
+		* @brief Gets the dimensions of the texture
+		* @return The texture's extent (width, height, depth)
 		*/
 		const data::Extent3D& GetExtent() const;
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying texture object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

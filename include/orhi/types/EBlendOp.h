@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Blend operation enumeration for color blending
+	* @brief Blend operation enumeration for color blending
+	* 
+	* Defines the mathematical operations used to combine source and destination
+	* colors during blending. Includes standard operations (add, subtract) and
+	* extended blend operations for advanced compositing effects.
 	*/
 	enum class EBlendOp : uint32_t
 	{

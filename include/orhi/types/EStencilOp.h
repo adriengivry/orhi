@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Stencil operation enumeration for stencil testing
+	* @brief Stencil operation enumeration for stencil buffer manipulation
+	* 
+	* Defines the operations that can be performed on the stencil buffer
+	* when stencil testing passes or fails. Controls how stencil values
+	* are modified during depth and stencil testing operations.
 	*/
 	enum class EStencilOp : uint32_t
 	{

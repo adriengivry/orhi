@@ -142,7 +142,7 @@ namespace orhi
 	template<>
 	void Texture::Upload(
 		const void* p_data,
-		std::optional<data::BufferMemoryRange> p_memoryRange
+		std::optional<data::MemoryRange> p_memoryRange
 	)
 	{
 		ORHI_ASSERT(IsAllocated(), "Uploading to unnallocated image");

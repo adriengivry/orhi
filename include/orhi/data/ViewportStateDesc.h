@@ -14,7 +14,11 @@
 namespace orhi::data
 {
 	/**
-	* Viewport state descriptor
+	* @brief Viewport state descriptor for graphics pipelines
+	* 
+	* Defines the viewport and scissor test configuration for a graphics pipeline,
+	* including arrays of viewport and scissor rectangle descriptors. Supports
+	* multiple viewports for advanced rendering techniques.
 	*/
 	struct ViewportStateDesc
 	{

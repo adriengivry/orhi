@@ -13,7 +13,11 @@
 namespace orhi::data
 {
 	/**
-	* Struct containing information about the instance
+	* @brief Descriptor for graphics instance creation
+	* 
+	* Contains the configuration for creating a graphics API instance, including
+	* debug settings, required extensions, and platform-specific window handles
+	* for surface creation and presentation.
 	*/
 	struct InstanceDesc
 	{

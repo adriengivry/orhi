@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of command buffer levels
+	* @brief Command buffer level enumeration
+	* 
+	* Defines the hierarchy level of command buffers. Primary command buffers
+	* can be submitted directly to queues, while secondary command buffers
+	* must be executed from within primary command buffers.
 	*/
 	enum class ECommandBufferLevel
 	{

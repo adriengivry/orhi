@@ -13,7 +13,11 @@
 namespace orhi::data
 {
 	/**
-	*
+	* @brief Vertex attribute descriptor for vertex input state
+	* 
+	* Defines a single vertex attribute including its binding point, shader location,
+	* offset within the vertex structure, and data format. Used to describe how
+	* vertex data is laid out and accessed by vertex shaders.
 	*/
 	struct VertexAttributeDesc
 	{

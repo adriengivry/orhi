@@ -14,14 +14,23 @@ namespace orhi::api
 {
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A render pass defining the structure of rendering operations
+	* 
+	* TRenderPass defines the attachments, subpasses, and dependencies for
+	* a rendering operation. It specifies the format and usage of color,
+	* depth, and stencil attachments used during rendering.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TRenderPass final
 	{
 	public:
 		/**
-		* Creates a render pass using the give format
-		* @param p_device
-		* @param p_format
+		* @brief Creates a render pass with a single color attachment
+		* @param p_device Reference to the device that will own this render pass
+		* @param p_format Format of the color attachment
 		*/
 		TRenderPass(
 			TDevice<BackendTraits>& p_device,
@@ -29,12 +38,13 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the render pass
+		* @brief Destroys the render pass and releases associated resources
 		*/
 		~TRenderPass();
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying render pass object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

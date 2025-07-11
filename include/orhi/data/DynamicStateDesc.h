@@ -13,7 +13,11 @@
 namespace orhi::data
 {
 	/**
-	* Dynamic state descriptor
+	* @brief Dynamic state descriptor for graphics pipelines
+	* 
+	* Specifies which pipeline states can be changed dynamically at command
+	* buffer recording time without requiring a new pipeline object. Dynamic
+	* states provide flexibility for frequently changing rendering parameters.
 	*/
 	struct DynamicStateDesc
 	{

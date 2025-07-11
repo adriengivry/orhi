@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Color component flags enumeration for color blending
+	* @brief Color component flags enumeration for color write masking
+	* 
+	* Defines which color components (Red, Green, Blue, Alpha) can be
+	* written to during rendering operations. Used to selectively enable
+	* or disable writing to specific color channels in framebuffers.
 	*/
 	enum class EColorComponentFlags : uint32_t
 	{

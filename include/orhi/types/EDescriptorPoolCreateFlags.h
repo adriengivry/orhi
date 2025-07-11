@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Descriptor pool create flags
+	* @brief Descriptor pool creation flags enumeration
+	* 
+	* Defines special properties and behaviors for descriptor pools,
+	* including whether individual descriptor sets can be freed,
+	* support for update-after-bind operations, and host-only pools.
 	*/
 	enum class EDescriptorPoolCreateFlags : uint32_t
 	{

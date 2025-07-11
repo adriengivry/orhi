@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Sampler address mode enumeration for texture coordinate wrapping
+	* @brief Sampler address mode enumeration for texture coordinate handling
+	* 
+	* Defines how texture coordinates outside the [0,1] range are handled
+	* during texture sampling operations. Controls wrapping, clamping,
+	* and mirroring behavior for texture coordinate addressing.
 	*/
 	enum class ESamplerAddressMode : uint32_t
 	{

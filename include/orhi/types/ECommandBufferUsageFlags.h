@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of buffer usage
+	* @brief Command buffer usage flags enumeration
+	* 
+	* Defines how a command buffer will be used, including whether it's
+	* submitted only once, continues a render pass, or can be used
+	* simultaneously from multiple threads.
 	*/
 	enum class ECommandBufferUsageFlags : uint32_t
 	{

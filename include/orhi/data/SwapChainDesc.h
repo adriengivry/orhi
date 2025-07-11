@@ -16,7 +16,11 @@
 namespace orhi::data
 {
 	/**
-	* Struct containing the optiomal swap chain description for the current context
+	* @brief Optimal swap chain configuration descriptor
+	* 
+	* Contains the optimal swap chain properties for the current graphics context,
+	* including surface format, color space, presentation mode, and image counts.
+	* Used to create swap chains with optimal performance and compatibility.
 	*/
 	struct SwapChainDesc
 	{

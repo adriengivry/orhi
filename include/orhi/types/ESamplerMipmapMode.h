@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Sampler mipmap mode enumeration for mipmap filtering
+	* @brief Sampler mipmap mode enumeration for mipmap level filtering
+	* 
+	* Defines how mipmap levels are selected and interpolated during
+	* texture sampling operations. Controls the filtering method used
+	* between different mipmap levels for level-of-detail sampling.
 	*/
 	enum class ESamplerMipmapMode : uint32_t
 	{

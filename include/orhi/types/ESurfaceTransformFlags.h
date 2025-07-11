@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of surface transform flags
+	* @brief Surface transformation flags enumeration for display presentation
+	* 
+	* Defines the transformations that can be applied to images before
+	* presentation to a surface, including rotations and mirroring operations.
+	* Used to handle different display orientations and configurations.
 	*/
 	enum class ESurfaceTransformFlags : uint32_t
 	{

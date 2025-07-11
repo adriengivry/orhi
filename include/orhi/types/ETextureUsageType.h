@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of texture usage flags
+	* @brief Texture usage flags enumeration for texture creation
+	* 
+	* Defines how a texture will be used during its lifetime, including
+	* sampling, storage, attachment, and transfer operations. Multiple
+	* usage flags can be combined to support different access patterns.
 	*/
 	enum class ETextureUsageFlags : uint32_t
 	{

@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of present modes
+	* @brief Presentation mode enumeration for swap chain display
+	* 
+	* Defines how rendered images are presented to the display surface,
+	* controlling synchronization, frame rate, and buffering behavior.
+	* Affects visual quality, latency, and power consumption.
 	*/
 	enum class EPresentMode
 	{

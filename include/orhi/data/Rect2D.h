@@ -12,7 +12,11 @@
 namespace orhi::data
 {
 	/**
-	*
+	* @brief 2D rectangle defined by offset and extent
+	* 
+	* Represents a rectangular region in 2D space with a starting position (offset)
+	* and size (extent). Commonly used for scissor rectangles, viewport regions,
+	* and other 2D area specifications.
 	*/
 	struct Rect2D
 	{

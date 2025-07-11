@@ -15,7 +15,11 @@
 namespace orhi::data
 {
 	/**
-	* Descriptor pool creation description
+	* @brief Descriptor pool creation descriptor
+	* 
+	* Defines the configuration for creating a descriptor pool, including
+	* creation flags, maximum number of descriptor sets, and the types
+	* and counts of descriptors that can be allocated from the pool.
 	*/
 	struct DescriptorPoolDesc
 	{

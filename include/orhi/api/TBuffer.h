@@ -8,7 +8,7 @@
 
 #include <orhi/api/TBackendTraits.h>
 #include <orhi/data/BufferDesc.h>
-#include <orhi/data/BufferMemoryRange.h>
+#include <orhi/data/MemoryRange.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
@@ -19,14 +19,23 @@ namespace orhi::api
 {
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A buffer object that represents a contiguous block of memory for storing data
+	* 
+	* TBuffer provides a cross-platform abstraction for buffer objects, which can be used
+	* for storing vertex data, index data, uniform data, or any other type of accessible data.
+	* The buffer must be allocated before use and can be uploaded with data from the CPU.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TBuffer final
 	{
 	public:
 		/**
-		* Creates a buffer
-		* @param p_device
-		* @param p_desc
+		* @brief Creates a buffer with the specified properties
+		* @param p_device Reference to the device that will own this buffer
+		* @param p_desc Buffer creation descriptor specifying size, usage flags, and other properties
 		*/
 		TBuffer(
 			TDevice<BackendTraits>& p_device,
@@ -34,37 +43,44 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the buffer
+		* @brief Destroys the buffer and releases associated resources
 		*/
 		~TBuffer();
 
 		/**
-		* Returns true if the buffer is allocated
+		* @brief Checks if the buffer has allocated memory
+		* @return True if the buffer has allocated memory, false otherwise
 		*/
 		bool IsAllocated() const;
 
 		/**
-		* Allocate memory for the buffer
+		* @brief Allocates memory for the buffer with specified properties
+		* @param p_properties Memory property flags specifying the type of memory to allocate (e.g., device-local, host-visible)
 		*/
 		void Allocate(types::EMemoryPropertyFlags p_properties);
 
 		/**
-		* Deallocates memory for the buffer
+		* @brief Deallocates the buffer's memory
+		* @note The buffer object remains valid but cannot be used until reallocated
 		*/
 		void Deallocate();
 
 		/**
-		* Uploads data to the allocated memory
+		* @brief Uploads data to the allocated buffer memory
+		* @param p_data Pointer to the source data to upload
+		* @param p_memoryRange Optional memory range specifying offset and size; if not provided, the entire buffer is used
 		*/
-		void Upload(const void* p_data, std::optional<data::BufferMemoryRange> p_memoryRange = std::nullopt);
+		void Upload(const void* p_data, std::optional<data::MemoryRange> p_memoryRange = std::nullopt);
 
 		/**
-		* Returns allocated bytes
+		* @brief Gets the number of bytes currently allocated for this buffer
+		* @return The number of allocated bytes
 		*/
 		uint64_t GetAllocatedBytes() const;
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying buffer object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

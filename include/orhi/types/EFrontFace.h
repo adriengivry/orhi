@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Front face enumeration for rasterization
+	* @brief Front face winding order enumeration for rasterization
+	* 
+	* Defines the vertex winding order that determines which side of
+	* a triangle is considered the front face. Used in conjunction with
+	* face culling to optimize rendering performance.
 	*/
 	enum class EFrontFace : uint32_t
 	{

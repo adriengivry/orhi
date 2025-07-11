@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of formats
+	* @brief Pixel format enumeration for textures and render targets
+	* 
+	* Defines the data format and layout for texture data, vertex attributes,
+	* and render targets. Includes various combinations of component counts,
+	* bit depths, numeric representations, and color spaces.
 	*/
 	enum class EFormat
 	{

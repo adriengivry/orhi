@@ -13,7 +13,11 @@
 namespace orhi::data
 {
 	/**
-	* Rasterization state descriptor
+	* @brief Rasterization state descriptor for graphics pipelines
+	* 
+	* Defines the rasterization configuration including polygon mode (fill, line, point),
+	* face culling, front face orientation, depth bias, and line width. Controls how
+	* primitives are converted to fragments during the rasterization stage.
 	*/
 	struct RasterizationStateDesc
 	{

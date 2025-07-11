@@ -18,12 +18,23 @@ namespace orhi::api
 	template<typename BackendTraits> class TBuffer;
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A descriptor set containing shader resources
+	* 
+	* TDescriptorSet represents a collection of descriptors (buffers, textures, samplers)
+	* that can be bound to a shader pipeline. Descriptor sets are allocated from descriptor
+	* pools and must conform to a descriptor set layout.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TDescriptorSet final
 	{
 	public:
 		/**
-		* Creates a descriptor set
+		* @brief Creates a descriptor set from a native handle
+		* @param p_device Reference to the device that owns this descriptor set
+		* @param p_handle Native handle to the underlying descriptor set object
 		*/
 		TDescriptorSet(
 			TDevice<BackendTraits>& p_device,
@@ -31,19 +42,21 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the descriptor set
+		* @brief Destroys the descriptor set and releases associated resources
 		*/
 		~TDescriptorSet();
 
 		/**
-		* Attaches a list of buffers and images to the descriptor set.
+		* @brief Updates the descriptor set with new resource bindings
+		* @param p_writeDescs Map of binding indices to descriptor write descriptors specifying the resources to bind
 		*/
 		void Write(
 			const std::unordered_map<uint32_t, data::DescriptorWriteDesc<BackendTraits>>& p_writeDescs
 		);
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying descriptor set object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

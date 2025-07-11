@@ -34,7 +34,13 @@ namespace orhi::api
 namespace orhi::data
 {
 	/**
-	* Graphics pipeline descriptor
+	* @brief Graphics pipeline descriptor for pipeline creation
+	* 
+	* Defines the complete configuration for creating a graphics pipeline,
+	* including all shader stages, fixed-function state, descriptor set layouts,
+	* and the target render pass. Graphics pipelines are immutable once created.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
 	struct GraphicsPipelineDesc
@@ -43,7 +49,7 @@ namespace orhi::data
 		api::TRenderPass<BackendTraits>& renderPass;
 		std::span<const std::reference_wrapper<api::TDescriptorSetLayout<BackendTraits>>> descriptorSetLayouts;
 		
-		// Pipeline state descriptors
+		// State descriptors
 		VertexInputStateDesc vertexInputState{};
 		InputAssemblyStateDesc inputAssemblyState{};
 		TessellationStateDesc tessellationState{};

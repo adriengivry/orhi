@@ -11,7 +11,10 @@
 namespace orhi::data
 {
 	/**
+	* @brief Descriptor for buffer-to-buffer copy operations
 	* 
+	* Defines the parameters for copying data between two buffers, including
+	* source and destination offsets and the number of bytes to copy.
 	*/
 	struct BufferCopyDesc
 	{

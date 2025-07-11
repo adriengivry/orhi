@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Primitive topology enumeration for input assembly
+	* @brief Primitive topology enumeration for vertex input assembly
+	* 
+	* Defines how vertex data is assembled into geometric primitives
+	* during the input assembly stage of the graphics pipeline.
+	* Determines the interpretation and connectivity of vertex indices.
 	*/
 	enum class EPrimitiveTopology : uint32_t
 	{

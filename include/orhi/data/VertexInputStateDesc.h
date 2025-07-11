@@ -14,7 +14,11 @@
 namespace orhi::data
 {
 	/**
-	* Vertex input state descriptor
+	* @brief Vertex input state descriptor for graphics pipelines
+	* 
+	* Defines the complete vertex input configuration including vertex buffer
+	* bindings and vertex attribute descriptions. Specifies how vertex data
+	* is organized and interpreted by the vertex shader.
 	*/
 	struct VertexInputStateDesc
 	{

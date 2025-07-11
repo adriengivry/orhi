@@ -11,7 +11,11 @@
 namespace orhi::data
 {
 	/**
-	* Tessellation state descriptor
+	* @brief Tessellation state descriptor for graphics pipelines
+	* 
+	* Defines the tessellation configuration, primarily the number of control points
+	* per patch for tessellation operations. Used when tessellation shaders are
+	* enabled in the graphics pipeline.
 	*/
 	struct TessellationStateDesc
 	{

@@ -17,7 +17,11 @@
 namespace orhi::data
 {
 	/**
-	* Color blend attachment state descriptor
+	* @brief Color blend attachment state descriptor
+	* 
+	* Defines the blending configuration for a single framebuffer attachment,
+	* including blend factors, operations, and color write mask. Controls how
+	* incoming fragment colors are combined with existing framebuffer colors.
 	*/
 	struct ColorBlendAttachmentStateDesc
 	{
@@ -32,8 +36,12 @@ namespace orhi::data
 	};
 
 	/**
-	* Color blend state descriptor
-	*/
+	 * @brief Color blend state descriptor for graphics pipelines
+	 * 
+	 * Defines the global color blending configuration for a graphics pipeline,
+	 * including logical operations and per-attachment blend states. Controls
+	 * how fragment colors are combined with framebuffer colors during rendering.
+	 */
 	struct ColorBlendStateDesc
 	{
 		bool logicOpEnable = false;

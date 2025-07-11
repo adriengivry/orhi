@@ -20,7 +20,13 @@ namespace orhi::api
 namespace orhi::data
 {
 	/**
-	*
+	* @brief Descriptor for framebuffer creation
+	* 
+	* Specifies the configuration for creating a framebuffer, including
+	* the render targets (attachments), associated render pass, and dimensions.
+	* Framebuffers must be compatible with the render pass they're used with.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
 	struct FramebufferDesc

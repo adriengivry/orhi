@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Sample count enumeration for multisampling
+	* @brief Sample count flags enumeration for multisampling anti-aliasing
+	* 
+	* Defines the number of samples per pixel used in multisampling
+	* anti-aliasing (MSAA) operations. Higher sample counts provide
+	* better edge quality at increased memory and performance cost.
 	*/
 	enum class ESampleCountFlags : uint32_t
 	{

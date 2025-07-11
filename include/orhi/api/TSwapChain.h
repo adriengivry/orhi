@@ -21,17 +21,26 @@ namespace orhi::api
 	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TSemaphore;
 
+	/**
+	* @brief A swap chain for presenting rendered images to the screen
+	* 
+	* TSwapChain manages a collection of images that can be rendered to and
+	* presented to the display. It handles double/triple buffering and
+	* synchronization with the display refresh rate.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TSwapChain final
 	{
 	public:
 		/**
-		* Create a swap chain for the given window size
-		* @param p_device
-		* @param p_surface
-		* @param p_windowSize
-		* @param p_desc
-		* @param p_oldSwapChain
+		* @brief Creates a swap chain for the specified surface and window size
+		* @param p_device Reference to the device that will own this swap chain
+		* @param p_surface Native handle to the presentation surface
+		* @param p_windowSize Window dimensions as a pair of width and height
+		* @param p_desc Swap chain descriptor specifying format, present mode, and other properties
+		* @param p_oldSwapChain Optional reference to an old swap chain for resource reuse during recreation
 		*/
 		TSwapChain(
 			TDevice<BackendTraits>& p_device,
@@ -42,20 +51,26 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the swap chain
+		* @brief Destroys the swap chain and releases associated resources
 		*/
 		~TSwapChain();
 
 		/**
-		* Create framebuffers for each image in the swap chain, for a given render pass
+		* @brief Creates framebuffers for each swap chain image
+		* @param p_renderPass The render pass that the framebuffers will be compatible with
+		* @return Vector of framebuffers, one for each swap chain image
 		*/
 		std::vector<orhi::api::TFramebuffer<BackendTraits>> CreateFramebuffers(
 			TRenderPass<BackendTraits>& p_renderPass
 		);
 
 		/**
-		* Returns the index of the next image
-		* @note throw an exception if the swapchain is out of date
+		* @brief Acquires the index of the next available swap chain image
+		* @param p_semaphore Optional semaphore to signal when the image is available
+		* @param p_fence Optional fence to signal when the image is available
+		* @param p_timeout Optional timeout in nanoseconds for the acquisition
+		* @return Index of the acquired image
+		* @throws Exception if the swap chain is out of date and needs recreation
 		*/
 		uint32_t AcquireNextImage(
 			std::optional<std::reference_wrapper<TSemaphore<BackendTraits>>> p_semaphore = std::nullopt,
@@ -64,7 +79,8 @@ namespace orhi::api
 		);
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying swap chain object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

@@ -18,12 +18,23 @@ namespace orhi::api
 	template<typename BackendTraits> class TDescriptorSetLayout;
 	template<typename BackendTraits> class TDevice;
 
+	/**
+	* @brief A pool for allocating descriptor sets
+	* 
+	* TDescriptorPool manages the allocation of descriptor sets and provides memory
+	* for the descriptors contained within those sets. The pool is created with
+	* a maximum number of sets and descriptors that can be allocated.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
+	*/
 	template<typename BackendTraits>
 	class TDescriptorPool final
 	{
 	public:
 		/**
-		* Creates a descriptor pool
+		* @brief Creates a descriptor pool with the specified properties
+		* @param p_device Reference to the device that will own this descriptor pool
+		* @param p_desc Descriptor pool descriptor specifying maximum sets and descriptor counts
 		*/
 		TDescriptorPool(
 			TDevice<BackendTraits>& p_device,
@@ -31,12 +42,15 @@ namespace orhi::api
 		);
 
 		/**
-		* Destroys the descriptor pool
+		* @brief Destroys the descriptor pool and all associated descriptor sets
 		*/
 		~TDescriptorPool();
 
 		/**
-		* Allocates descriptor sets
+		* @brief Allocates descriptor sets from this pool
+		* @param p_layout The descriptor set layout defining the structure of the sets
+		* @param p_count Number of descriptor sets to allocate
+		* @return Vector of references to the allocated descriptor sets
 		*/
 		std::vector<std::reference_wrapper<TDescriptorSet<BackendTraits>>> AllocateDescriptorSets(
 			const TDescriptorSetLayout<BackendTraits>& p_layout,
@@ -44,7 +58,8 @@ namespace orhi::api
 		);
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying descriptor pool object
 		*/
 		data::NativeHandle GetNativeHandle() const;
 

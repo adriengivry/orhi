@@ -20,41 +20,51 @@ namespace orhi::api
 	template<typename BackendTraits> class TDevice;
 
 	/**
-	* Backend class that wraps the selected graphics API's context.
+	* @brief The root object for managing graphics API instances and devices
+	* 
+	* TInstance represents the top-level graphics API context that manages
+	* device enumeration, surface creation, and logical device creation.
+	* It serves as the entry point for all graphics operations.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
 	class TInstance final
 	{
 	public:
 		/**
-		* Creates the backend.
-		* @param p_desc
+		* @brief Creates a graphics instance with the specified configuration
+		* @param p_desc Instance descriptor specifying application info, extensions, and validation layers
 		*/
 		TInstance(const data::InstanceDesc& p_desc);
 
 		/**
-		* Destroys the backend.
+		* @brief Destroys the graphics instance and releases all associated resources
 		*/
 		~TInstance();
 
 		/**
-		* Return the list of available devices to select from
+		* @brief Gets the list of available physical devices
+		* @return Vector of device information structures for all suitable devices
 		*/
 		const std::vector<data::DeviceInfo>& GetSuitableDevices() const;
 
 		/**
-		* Create a logical device from the selected device ID
-		* @param p_deviceId
+		* @brief Creates a logical device from the specified physical device
+		* @param p_deviceId Index of the physical device to create a logical device from
+		* @return Reference to the created logical device
 		*/
 		TDevice<BackendTraits>& CreateDevice(uint32_t p_deviceId);
 
 		/**
-		* Returns the underlying object's native handle
+		* @brief Gets the native handle for backend-specific operations
+		* @return Native handle to the underlying graphics instance
 		*/
 		data::NativeHandle GetNativeHandle() const;
 
 		/**
-		* Returns a handle to the surface
+		* @brief Gets the native handle to the presentation surface
+		* @return Native handle to the underlying surface object
 		*/
 		data::NativeHandle GetSurfaceHandle() const;
 

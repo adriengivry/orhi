@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Dynamic state flags enumeration for graphics pipeline
+	* @brief Dynamic state enumeration for graphics pipeline
+	* 
+	* Defines the pipeline state that can be changed dynamically during
+	* command buffer recording without creating a new pipeline. Allows
+	* for efficient modification of rendering parameters at runtime.
 	*/
 	enum class EDynamicState : uint32_t
 	{

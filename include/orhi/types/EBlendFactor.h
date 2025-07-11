@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Blend factor enumeration for color blending
+	* @brief Blend factor enumeration for color blending operations
+	* 
+	* Defines the scaling factors used in blending equations to combine
+	* source and destination colors during rendering. Each factor specifies
+	* how to scale color components before combining them.
 	*/
 	enum class EBlendFactor : uint32_t
 	{

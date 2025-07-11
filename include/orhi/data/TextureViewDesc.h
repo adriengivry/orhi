@@ -21,7 +21,13 @@ namespace orhi::api
 namespace orhi::data
 {
 	/**
-	*
+	* @brief Descriptor for texture view creation
+	* 
+	* Defines how a texture should be viewed and accessed by shaders,
+	* including the target texture, format interpretation, view type,
+	* and mip level and array layer ranges.
+	* 
+	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
 	struct TextureViewDesc

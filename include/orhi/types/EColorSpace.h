@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Enumeration of color spaces
+	* @brief Color space enumeration for surface presentation
+	* 
+	* Defines the color space interpretation for swap chain surfaces,
+	* including standard RGB, wide gamut, and HDR color spaces.
+	* Affects how colors are interpreted and displayed on the output device.
 	*/
 	enum class EColorSpace
 	{

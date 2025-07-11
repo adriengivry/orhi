@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
+	* @brief Index buffer data type enumeration for indexed rendering
 	* 
+	* Defines the data types that can be used for index buffers when
+	* performing indexed draw operations. Different types provide
+	* different ranges and memory usage characteristics.
 	*/
 	enum class EIndexType
 	{

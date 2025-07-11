@@ -11,7 +11,11 @@
 namespace orhi::types
 {
 	/**
-	* Logic operation enumeration for color blending
+	* @brief Logical operation enumeration for framebuffer blending
+	* 
+	* Defines the bitwise logical operations that can be applied between
+	* source and destination colors when logical operations are enabled
+	* instead of standard alpha blending.
 	*/
 	enum class ELogicOp : uint32_t
 	{
