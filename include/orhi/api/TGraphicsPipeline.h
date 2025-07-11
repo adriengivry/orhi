@@ -40,6 +40,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::GraphicsPipelineContext m_context;
+		ContextRegistry::GraphicsPipelineContext m_context;
 	};
 }

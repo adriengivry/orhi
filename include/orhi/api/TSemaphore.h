@@ -38,6 +38,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::SemaphoreContext m_context;
+		ContextRegistry::SemaphoreContext m_context;
 	};
 }

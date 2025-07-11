@@ -58,6 +58,6 @@ namespace orhi::api
 		data::NativeHandle GetSurfaceHandle() const;
 
 	private:
-		typename ContextRegistry::BackendContext m_context;
+		ContextRegistry::BackendContext m_context;
 	};
 }

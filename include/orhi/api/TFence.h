@@ -43,6 +43,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::FenceContext m_context;
+		ContextRegistry::FenceContext m_context;
 	};
 }

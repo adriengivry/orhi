@@ -64,6 +64,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::SwapChainContext m_context;
+		ContextRegistry::SwapChainContext m_context;
 	};
 }

@@ -89,6 +89,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::TextureContext m_context;
+		ContextRegistry::TextureContext m_context;
 	};
 }

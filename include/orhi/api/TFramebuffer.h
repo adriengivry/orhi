@@ -34,6 +34,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::FramebufferContext m_context;
+		ContextRegistry::FramebufferContext m_context;
 	};
 }

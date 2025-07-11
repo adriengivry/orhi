@@ -42,6 +42,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::CommandPoolContext m_context;
+		ContextRegistry::CommandPoolContext m_context;
 	};
 }

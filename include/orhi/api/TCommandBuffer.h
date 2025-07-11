@@ -154,6 +154,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::CommandBufferContext m_context;
+		ContextRegistry::CommandBufferContext m_context;
 	};
 }

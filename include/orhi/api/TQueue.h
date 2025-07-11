@@ -56,6 +56,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::QueueContext m_context;
+		ContextRegistry::QueueContext m_context;
 	};
 }

@@ -37,6 +37,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::ShaderModuleContext m_context;
+		ContextRegistry::ShaderModuleContext m_context;
 	};
 }

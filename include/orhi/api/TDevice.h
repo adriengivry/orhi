@@ -80,6 +80,6 @@ namespace orhi::api
 		data::NativeHandle GetAdapterNativeHandle() const;
 
 	private:
-		typename ContextRegistry::DeviceContext m_context;
+		ContextRegistry::DeviceContext m_context;
 	};
 }

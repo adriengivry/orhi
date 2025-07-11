@@ -37,6 +37,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		typename ContextRegistry::RenderPassContext m_context;
+		ContextRegistry::RenderPassContext m_context;
 	};
 }
