@@ -16,11 +16,11 @@ namespace orhi::data
 	/**
 	*
 	*/
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	struct FramebufferDesc
 	{
 		std::span<const NativeHandle> attachments;
-		api::TRenderPass<Backend, CTX_SIG_FWD>& renderPass;
+		api::TRenderPass<Backend, ContextRegistry>& renderPass;
 		std::pair<uint32_t, uint32_t> extent;
 	};
 }

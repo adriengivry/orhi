@@ -18,7 +18,7 @@ namespace orhi::api
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TDevice final
 	{
 	public:
@@ -80,6 +80,6 @@ namespace orhi::api
 		data::NativeHandle GetAdapterNativeHandle() const;
 
 	private:
-		DeviceContext m_context;
+		typename ContextRegistry::DeviceContext m_context;
 	};
 }

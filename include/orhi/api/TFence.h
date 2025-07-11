@@ -12,14 +12,14 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TFence final
 	{
 	public:
 		/**
 		* Creates a fence
 		*/
-		TFence(TDevice<Backend, CTX_SIG_FWD>& p_device, bool p_createSignaled = false);
+		TFence(TDevice<Backend, ContextRegistry>& p_device, bool p_createSignaled = false);
 
 		/**
 		* Destroys the fence
@@ -43,6 +43,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		FenceContext m_context;
+		typename ContextRegistry::FenceContext m_context;
 	};
 }

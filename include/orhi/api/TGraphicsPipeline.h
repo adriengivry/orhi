@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TGraphicsPipeline final
 	{
 	public:
@@ -20,8 +20,8 @@ namespace orhi::api
 		* Creates a graphics pipeline
 		*/
 		TGraphicsPipeline(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
-			const data::GraphicsPipelineDesc<Backend, CTX_SIG_FWD>& p_desc
+			TDevice<Backend, ContextRegistry>& p_device,
+			const data::GraphicsPipelineDesc<Backend, ContextRegistry>& p_desc
 		);
 
 		/**
@@ -40,6 +40,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		GraphicsPipelineContext m_context;
+		typename ContextRegistry::GraphicsPipelineContext m_context;
 	};
 }

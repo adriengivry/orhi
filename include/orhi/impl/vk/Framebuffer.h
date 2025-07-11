@@ -8,6 +8,7 @@
 
 #include <orhi/api/TFramebuffer.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 
 struct VkFramebuffer_T;
 typedef VkFramebuffer_T* VkFramebuffer;
@@ -20,5 +21,5 @@ namespace orhi::impl::vk
 		VkFramebuffer handle;
 	};
 
-	using Framebuffer = api::TFramebuffer<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using Framebuffer = api::TFramebuffer<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

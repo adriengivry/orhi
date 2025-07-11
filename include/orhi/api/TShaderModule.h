@@ -13,7 +13,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TShaderModule final
 	{
 	public:
@@ -22,7 +22,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TShaderModule(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			TDevice<Backend, ContextRegistry>& p_device,
 			const std::span<const std::byte> p_source
 		);
 
@@ -37,6 +37,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ShaderModuleContext m_context;
+		typename ContextRegistry::ShaderModuleContext m_context;
 	};
 }

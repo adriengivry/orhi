@@ -18,7 +18,7 @@ namespace orhi
 	template<>
 	Framebuffer::TFramebuffer(
 		Device& p_device,
-		const data::FramebufferDesc<types::EGraphicsBackend::VULKAN, CTX_SIG_FWD>& p_desc
+		const data::FramebufferDesc<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>& p_desc
 	) :
 		m_context{
 			.device = p_device,
@@ -64,6 +64,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TFramebuffer);
+CTX_REG_INST_VK(TFramebuffer);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

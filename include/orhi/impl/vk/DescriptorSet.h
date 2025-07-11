@@ -8,6 +8,7 @@
 
 #include <orhi/api/TDescriptorSet.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 
 struct VkDescriptorSet_T;
 typedef VkDescriptorSet_T* VkDescriptorSet;
@@ -20,5 +21,5 @@ namespace orhi::impl::vk
 		VkDescriptorSet handle;
 	};
 
-	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

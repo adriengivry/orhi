@@ -7,6 +7,7 @@
 #pragma once
 
 #include <orhi/api/TQueue.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 
 struct VkDevice_T;
 typedef VkDevice_T* VkDevice;
@@ -22,5 +23,5 @@ namespace orhi::impl::vk
 		VkQueue handle;
 	};
 
-	using Queue = api::TQueue<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using Queue = api::TQueue<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

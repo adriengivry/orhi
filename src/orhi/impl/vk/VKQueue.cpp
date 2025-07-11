@@ -115,6 +115,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TQueue);
+CTX_REG_INST_VK(TQueue);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

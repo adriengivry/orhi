@@ -8,6 +8,7 @@
 
 #include <orhi/api/TTexture.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
 
@@ -30,5 +31,5 @@ namespace orhi::impl::vk
 		uint64_t allocatedBytes;
 	};
 
-	using Texture = api::TTexture<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using Texture = api::TTexture<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

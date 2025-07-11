@@ -307,7 +307,7 @@ namespace orhi
 	template<>
 	GraphicsPipeline::TGraphicsPipeline(
 		Device& p_device,
-		const data::GraphicsPipelineDesc<types::EGraphicsBackend::VULKAN, CTX_SIG_FWD>& p_desc
+		const data::GraphicsPipelineDesc<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>& p_desc
 	) : m_context{
 		.device = p_device,
 		.layout = VK_NULL_HANDLE,
@@ -423,6 +423,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TGraphicsPipeline);
+CTX_REG_INST_VK(TGraphicsPipeline);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

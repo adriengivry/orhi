@@ -21,7 +21,7 @@ namespace orhi::api
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TBackend final
 	{
 	public:
@@ -45,7 +45,7 @@ namespace orhi::api
 		* Create a logical device from the selected device ID
 		* @param p_deviceId
 		*/
-		TDevice<Backend, CTX_SIG_FWD>& CreateDevice(uint32_t p_deviceId);
+		TDevice<Backend, ContextRegistry>& CreateDevice(uint32_t p_deviceId);
 
 		/**
 		* Returns the underlying object's native handle
@@ -58,6 +58,6 @@ namespace orhi::api
 		data::NativeHandle GetSurfaceHandle() const;
 
 	private:
-		BackendContext m_context;
+		typename ContextRegistry::BackendContext m_context;
 	};
 }

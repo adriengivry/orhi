@@ -13,7 +13,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TQueue final
 	{
 	public:
@@ -35,18 +35,18 @@ namespace orhi::api
 		* Submit the queue
 		*/
 		void Submit(
-			std::initializer_list<std::reference_wrapper<TCommandBuffer<Backend, CTX_SIG_FWD>>> p_commandBuffers,
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_waitSemaphores = {},
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_signalSemaphores = {},
-			std::optional<std::reference_wrapper<TFence<Backend, CTX_SIG_FWD>>> p_fence = std::nullopt
+			std::initializer_list<std::reference_wrapper<TCommandBuffer<Backend, ContextRegistry>>> p_commandBuffers,
+			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, ContextRegistry>>> p_waitSemaphores = {},
+			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, ContextRegistry>>> p_signalSemaphores = {},
+			std::optional<std::reference_wrapper<TFence<Backend, ContextRegistry>>> p_fence = std::nullopt
 		);
 
 		/**
 		* Present the queue
 		*/
 		void Present(
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_waitSemaphores,
-			TSwapChain<Backend, CTX_SIG_FWD>& p_swapChain,
+			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, ContextRegistry>>> p_waitSemaphores,
+			TSwapChain<Backend, ContextRegistry>& p_swapChain,
 			uint32_t p_swapChainIndice
 		);
 
@@ -56,6 +56,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		QueueContext m_context;
+		typename ContextRegistry::QueueContext m_context;
 	};
 }

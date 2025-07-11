@@ -72,6 +72,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TDescriptorSetLayout);
+CTX_REG_INST_VK(TDescriptorSetLayout);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

@@ -8,6 +8,7 @@
 
 #include <orhi/api/TRenderPass.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 
 struct VkRenderPass_T;
 typedef VkRenderPass_T* VkRenderPass;
@@ -20,5 +21,5 @@ namespace orhi::impl::vk
 		VkRenderPass handle;
 	};
 
-	using RenderPass = api::TRenderPass<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using RenderPass = api::TRenderPass<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

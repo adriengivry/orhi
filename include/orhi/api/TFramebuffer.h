@@ -11,7 +11,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TFramebuffer final
 	{
 	public:
@@ -19,8 +19,8 @@ namespace orhi::api
 		* Creates a framebuffer
 		*/
 		TFramebuffer(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
-			const data::FramebufferDesc<Backend, CTX_SIG_FWD>& p_desc
+			TDevice<Backend, ContextRegistry>& p_device,
+			const data::FramebufferDesc<Backend, ContextRegistry>& p_desc
 		);
 
 		/**
@@ -34,6 +34,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		FramebufferContext m_context;
+		typename ContextRegistry::FramebufferContext m_context;
 	};
 }

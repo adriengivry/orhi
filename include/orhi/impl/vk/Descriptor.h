@@ -8,6 +8,7 @@
 
 #include <orhi/api/TDescriptor.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
 #include <orhi/types/EDescriptorType.h>
@@ -30,5 +31,5 @@ namespace orhi::impl::vk
 		EVulkanDescriptorType type;
 	};
 
-	using Descriptor = api::TDescriptor<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using Descriptor = api::TDescriptor<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

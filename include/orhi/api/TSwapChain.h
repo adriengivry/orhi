@@ -16,7 +16,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TSwapChain final
 	{
 	public:
@@ -29,11 +29,11 @@ namespace orhi::api
 		* @param p_oldSwapChain
 		*/
 		TSwapChain(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			TDevice<Backend, ContextRegistry>& p_device,
 			data::NativeHandle p_surface,
 			std::pair<uint32_t, uint32_t> p_windowSize,
 			const data::SwapChainDesc& p_desc,
-			std::optional<std::reference_wrapper<TSwapChain<Backend, CTX_SIG_FWD>>> p_oldSwapChain = std::nullopt
+			std::optional<std::reference_wrapper<TSwapChain<Backend, ContextRegistry>>> p_oldSwapChain = std::nullopt
 		);
 
 		/**
@@ -44,8 +44,8 @@ namespace orhi::api
 		/**
 		* Create framebuffers for each image in the swap chain, for a given render pass
 		*/
-		std::vector<orhi::api::TFramebuffer<Backend, CTX_SIG_FWD>> CreateFramebuffers(
-			TRenderPass<Backend, CTX_SIG_FWD>& p_renderPass
+		std::vector<orhi::api::TFramebuffer<Backend, ContextRegistry>> CreateFramebuffers(
+			TRenderPass<Backend, ContextRegistry>& p_renderPass
 		);
 
 		/**
@@ -53,8 +53,8 @@ namespace orhi::api
 		* @note throw an exception if the swapchain is out of date
 		*/
 		uint32_t AcquireNextImage(
-			std::optional<std::reference_wrapper<TSemaphore<Backend, CTX_SIG_FWD>>> p_semaphore = std::nullopt,
-			std::optional<std::reference_wrapper<TFence<Backend, CTX_SIG_FWD>>> p_fence = std::nullopt,
+			std::optional<std::reference_wrapper<TSemaphore<Backend, ContextRegistry>>> p_semaphore = std::nullopt,
+			std::optional<std::reference_wrapper<TFence<Backend, ContextRegistry>>> p_fence = std::nullopt,
 			std::optional<uint64_t> p_timeout = std::nullopt
 		);
 
@@ -64,6 +64,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		SwapChainContext m_context;
+		typename ContextRegistry::SwapChainContext m_context;
 	};
 }

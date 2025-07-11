@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TDescriptorSetLayout final
 	{
 	public:
@@ -21,7 +21,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TDescriptorSetLayout(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			TDevice<Backend, ContextRegistry>& p_device,
 			std::initializer_list<data::DescriptorBinding> p_bindings
 		);
 
@@ -36,6 +36,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		DescriptorSetLayoutContext m_context;
+		typename ContextRegistry::DescriptorSetLayoutContext m_context;
 	};
 }

@@ -7,53 +7,42 @@
 
 #include <type_traits>
 
-#define CTX_SIG_AS(type) \
-type BackendContext, \
-type BufferContext, \
-type CommandBufferContext, \
-type CommandPoolContext, \
-type DescriptorContext, \
-type DescriptorPoolContext, \
-type DescriptorSetContext, \
-type DescriptorSetLayoutContext, \
-type DeviceContext, \
-type FenceContext, \
-type FramebufferContext, \
-type GraphicsPipelineContext, \
-type QueueContext, \
-type RenderPassContext, \
-type SemaphoreContext, \
-type ShaderModuleContext, \
-type SwapChainContext, \
-type TextureContext
+namespace orhi::utils
+{
+	/**
+	* Registry structure that agglomerates all context types for a specific backend.
+	* This replaces the need to pass all individual context types as template parameters.
+	*/
+	template<typename TBackendContext, typename TBufferContext, typename TCommandBufferContext, 
+		typename TCommandPoolContext, typename TDescriptorContext, typename TDescriptorPoolContext,
+		typename TDescriptorSetContext, typename TDescriptorSetLayoutContext, typename TDeviceContext,
+		typename TFenceContext, typename TFramebufferContext, typename TGraphicsPipelineContext,
+		typename TQueueContext, typename TRenderPassContext, typename TSemaphoreContext,
+		typename TShaderModuleContext, typename TSwapChainContext, typename TTextureContext>
+	struct ContextRegistry
+	{
+		using BackendContext = TBackendContext;
+		using BufferContext = TBufferContext;
+		using CommandBufferContext = TCommandBufferContext;
+		using CommandPoolContext = TCommandPoolContext;
+		using DescriptorContext = TDescriptorContext;
+		using DescriptorPoolContext = TDescriptorPoolContext;
+		using DescriptorSetContext = TDescriptorSetContext;
+		using DescriptorSetLayoutContext = TDescriptorSetLayoutContext;
+		using DeviceContext = TDeviceContext;
+		using FenceContext = TFenceContext;
+		using FramebufferContext = TFramebufferContext;
+		using GraphicsPipelineContext = TGraphicsPipelineContext;
+		using QueueContext = TQueueContext;
+		using RenderPassContext = TRenderPassContext;
+		using SemaphoreContext = TSemaphoreContext;
+		using ShaderModuleContext = TShaderModuleContext;
+		using SwapChainContext = TSwapChainContext;
+		using TextureContext = TTextureContext;
+	};
+}
 
-#define CTX_SIG_NUL
-#define CTX_SIG_DCL CTX_SIG_AS(class)
-#define CTX_SIG_DEF CTX_SIG_AS(struct)
-#define CTX_SIG_FWD CTX_SIG_AS(CTX_SIG_NUL)
+#define CTX_REG_INST(name, backend, registry) \
+template class orhi::api::name<backend, registry>
 
-// Explicit template instantiation
-#define CTX_SIG_REG(name, backend, ns) \
-template class orhi::api::name< \
-	backend, \
-	ns::BackendContext, \
-	ns::BufferContext, \
-	ns::CommandBufferContext, \
-	ns::CommandPoolContext, \
-	ns::DescriptorContext, \
-	ns::DescriptorPoolContext, \
-	ns::DescriptorSetContext, \
-	ns::DescriptorSetLayoutContext, \
-	ns::DeviceContext, \
-	ns::FenceContext, \
-	ns::FramebufferContext, \
-	ns::GraphicsPipelineContext, \
-	ns::QueueContext, \
-	ns::RenderPassContext, \
-	ns::SemaphoreContext, \
-	ns::ShaderModuleContext, \
-	ns::SwapChainContext, \
-	ns::TextureContext \
->
-
-#define CTX_SIG_REG_VK(name) CTX_SIG_REG(name, orhi::types::EGraphicsBackend::VULKAN, orhi::impl::vk)
+#define CTX_REG_INST_VK(name) CTX_REG_INST(name, orhi::types::EGraphicsBackend::VULKAN, orhi::impl::vk::VulkanContextRegistry)

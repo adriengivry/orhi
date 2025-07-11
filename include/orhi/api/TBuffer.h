@@ -17,7 +17,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TBuffer final
 	{
 	public:
@@ -27,7 +27,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TBuffer(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			TDevice<Backend, ContextRegistry>& p_device,
 			const data::BufferDesc& p_desc
 		);
 
@@ -67,6 +67,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		BufferContext m_context;
+		typename ContextRegistry::BufferContext m_context;
 	};
 }

@@ -9,6 +9,7 @@
 #include <orhi/api/TDescriptorPool.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/DescriptorSet.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 #include <list>
 
 struct VkDescriptorPool_T;
@@ -23,5 +24,5 @@ namespace orhi::impl::vk
 		std::list<DescriptorSet> descriptorSets;
 	};
 
-	using DescriptorPool = api::TDescriptorPool<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using DescriptorPool = api::TDescriptorPool<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

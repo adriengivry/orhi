@@ -96,6 +96,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TCommandPool);
+CTX_REG_INST_VK(TCommandPool);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

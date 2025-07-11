@@ -170,6 +170,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TBuffer);
+CTX_REG_INST_VK(TBuffer);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

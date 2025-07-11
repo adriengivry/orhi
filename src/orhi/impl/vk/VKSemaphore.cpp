@@ -67,6 +67,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TSemaphore);
+CTX_REG_INST_VK(TSemaphore);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

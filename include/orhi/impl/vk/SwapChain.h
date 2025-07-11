@@ -10,6 +10,7 @@
 #include <orhi/impl/vk/Framebuffer.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 
 struct VkSwapchainKHR_T;
 typedef VkSwapchainKHR_T* VkSwapchainKHR;
@@ -32,5 +33,5 @@ namespace orhi::impl::vk
 		std::pair<uint32_t, uint32_t> extent;
 	};
 
-	using SwapChain = api::TSwapChain<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using SwapChain = api::TSwapChain<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

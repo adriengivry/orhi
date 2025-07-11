@@ -7,6 +7,7 @@
 #pragma once
 
 #include <orhi/api/TCommandPool.h>
+#include <orhi/impl/vk/VulkanContextRegistry.h>
 #include <orhi/impl/vk/CommandBuffer.h>
 #include <orhi/impl/vk/Device.h>
 
@@ -22,5 +23,5 @@ namespace orhi::impl::vk
 		std::list<CommandBuffer> commandBuffers;
 	};
 
-	using CommandPool = api::TCommandPool<types::EGraphicsBackend::VULKAN, CTX_SIG_DEF>;
+	using CommandPool = api::TCommandPool<types::EGraphicsBackend::VULKAN, VulkanContextRegistry>;
 }

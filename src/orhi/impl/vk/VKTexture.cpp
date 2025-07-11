@@ -210,6 +210,6 @@ namespace orhi
 	}
 }
 
-CTX_SIG_REG_VK(TTexture);
+CTX_REG_INST_VK(TTexture);
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

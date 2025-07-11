@@ -16,7 +16,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TDescriptor final
 	{
 	public:
@@ -26,8 +26,8 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
-			const data::TextureViewDesc<Backend, CTX_SIG_FWD>& p_desc
+			TDevice<Backend, ContextRegistry>& p_device,
+			const data::TextureViewDesc<Backend, ContextRegistry>& p_desc
 		);
 
 		/**
@@ -36,7 +36,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			TDevice<Backend, ContextRegistry>& p_device,
 			const data::SamplerDesc& p_desc
 		);
 
@@ -51,6 +51,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		DescriptorContext m_context;
+		typename ContextRegistry::DescriptorContext m_context;
 	};
 }

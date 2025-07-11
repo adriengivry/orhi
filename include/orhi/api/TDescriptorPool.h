@@ -14,7 +14,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TDescriptorPool final
 	{
 	public:
@@ -22,7 +22,7 @@ namespace orhi::api
 		* Creates a descriptor pool
 		*/
 		TDescriptorPool(
-			TDevice<Backend, CTX_SIG_FWD>& p_device,
+			TDevice<Backend, ContextRegistry>& p_device,
 			const data::DescriptorPoolDesc& p_desc
 		);
 
@@ -34,8 +34,8 @@ namespace orhi::api
 		/**
 		* Allocates descriptor sets
 		*/
-		std::vector<std::reference_wrapper<TDescriptorSet<Backend, CTX_SIG_FWD>>> AllocateDescriptorSets(
-			const TDescriptorSetLayout<Backend, CTX_SIG_FWD>& p_layout,
+		std::vector<std::reference_wrapper<TDescriptorSet<Backend, ContextRegistry>>> AllocateDescriptorSets(
+			const TDescriptorSetLayout<Backend, ContextRegistry>& p_layout,
 			uint32_t p_count
 		);
 
@@ -45,6 +45,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		DescriptorPoolContext m_context;
+		typename ContextRegistry::DescriptorPoolContext m_context;
 	};
 }

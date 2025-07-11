@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, CTX_SIG_DCL>
+	template<types::EGraphicsBackend Backend, typename ContextRegistry>
 	class TCommandPool final
 	{
 	public:
@@ -20,7 +20,7 @@ namespace orhi::api
 		* Creates a command pool
 		*/
 		TCommandPool(
-			TDevice<Backend, CTX_SIG_FWD>& p_device
+			TDevice<Backend, ContextRegistry>& p_device
 		);
 
 		/**
@@ -31,7 +31,7 @@ namespace orhi::api
 		/**
 		* Allocates a command buffer from the command pool
 		*/
-		std::vector<std::reference_wrapper<TCommandBuffer<Backend, CTX_SIG_FWD>>> AllocateCommandBuffers(
+		std::vector<std::reference_wrapper<TCommandBuffer<Backend, ContextRegistry>>> AllocateCommandBuffers(
 			uint32_t p_count,
 			types::ECommandBufferLevel p_level = types::ECommandBufferLevel::PRIMARY
 		);
@@ -42,6 +42,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		CommandPoolContext m_context;
+		typename ContextRegistry::CommandPoolContext m_context;
 	};
 }
