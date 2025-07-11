@@ -19,33 +19,34 @@ namespace orhi::math
 	* structure for 3D transformations including translation, rotation, scaling,
 	* and projection operations in graphics programming. Provides row-based access.
 	*/
-	struct Mat4
+	template<typename T>
+	struct TMat4
 	{
-		std::array<Vec4, 4> data {{
-			{0.0f, 0.0f, 0.0f, 0.0f},
-			{0.0f, 0.0f, 0.0f, 0.0f},
-			{0.0f, 0.0f, 0.0f, 0.0f},
-			{0.0f, 0.0f, 0.0f, 0.0f}
-		}};
+		std::array<TVec4<T>, 4> data;
 
 		/**
 		* @brief Provides mutable access to matrix rows
 		* @param index The row index (0-3)
 		* @return Reference to the Vec4 row at the specified index
 		*/
-		Vec4& operator[](int index)
-		{
-			return data[index];
-		}
+		inline TVec4<T>& operator[](int index) { return data[index]; }
 
 		/**
 		* @brief Provides immutable access to matrix rows
 		* @param index The row index (0-3)
 		* @return Const reference to the Vec4 row at the specified index
 		*/
-		const Vec4& operator[](int index) const
-		{
-			return data[index];
-		}
+		inline const TVec4<T>& operator[](int index) const { return data[index]; }
 	};
+
+	using Mat4f = TMat4<float>;
+	using Mat4d = TMat4<double>;
+	using Mat4u8 = TMat4<uint8_t>;
+	using Mat4u16 = TMat4<uint16_t>;
+	using Mat4u32 = TMat4<uint32_t>;
+	using Mat4u64 = TMat4<uint64_t>;
+	using Mat4i8 = TMat4<int8_t>;
+	using Mat4i16 = TMat4<int16_t>;
+	using Mat4i32 = TMat4<int32_t>;
+	using Mat4i64 = TMat4<int64_t>;
 }

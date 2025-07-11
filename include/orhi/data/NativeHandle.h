@@ -25,20 +25,13 @@ namespace orhi::data
 		/**
 		* Default constructor creating an empty handle
 		*/
-		NativeHandle() : m_handle(nullptr)
-		{
-
-		}
+		NativeHandle() : m_handle(nullptr) {}
 
 		/**
 		* Constructor from a raw pointer
 		* @param p_ptr Raw pointer to the native handle
 		*/
-		NativeHandle(void* p_ptr) :
-			m_handle(p_ptr)
-		{
-
-		}
+		NativeHandle(void* p_ptr) : m_handle(p_ptr) {}
 
 		/**
 		* Converts the handle to a specific type
@@ -46,12 +39,9 @@ namespace orhi::data
 		* @return The handle cast to the specified type
 		*/
 		template<class T>
-		T As()
-		{
-			return static_cast<T>(m_handle);
-		}
+		inline T As() { return static_cast<T>(m_handle); }
 
 	private:
-		void* m_handle = nullptr;	///< Raw pointer to the native handle
+		void* m_handle = nullptr;
 	};
 }
