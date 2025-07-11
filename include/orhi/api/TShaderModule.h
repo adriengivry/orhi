@@ -13,11 +13,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class ShaderModuleContext,
-		class DeviceContext
-	>
+	template<typename BackendTraits>
 	class TShaderModule final
 	{
 	public:
@@ -26,7 +22,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TShaderModule(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<BackendTraits>& p_device,
 			const std::span<const std::byte> p_source
 		);
 
@@ -41,6 +37,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		ShaderModuleContext m_context;
+		BackendTraits::ShaderModuleContext m_context;
 	};
 }

@@ -11,16 +11,14 @@
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/QueuesDesc.h>
 #include <orhi/data/DeviceInfo.h>
+#include <orhi/api/TBackendTraits.h>
 
 namespace orhi::api
 {
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<
-		types::EGraphicsBackend Backend,
-		class DeviceContext
-	>
+	template<typename BackendTraits>
 	class TDevice final
 	{
 	public:
@@ -82,6 +80,6 @@ namespace orhi::api
 		data::NativeHandle GetAdapterNativeHandle() const;
 
 	private:
-		DeviceContext m_context;
+		BackendTraits::DeviceContext m_context;
 	};
 }

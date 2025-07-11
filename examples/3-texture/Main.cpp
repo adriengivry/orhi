@@ -27,7 +27,7 @@
 #include <fstream>
 #include <array>
 
-#include <orhi/Backend.h>
+#include <orhi/Instance.h>
 #include <orhi/RenderPass.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/GraphicsPipeline.h>
@@ -44,6 +44,7 @@
 #include <orhi/Queue.h>
 #include <orhi/Texture.h>
 #include <orhi/Descriptor.h>
+#include <orhi/Device.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 
 namespace
@@ -156,17 +157,17 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 	GLFWwindow* window = glfwCreateWindow(800, 600, "3-texture", nullptr, nullptr);
 
-	// Create backend and device
-	orhi::Backend backend(orhi::data::BackendDesc{
+	// Create instance and device
+	orhi::Instance instance(orhi::data::InstanceDesc{
 		.debug = true,
 		.extensions = GetGlfwRequiredExtensions(),
 		.win32_windowHandle = glfwGetWin32Window(window),
 		.win32_instanceHandle = GetModuleHandle(nullptr)
 	});
 
-	const auto& devices = backend.GetSuitableDevices();
+	const auto& devices = instance.GetSuitableDevices();
 	assert(!devices.empty());
-	auto& device = backend.CreateDevice(devices.front().id);
+	auto& device = instance.CreateDevice(devices.front().id);
 
 	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(GetWindowSize(window));
 
@@ -256,7 +257,7 @@ int main()
 
 	orhi::GraphicsPipeline pipeline{
 		device,
-		orhi::GraphicsPipeline::Desc{
+		{
 			.stages = {
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
@@ -298,7 +299,7 @@ int main()
 
 		swapChain = std::make_unique<orhi::SwapChain>(
 			device,
-			backend.GetSurfaceHandle(),
+			instance.GetSurfaceHandle(),
 			windowSize,
 			optimalSwapChainDesc,
 			swapChain ? std::make_optional(std::ref(*swapChain)) : std::nullopt
@@ -336,7 +337,7 @@ int main()
 
 	auto textureDescriptor = std::make_unique<orhi::Descriptor>(
 		device,
-		orhi::Descriptor::TextureViewDesc{
+		orhi::data::TextureViewDesc{
 			.texture = texture
 		}
 	);

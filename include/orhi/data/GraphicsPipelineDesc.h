@@ -31,12 +31,12 @@ namespace orhi::data
 	/**
 	* Graphics pipeline descriptor
 	*/
-	template<types::EGraphicsBackend Backend, class DeviceContext, class ShaderModuleContext, class RenderPassContext, class DescriptorSetLayoutContext>
+	template<typename BackendTraits>
 	struct GraphicsPipelineDesc
 	{
-		std::unordered_map<types::EShaderStageFlags, std::reference_wrapper<api::TShaderModule<Backend, ShaderModuleContext, DeviceContext>>> stages;
-		api::TRenderPass<Backend, RenderPassContext, DeviceContext>& renderPass;
-		std::span<const std::reference_wrapper<api::TDescriptorSetLayout<Backend, DescriptorSetLayoutContext, DeviceContext>>> descriptorSetLayouts;
+		std::unordered_map<types::EShaderStageFlags, std::reference_wrapper<api::TShaderModule<BackendTraits>>> stages;
+		api::TRenderPass<BackendTraits>& renderPass;
+		std::span<const std::reference_wrapper<api::TDescriptorSetLayout<BackendTraits>>> descriptorSetLayouts;
 		
 		// Pipeline state descriptors
 		VertexInputStateDesc vertexInputState{};

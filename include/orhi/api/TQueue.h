@@ -13,21 +13,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class QueueContext,
-		class DeviceContext,
-		class RenderPassContext,
-		class FramebufferContext,
-		class BufferContext,
-		class DescriptorSetContext,
-		class SwapChainContext,
-		class SemaphoreContext,
-		class FenceContext,
-		class CommandBufferContext,
-		class TextureContext,
-		class DescriptorContext
-	>
+	template<typename BackendTraits>
 	class TQueue final
 	{
 	public:
@@ -49,18 +35,18 @@ namespace orhi::api
 		* Submit the queue
 		*/
 		void Submit(
-			std::initializer_list<std::reference_wrapper<TCommandBuffer<Backend, CommandBufferContext, DeviceContext, RenderPassContext, FramebufferContext, BufferContext, DescriptorSetContext, TextureContext, DescriptorContext>>> p_commandBuffers,
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_waitSemaphores = {},
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_signalSemaphores = {},
-			std::optional<std::reference_wrapper<TFence<Backend, FenceContext, DeviceContext>>> p_fence = std::nullopt
+			std::initializer_list<std::reference_wrapper<TCommandBuffer<BackendTraits>>> p_commandBuffers,
+			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_waitSemaphores = {},
+			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_signalSemaphores = {},
+			std::optional<std::reference_wrapper<TFence<BackendTraits>>> p_fence = std::nullopt
 		);
 
 		/**
 		* Present the queue
 		*/
 		void Present(
-			std::initializer_list<std::reference_wrapper<TSemaphore<Backend, SemaphoreContext, DeviceContext>>> p_waitSemaphores,
-			TSwapChain<Backend, SwapChainContext, DeviceContext, FramebufferContext, RenderPassContext, SemaphoreContext, FenceContext>& p_swapChain,
+			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_waitSemaphores,
+			TSwapChain<BackendTraits>& p_swapChain,
 			uint32_t p_swapChainIndice
 		);
 
@@ -70,6 +56,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		QueueContext m_context;
+		BackendTraits::QueueContext m_context;
 	};
 }

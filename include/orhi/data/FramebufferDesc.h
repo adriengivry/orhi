@@ -16,11 +16,11 @@ namespace orhi::data
 	/**
 	*
 	*/
-	template<types::EGraphicsBackend Backend, class DeviceContext, class RenderPassContext>
+	template<typename BackendTraits>
 	struct FramebufferDesc
 	{
 		std::span<const NativeHandle> attachments;
-		api::TRenderPass<Backend, RenderPassContext, DeviceContext>& renderPass;
+		api::TRenderPass<BackendTraits>& renderPass;
 		std::pair<uint32_t, uint32_t> extent;
 	};
 }

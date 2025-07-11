@@ -7,6 +7,6 @@
 #pragma once
 
 #include <orhi/impl/BackendSelection.h>
-#include ORHI_SELECTED_API_HEADER_LOCATION(Backend)
+#include ORHI_SELECTED_API_HEADER_LOCATION(Device)
 
-ORHI_EXPOSE_SELECTED_TYPE(Backend)
+ORHI_EXPOSE_SELECTED_TYPE(Device)

@@ -13,9 +13,9 @@
 namespace orhi::data
 {
 	/**
-	* Struct containing information about the backend
+	* Struct containing information about the instance
 	*/
-	struct BackendDesc
+	struct InstanceDesc
 	{
 		bool debug;
 		std::vector<std::string> extensions;

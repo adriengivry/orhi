@@ -12,18 +12,14 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class SemaphoreContext,
-		class DeviceContext
-	>
+	template<typename BackendTraits>
 	class TSemaphore final
 	{
 	public:
 		/**
 		* Creates a semaphore
 		*/
-		TSemaphore(TDevice<Backend, DeviceContext>& p_device);
+		TSemaphore(TDevice<BackendTraits>& p_device);
 
 		/**
 		* Destroys the semaphore
@@ -42,6 +38,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		SemaphoreContext m_context;
+		BackendTraits::SemaphoreContext m_context;
 	};
 }

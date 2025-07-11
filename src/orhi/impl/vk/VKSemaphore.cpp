@@ -67,4 +67,6 @@ namespace orhi
 	}
 }
 
+template class orhi::api::TSemaphore<orhi::impl::vk::BackendTraits>;
+
 #endif // #if defined(ORHI_COMPILE_VULKAN)

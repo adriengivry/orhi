@@ -12,31 +12,16 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class GraphicsPipelineContext,
-		class DeviceContext,
-		class ShaderModuleContext,
-		class RenderPassContext,
-		class DescriptorSetLayoutContext
-	>
+	template<typename BackendTraits>
 	class TGraphicsPipeline final
 	{
 	public:
-		using Desc = data::GraphicsPipelineDesc<
-			Backend,
-			DeviceContext,
-			ShaderModuleContext,
-			RenderPassContext,
-			DescriptorSetLayoutContext
-		>;
-
 		/**
 		* Creates a graphics pipeline
 		*/
 		TGraphicsPipeline(
-			TDevice<Backend, DeviceContext>& p_device,
-			const Desc& p_desc
+			TDevice<BackendTraits>& p_device,
+			const data::GraphicsPipelineDesc<BackendTraits>& p_desc
 		);
 
 		/**
@@ -55,6 +40,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		GraphicsPipelineContext m_context;
+		BackendTraits::GraphicsPipelineContext m_context;
 	};
 }

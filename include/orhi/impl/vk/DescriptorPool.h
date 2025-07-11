@@ -9,6 +9,7 @@
 #include <orhi/api/TDescriptorPool.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/DescriptorSet.h>
+#include <orhi/impl/vk/BackendTraits.h>
 #include <list>
 
 struct VkDescriptorPool_T;
@@ -23,14 +24,5 @@ namespace orhi::impl::vk
 		std::list<DescriptorSet> descriptorSets;
 	};
 
-	using DescriptorPool = api::TDescriptorPool<
-		types::EGraphicsBackend::VULKAN,
-		struct DescriptorPoolContext,
-		struct DeviceContext,
-		struct DescriptorSetContext,
-		struct DescriptorSetLayoutContext,
-		struct BufferContext,
-		struct DescriptorContext,
-		struct TextureContext
-	>;
+	using DescriptorPool = api::TDescriptorPool<BackendTraits>;
 }

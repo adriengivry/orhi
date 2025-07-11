@@ -12,18 +12,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class CommandPoolContext,
-		class DeviceContext,
-		class CommandBufferContext,
-		class RenderPassContext,
-		class FramebufferContext,
-		class BufferContext,
-		class DescriptorSetContext,
-		class TextureContext,
-		class DescriptorContext
-	>
+	template<typename BackendTraits>
 	class TCommandPool final
 	{
 	public:
@@ -31,7 +20,7 @@ namespace orhi::api
 		* Creates a command pool
 		*/
 		TCommandPool(
-			TDevice<Backend, DeviceContext>& p_device
+			TDevice<BackendTraits>& p_device
 		);
 
 		/**
@@ -42,7 +31,7 @@ namespace orhi::api
 		/**
 		* Allocates a command buffer from the command pool
 		*/
-		std::vector<std::reference_wrapper<TCommandBuffer<Backend, CommandBufferContext, DeviceContext, RenderPassContext, FramebufferContext, BufferContext, DescriptorSetContext, TextureContext, DescriptorContext>>> AllocateCommandBuffers(
+		std::vector<std::reference_wrapper<TCommandBuffer<BackendTraits>>> AllocateCommandBuffers(
 			uint32_t p_count,
 			types::ECommandBufferLevel p_level = types::ECommandBufferLevel::PRIMARY
 		);
@@ -53,6 +42,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		CommandPoolContext m_context;
+		BackendTraits::CommandPoolContext m_context;
 	};
 }

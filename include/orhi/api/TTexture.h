@@ -18,11 +18,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class TextureContext,
-		class DeviceContext
-	>
+	template<typename BackendTraits>
 	class TTexture final
 	{
 	public:
@@ -32,7 +28,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TTexture(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<BackendTraits>& p_device,
 			const data::TextureDesc& p_desc
 		);
 
@@ -93,6 +89,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		TextureContext m_context;
+		BackendTraits::TextureContext m_context;
 	};
 }

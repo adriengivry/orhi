@@ -8,6 +8,7 @@
 
 #include <orhi/api/TSemaphore.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkSemaphore_T;
 typedef VkSemaphore_T* VkSemaphore;
@@ -20,9 +21,5 @@ namespace orhi::impl::vk
 		VkSemaphore handle;
 	};
 
-	using Semaphore = api::TSemaphore<
-		types::EGraphicsBackend::VULKAN,
-		struct SemaphoreContext,
-		struct DeviceContext
-	>;
+	using Semaphore = api::TSemaphore<BackendTraits>;
 }

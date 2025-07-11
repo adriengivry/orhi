@@ -8,6 +8,7 @@
 
 #include <orhi/api/TDescriptorSetLayout.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkDescriptorSetLayout_T;
 typedef VkDescriptorSetLayout_T* VkDescriptorSetLayout;
@@ -20,9 +21,5 @@ namespace orhi::impl::vk
 		VkDescriptorSetLayout handle;
 	};
 
-	using DescriptorSetLayout = api::TDescriptorSetLayout<
-		types::EGraphicsBackend::VULKAN,
-		struct DescriptorSetLayoutContext,
-		struct DeviceContext
-	>;
+	using DescriptorSetLayout = api::TDescriptorSetLayout<BackendTraits>;
 }

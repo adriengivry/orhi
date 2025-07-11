@@ -8,6 +8,7 @@
 
 #include <orhi/api/TFence.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkFence_T;
 typedef VkFence_T* VkFence;
@@ -20,9 +21,5 @@ namespace orhi::impl::vk
 		VkFence handle;
 	};
 
-	using Fence = api::TFence<
-		types::EGraphicsBackend::VULKAN,
-		struct FenceContext,
-		struct DeviceContext
-	>;
+	using Fence = api::TFence<BackendTraits>;
 }

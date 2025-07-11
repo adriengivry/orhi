@@ -8,6 +8,7 @@
 
 #include <orhi/api/TBuffer.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkBuffer_T;
 typedef VkBuffer_T* VkBuffer;
@@ -25,9 +26,5 @@ namespace orhi::impl::vk
 		uint64_t allocatedBytes;
 	};
 
-	using Buffer = api::TBuffer<
-		types::EGraphicsBackend::VULKAN,
-		struct BufferContext,
-		struct DeviceContext
-	>;
+	using Buffer = api::TBuffer<BackendTraits>;
 }

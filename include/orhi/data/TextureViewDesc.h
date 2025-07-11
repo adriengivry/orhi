@@ -22,10 +22,10 @@ namespace orhi::data
 	/**
 	*
 	*/
-	template<types::EGraphicsBackend Backend, class TextureContext, class DeviceContext>
+	template<typename BackendTraits>
 	struct TextureViewDesc
 	{
-		api::TTexture<Backend, TextureContext, DeviceContext>& texture;
+		api::TTexture<BackendTraits>& texture;
 		types::EFormat format = types::EFormat::R8G8B8A8_SRGB;
 		types::ETextureType type = types::ETextureType::TEXTURE_2D;
 		uint32_t mipLevels = 1;

@@ -16,7 +16,10 @@ using namespace orhi::impl::vk;
 namespace orhi
 {
 	template<>
-	Framebuffer::TFramebuffer(Device& p_device, const Desc& p_desc) :
+	Framebuffer::TFramebuffer(
+		Device& p_device,
+		const data::FramebufferDesc<BackendTraits>& p_desc
+	) :
 		m_context{
 			.device = p_device,
 			.handle = VK_NULL_HANDLE
@@ -60,5 +63,7 @@ namespace orhi
 		return m_context.handle;
 	}
 }
+
+template class orhi::api::TFramebuffer<orhi::impl::vk::BackendTraits>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

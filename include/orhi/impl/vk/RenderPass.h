@@ -8,6 +8,7 @@
 
 #include <orhi/api/TRenderPass.h>
 #include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkRenderPass_T;
 typedef VkRenderPass_T* VkRenderPass;
@@ -20,9 +21,5 @@ namespace orhi::impl::vk
 		VkRenderPass handle;
 	};
 
-	using RenderPass = api::TRenderPass<
-		types::EGraphicsBackend::VULKAN,
-		struct RenderPassContext,
-		struct DeviceContext
-	>;
+	using RenderPass = api::TRenderPass<BackendTraits>;
 }

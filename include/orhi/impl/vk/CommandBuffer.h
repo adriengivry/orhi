@@ -7,6 +7,7 @@
 #pragma once
 
 #include <orhi/api/TCommandBuffer.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkCommandBuffer_T;
 typedef VkCommandBuffer_T* VkCommandBuffer;
@@ -18,15 +19,5 @@ namespace orhi::impl::vk
 		VkCommandBuffer handle;
 	};
 
-	using CommandBuffer = api::TCommandBuffer<
-		types::EGraphicsBackend::VULKAN,
-		struct CommandBufferContext,
-		struct DeviceContext,
-		struct RenderPassContext,
-		struct FramebufferContext,
-		struct BufferContext,
-		struct DescriptorSetContext,
-		struct TextureContext,
-		struct DescriptorContext
-	>;
+	using CommandBuffer = api::TCommandBuffer<BackendTraits>;
 }

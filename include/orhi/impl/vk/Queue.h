@@ -7,6 +7,7 @@
 #pragma once
 
 #include <orhi/api/TQueue.h>
+#include <orhi/impl/vk/BackendTraits.h>
 
 struct VkDevice_T;
 typedef VkDevice_T* VkDevice;
@@ -22,19 +23,5 @@ namespace orhi::impl::vk
 		VkQueue handle;
 	};
 
-	using Queue = api::TQueue<
-		types::EGraphicsBackend::VULKAN,
-		struct QueueContext,
-		struct DeviceContext,
-		struct RenderPassContext,
-		struct FramebufferContext,
-		struct BufferContext,
-		struct DescriptorSetContext,
-		struct SwapChainContext,
-		struct SemaphoreContext,
-		struct FenceContext,
-		struct CommandBufferContext,
-		struct TextureContext,
-		struct DescriptorContext
-	>;
+	using Queue = api::TQueue<BackendTraits>;
 }

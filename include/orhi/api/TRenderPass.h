@@ -12,11 +12,7 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class RenderPassContext,
-		class DeviceContext
-	>
+	template<typename BackendTraits>
 	class TRenderPass final
 	{
 	public:
@@ -26,7 +22,7 @@ namespace orhi::api
 		* @param p_format
 		*/
 		TRenderPass(
-			TDevice<Backend, DeviceContext>& p_device,
+			TDevice<BackendTraits>& p_device,
 			types::EFormat p_format
 		);
 
@@ -41,6 +37,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		RenderPassContext m_context;
+		BackendTraits::RenderPassContext m_context;
 	};
 }

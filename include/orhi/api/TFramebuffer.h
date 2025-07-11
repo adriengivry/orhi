@@ -11,27 +11,16 @@
 
 namespace orhi::api
 {
-	template<
-		types::EGraphicsBackend Backend,
-		class FramebufferContext,
-		class DeviceContext,
-		class RenderPassContext
-	>
+	template<typename BackendTraits>
 	class TFramebuffer final
 	{
 	public:
-		using Desc = data::FramebufferDesc<
-			Backend,
-			DeviceContext,
-			RenderPassContext
-		>;
-
 		/**
 		* Creates a framebuffer
 		*/
 		TFramebuffer(
-			TDevice<Backend, DeviceContext>& p_device,
-			const Desc& p_desc
+			TDevice<BackendTraits>& p_device,
+			const data::FramebufferDesc<BackendTraits>& p_desc
 		);
 
 		/**
@@ -45,6 +34,6 @@ namespace orhi::api
 		data::NativeHandle GetNativeHandle() const;
 
 	private:
-		FramebufferContext m_context;
+		BackendTraits::FramebufferContext m_context;
 	};
 }

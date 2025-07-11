@@ -11,33 +11,30 @@
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/api/TDevice.h>
 #include <orhi/data/DeviceInfo.h>
-#include <orhi/data/BackendDesc.h>
+#include <orhi/data/InstanceDesc.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/data/NativeHandle.h>
+#include <orhi/api/TBackendTraits.h>
 
 namespace orhi::api
 {
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<
-		types::EGraphicsBackend Backend,
-		class BackendContext,
-		class DeviceContext
-	>
-	class TBackend final
+	template<typename BackendTraits>
+	class TInstance final
 	{
 	public:
 		/**
 		* Creates the backend.
 		* @param p_desc
 		*/
-		TBackend(const data::BackendDesc& p_desc);
+		TInstance(const data::InstanceDesc& p_desc);
 
 		/**
 		* Destroys the backend.
 		*/
-		~TBackend();
+		~TInstance();
 
 		/**
 		* Return the list of available devices to select from
@@ -48,7 +45,7 @@ namespace orhi::api
 		* Create a logical device from the selected device ID
 		* @param p_deviceId
 		*/
-		TDevice<Backend, DeviceContext>& CreateDevice(uint32_t p_deviceId);
+		TDevice<BackendTraits>& CreateDevice(uint32_t p_deviceId);
 
 		/**
 		* Returns the underlying object's native handle
@@ -61,6 +58,6 @@ namespace orhi::api
 		data::NativeHandle GetSurfaceHandle() const;
 
 	private:
-		BackendContext m_context;
+		BackendTraits::InstanceContext m_context;
 	};
 }
