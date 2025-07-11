@@ -6,12 +6,13 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
 #include <orhi/api/TDevice.h>
-#include <orhi/impl/vk/Queue.h>
 #include <orhi/data/DeviceInfo.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Queue.h>
+
+#include <memory>
+#include <vector>
 
 struct VkPhysicalDevice_T;
 typedef VkPhysicalDevice_T* VkPhysicalDevice;

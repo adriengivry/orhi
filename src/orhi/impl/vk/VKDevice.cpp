@@ -6,20 +6,23 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
+#include <orhi/impl/vk/Device.h>
+
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/details/ExtensionManager.h>
-#include <orhi/impl/vk/details/ValidationLayerManager.h>
 #include <orhi/impl/vk/details/DebugMessenger.h>
-#include <orhi/impl/vk/details/SwapChainUtils.h>
 #include <orhi/impl/vk/details/DeviceCreationInfo.h>
+#include <orhi/impl/vk/details/ExtensionManager.h>
 #include <orhi/impl/vk/details/QueueFamilyIndices.h>
+#include <orhi/impl/vk/details/SwapChainUtils.h>
 #include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/details/ValidationLayerManager.h>
+
+#include <vulkan/vulkan.h>
+
 #include <format>
 #include <optional>
 #include <set>
-#include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
 

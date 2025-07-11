@@ -6,9 +6,10 @@
 
 #pragma once
 
+#include <orhi/utils/BitmaskOperators.h>
+
 #include <tuple>
 #include <type_traits>
-#include <orhi/utils/BitmaskOperators.h>
 
 namespace orhi::utils
 {

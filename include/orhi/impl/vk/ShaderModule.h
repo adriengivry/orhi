@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/api/TShaderModule.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
 
 struct VkShaderModule_T;
 typedef VkShaderModule_T* VkShaderModule;

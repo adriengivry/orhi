@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <cstdint>
 #include <orhi/utils/BitmaskOperators.h>
 
 namespace orhi::types

@@ -7,10 +7,10 @@
 #pragma once
 
 #include <orhi/api/TSwapChain.h>
-#include <orhi/impl/vk/Framebuffer.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/Framebuffer.h>
 
 struct VkSwapchainKHR_T;
 typedef VkSwapchainKHR_T* VkSwapchainKHR;

@@ -6,11 +6,12 @@
 
 #pragma once
 
-#include <cstdint>
+#include <orhi/types/EColorSpace.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EPresentMode.h>
-#include <orhi/types/EColorSpace.h>
 #include <orhi/types/ESurfaceTransformFlags.h>
+
+#include <cstdint>
 
 namespace orhi::data
 {

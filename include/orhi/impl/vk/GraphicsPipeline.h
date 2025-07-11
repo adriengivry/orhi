@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/api/TGraphicsPipeline.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
 
 struct VkPipeline_T;
 typedef VkPipeline_T* VkPipeline;

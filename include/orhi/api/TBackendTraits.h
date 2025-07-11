@@ -5,8 +5,9 @@
 */
 #pragma once
 
-#include <type_traits>
 #include <orhi/types/EGraphicsBackend.h>
+
+#include <type_traits>
 
 namespace orhi::api
 {

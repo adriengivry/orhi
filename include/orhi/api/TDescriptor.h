@@ -6,12 +6,13 @@
 
 #pragma once
 
-#include <optional>
 #include <orhi/data/BufferMemoryRange.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/SamplerDesc.h>
 #include <orhi/data/TextureViewDesc.h>
 #include <orhi/types/EGraphicsBackend.h>
+
+#include <optional>
 
 namespace orhi::api
 {

@@ -6,9 +6,10 @@
 
 #pragma once
 
-#include <memory>
 #include <orhi/api/TInstance.h>
 #include <orhi/impl/vk/BackendTraits.h>
+
+#include <memory>
 
 struct VkInstance_T;
 typedef VkInstance_T* VkInstance;

@@ -6,12 +6,11 @@
 
 #pragma once
 
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/data/SwapChainDesc.h>
+#include <orhi/data/DeviceInfo.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/QueuesDesc.h>
-#include <orhi/data/DeviceInfo.h>
-#include <orhi/api/TBackendTraits.h>
+#include <orhi/data/SwapChainDesc.h>
+#include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
 {

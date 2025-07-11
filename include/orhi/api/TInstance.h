@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include <vector>
-#include <unordered_map>
-#include <orhi/api/TBackendTraits.h>
 #include <orhi/data/DeviceInfo.h>
 #include <orhi/data/InstanceDesc.h>
-#include <orhi/data/SwapChainDesc.h>
 #include <orhi/data/NativeHandle.h>
+#include <orhi/data/SwapChainDesc.h>
 #include <orhi/types/EGraphicsBackend.h>
+
+#include <unordered_map>
+#include <vector>
 
 namespace orhi::api
 {

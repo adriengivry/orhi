@@ -6,16 +6,17 @@
 
 #pragma once
 
-#include <cstdint>
 #include <orhi/data/Extent3D.h>
+
 #include <orhi/types/EFormat.h>
-#include <orhi/types/ETextureUsageType.h>
 #include <orhi/types/ETextureType.h>
-#include <orhi/types/ETextureTiling.h>
-#include <orhi/types/ETextureLayout.h>
-#include <orhi/types/ESampleCountFlags.h>
-#include <orhi/types/EGraphicsBackend.h>
-#include <orhi/api/TTexture.h>
+
+#include <cstdint>
+
+namespace orhi::api
+{
+	template<typename BackendTraits> class TTexture;
+}
 
 namespace orhi::data
 {

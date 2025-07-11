@@ -6,14 +6,15 @@
 
 #pragma once
 
-#include <cstdint>
 #include <orhi/data/Extent3D.h>
 #include <orhi/types/EFormat.h>
-#include <orhi/types/ETextureUsageType.h>
-#include <orhi/types/ETextureType.h>
-#include <orhi/types/ETextureTiling.h>
-#include <orhi/types/ETextureLayout.h>
 #include <orhi/types/ESampleCountFlags.h>
+#include <orhi/types/ETextureTiling.h>
+#include <orhi/types/ETextureType.h>
+#include <orhi/types/ETextureUsageType.h>
+#include <orhi/types/ETextureLayout.h>
+
+#include <cstdint>
 
 namespace orhi::data
 {

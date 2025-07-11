@@ -7,11 +7,11 @@
 #pragma once
 
 #include <orhi/api/TDescriptor.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
+#include <orhi/types/EDescriptorType.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
-#include <orhi/types/EDescriptorType.h>
 
 namespace orhi::impl::vk
 {

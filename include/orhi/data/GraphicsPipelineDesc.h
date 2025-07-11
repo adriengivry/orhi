@@ -6,25 +6,30 @@
 
 #pragma once
 
-#include <unordered_map>
-#include <cstdint>
-#include <span>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EShaderStageFlags.h>
-#include <orhi/api/TRenderPass.h>
-#include <orhi/api/TShaderModule.h>
-#include <orhi/api/TDescriptorSetLayout.h>
-#include <orhi/data/VertexBindingDesc.h>
-#include <orhi/data/VertexAttributeDesc.h>
-#include <orhi/data/VertexInputStateDesc.h>
-#include <orhi/data/InputAssemblyStateDesc.h>
-#include <orhi/data/TessellationStateDesc.h>
-#include <orhi/data/ViewportStateDesc.h>
-#include <orhi/data/RasterizationStateDesc.h>
-#include <orhi/data/MultisampleStateDesc.h>
-#include <orhi/data/DepthStencilStateDesc.h>
 #include <orhi/data/ColorBlendStateDesc.h>
+#include <orhi/data/DepthStencilStateDesc.h>
 #include <orhi/data/DynamicStateDesc.h>
+#include <orhi/data/InputAssemblyStateDesc.h>
+#include <orhi/data/MultisampleStateDesc.h>
+#include <orhi/data/RasterizationStateDesc.h>
+#include <orhi/data/TessellationStateDesc.h>
+#include <orhi/data/VertexAttributeDesc.h>
+#include <orhi/data/VertexBindingDesc.h>
+#include <orhi/data/VertexInputStateDesc.h>
+#include <orhi/data/ViewportStateDesc.h>
+
+#include <cstdint>
+#include <span>
+#include <unordered_map>
+
+namespace orhi::api
+{
+	template<typename BackendTraits> class TDescriptorSetLayout;
+	template<typename BackendTraits> class TRenderPass;
+	template<typename BackendTraits> class TShaderModule;
+}
 
 namespace orhi::data
 {

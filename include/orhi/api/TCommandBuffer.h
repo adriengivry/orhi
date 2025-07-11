@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <orhi/api/TBackendTraits.h>
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
 #include <orhi/data/NativeHandle.h>

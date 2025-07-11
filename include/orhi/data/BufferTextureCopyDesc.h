@@ -6,9 +6,10 @@
 
 #pragma once
 
-#include <cstdint>
 #include <orhi/data/Extent3D.h>
 #include <orhi/data/Offset3D.h>
+
+#include <cstdint>
 
 namespace orhi::data
 {

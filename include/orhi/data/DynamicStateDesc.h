@@ -7,6 +7,7 @@
 #pragma once
 
 #include <orhi/types/EDynamicState.h>
+
 #include <span>
 
 namespace orhi::data

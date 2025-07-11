@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/api/TSemaphore.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
 
 struct VkSemaphore_T;
 typedef VkSemaphore_T* VkSemaphore;

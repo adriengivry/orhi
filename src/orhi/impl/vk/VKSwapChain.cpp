@@ -6,16 +6,19 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <array>
+#include <orhi/impl/vk/SwapChain.h>
+
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/SwapChain.h>
+#include <orhi/except/OutOfDateSwapChain.h>
+#include <orhi/impl/vk/Fence.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Semaphore.h>
-#include <orhi/impl/vk/Fence.h>
 #include <orhi/impl/vk/details/Types.h>
-#include <orhi/except/OutOfDateSwapChain.h>
+
 #include <vulkan/vulkan.h>
+
+#include <array>
 
 using namespace orhi::impl::vk;
 

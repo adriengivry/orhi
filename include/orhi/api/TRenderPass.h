@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/data/NativeHandle.h>
-#include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EFormat.h>
+#include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
 {

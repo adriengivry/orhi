@@ -4,8 +4,27 @@
 * @licence: MIT
 */
 
-#include <GLFW/glfw3.h>
+#include <orhi/Buffer.h>
+#include <orhi/CommandBuffer.h>
+#include <orhi/CommandPool.h>
+#include <orhi/Descriptor.h>
+#include <orhi/DescriptorPool.h>
+#include <orhi/DescriptorSet.h>
+#include <orhi/DescriptorSetLayout.h>
+#include <orhi/Device.h>
+#include <orhi/except/OutOfDateSwapChain.h>
+#include <orhi/Fence.h>
+#include <orhi/Framebuffer.h>
+#include <orhi/GraphicsPipeline.h>
+#include <orhi/Instance.h>
+#include <orhi/Queue.h>
+#include <orhi/RenderPass.h>
+#include <orhi/Semaphore.h>
+#include <orhi/ShaderModule.h>
+#include <orhi/SwapChain.h>
+#include <orhi/Texture.h>
 
+#include <GLFW/glfw3.h>
 #if defined(_WIN32) || defined(_WIN64)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
@@ -15,37 +34,17 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
+#include <array>
 #include <cassert>
-#include <vector>
 #include <filesystem>
 #include <fstream>
-#include <array>
-
-#include <orhi/Instance.h>
-#include <orhi/RenderPass.h>
-#include <orhi/ShaderModule.h>
-#include <orhi/GraphicsPipeline.h>
-#include <orhi/Framebuffer.h>
-#include <orhi/Semaphore.h>
-#include <orhi/Fence.h>
-#include <orhi/SwapChain.h>
-#include <orhi/Buffer.h>
-#include <orhi/CommandPool.h>
-#include <orhi/CommandBuffer.h>
-#include <orhi/DescriptorPool.h>
-#include <orhi/DescriptorSet.h>
-#include <orhi/DescriptorSetLayout.h>
-#include <orhi/Queue.h>
-#include <orhi/Texture.h>
-#include <orhi/Descriptor.h>
-#include <orhi/Device.h>
-#include <orhi/except/OutOfDateSwapChain.h>
+#include <vector>
 
 namespace
 {

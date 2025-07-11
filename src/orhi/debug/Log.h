@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <string>
+#include <string_view>
 
 #define ORHI_LOG_INFO(message) orhi::debug::Log<orhi::debug::ELogLevel::INFO>(message)
 #define ORHI_LOG_WARNING(message) orhi::debug::Log<orhi::debug::ELogLevel::WARNING>(message)

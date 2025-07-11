@@ -6,14 +6,17 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
+#include <orhi/impl/vk/DescriptorSet.h>
+
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/DescriptorSet.h>
 #include <orhi/impl/vk/details/Types.h>
-#include <orhi/impl/vk/Descriptor.h>
 #include <orhi/impl/vk/Buffer.h>
+#include <orhi/impl/vk/Descriptor.h>
 #include <orhi/utils/EnumMapper.h>
+
 #include <vulkan/vulkan.h>
+
 #include <variant>
 
 using namespace orhi::impl::vk;

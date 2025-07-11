@@ -4,9 +4,9 @@
 * @licence: MIT
 */
 
-#include <cstdio>
-
 #include <orhi/debug/Log.h>
+
+#include <cstdio>
 
 namespace orhi::debug
 {

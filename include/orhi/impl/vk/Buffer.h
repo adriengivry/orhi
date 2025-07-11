@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/api/TBuffer.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
 
 struct VkBuffer_T;
 typedef VkBuffer_T* VkBuffer;

@@ -10,6 +10,8 @@
 #include <orhi/data/NativeHandle.h>
 #include <orhi/types/EGraphicsBackend.h>
 
+#include <initializer_list>
+
 namespace orhi::api
 {
 	template<typename BackendTraits> class TDevice;

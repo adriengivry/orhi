@@ -6,9 +6,11 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
+#include <orhi/impl/vk/Fence.h>
+
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/Fence.h>
+
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;

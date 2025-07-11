@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <orhi/data/NativeHandle.h>
 #include <orhi/types/ECommandBufferLevel.h>
 #include <orhi/types/EGraphicsBackend.h>
 

@@ -6,12 +6,14 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
+#include <orhi/impl/vk/Descriptor.h>
+
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/Descriptor.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/Texture.h>
-#include <orhi/impl/vk/details/Types.h>
+
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;

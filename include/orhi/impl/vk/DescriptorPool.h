@@ -7,9 +7,10 @@
 #pragma once
 
 #include <orhi/api/TDescriptorPool.h>
-#include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/DescriptorSet.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/DescriptorSet.h>
+#include <orhi/impl/vk/Device.h>
+
 #include <list>
 
 struct VkDescriptorPool_T;

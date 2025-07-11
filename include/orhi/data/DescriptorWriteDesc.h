@@ -8,10 +8,15 @@
 
 #include <orhi/types/EDescriptorType.h>
 #include <orhi/types/EGraphicsBackend.h>
-#include <orhi/api/TDescriptor.h>
-#include <orhi/api/TBuffer.h>
+
 #include <cstdint>
 #include <variant>
+
+namespace orhi::api
+{
+	template<typename BackendTraits> class TBuffer;
+	template<typename BackendTraits> class TDescriptor;
+}
 
 namespace orhi::data
 {

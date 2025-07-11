@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <array>
-
 #include <orhi/math/Vec3.h>
+
+#include <array>
 
 namespace orhi::math
 {

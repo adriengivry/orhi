@@ -6,20 +6,21 @@
 
 #pragma once
 
-#include <cstdint>
 #include <orhi/data/Extent3D.h>
-#include <orhi/types/EFormat.h>
-#include <orhi/types/ETextureUsageType.h>
-#include <orhi/types/ETextureType.h>
-#include <orhi/types/ETextureTiling.h>
-#include <orhi/types/ETextureLayout.h>
-#include <orhi/types/ESampleCountFlags.h>
-#include <orhi/types/EGraphicsBackend.h>
+
+#include <orhi/types/ECompareOp.h>
 #include <orhi/types/EFilter.h>
+#include <orhi/types/EFormat.h>
+#include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/ESamplerAddressMode.h>
 #include <orhi/types/ESamplerMipmapMode.h>
-#include <orhi/types/ECompareOp.h>
-#include <orhi/api/TTexture.h>
+#include <orhi/types/ESampleCountFlags.h>
+#include <orhi/types/ETextureLayout.h>
+#include <orhi/types/ETextureTiling.h>
+#include <orhi/types/ETextureType.h>
+#include <orhi/types/ETextureUsageType.h>
+
+#include <cstdint>
 
 namespace orhi::data
 {

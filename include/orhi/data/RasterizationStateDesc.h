@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <orhi/types/EPolygonMode.h>
 #include <orhi/types/ECullModeFlags.h>
 #include <orhi/types/EFrontFace.h>
+#include <orhi/types/EPolygonMode.h>
 
 namespace orhi::data
 {

@@ -10,8 +10,9 @@
 #include <orhi/types/EBlendOp.h>
 #include <orhi/types/EColorComponentFlags.h>
 #include <orhi/types/ELogicOp.h>
-#include <span>
+
 #include <array>
+#include <span>
 
 namespace orhi::data
 {

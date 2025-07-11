@@ -10,21 +10,24 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 
+#include <orhi/impl/vk/Instance.h>
+
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/Instance.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/details/ExtensionManager.h>
-#include <orhi/impl/vk/details/ValidationLayerManager.h>
 #include <orhi/impl/vk/details/DebugMessenger.h>
 #include <orhi/impl/vk/details/DeviceCreationInfo.h>
-#include <orhi/impl/vk/details/SwapChainUtils.h>
+#include <orhi/impl/vk/details/ExtensionManager.h>
 #include <orhi/impl/vk/details/QueueFamilyIndices.h>
+#include <orhi/impl/vk/details/SwapChainUtils.h>
+#include <orhi/impl/vk/details/ValidationLayerManager.h>
+
+#include <vulkan/vulkan.h>
+
 #include <format>
+#include <list>
 #include <optional>
 #include <set>
-#include <list>
-#include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;
 

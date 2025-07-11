@@ -5,6 +5,7 @@
 */
 
 #include <orhi/impl/vk/details/ValidationLayerManager.h>
+
 #include <iostream>
 
 namespace orhi::impl::vk::details

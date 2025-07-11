@@ -6,9 +6,10 @@
 
 #pragma once
 
-#include <span>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/types/EGraphicsBackend.h>
+
+#include <span>
 
 namespace orhi::api
 {

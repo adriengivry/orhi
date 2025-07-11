@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/api/TFence.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
 
 struct VkFence_T;
 typedef VkFence_T* VkFence;

@@ -3,6 +3,7 @@
 * @author: Adrien Givry
 * @licence: MIT
 */
+
 #pragma once
 
 #include <type_traits>

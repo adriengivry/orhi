@@ -6,9 +6,10 @@
 
 #pragma once
 
-#include <cstdint>
 #include <orhi/types/EDescriptorType.h>
 #include <orhi/types/EShaderStageFlags.h>
+
+#include <cstdint>
 
 namespace orhi::data
 {

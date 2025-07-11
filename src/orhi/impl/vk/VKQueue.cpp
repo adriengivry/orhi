@@ -6,16 +6,18 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
+#include <orhi/impl/vk/Queue.h>
+
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/except/OutOfDateSwapChain.h>
-#include <orhi/impl/vk/Queue.h>
-#include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/CommandBuffer.h>
-#include <orhi/impl/vk/Semaphore.h>
-#include <orhi/impl/vk/Fence.h>
-#include <orhi/impl/vk/SwapChain.h>
 #include <orhi/impl/vk/details/MemoryUtils.h>
+#include <orhi/impl/vk/CommandBuffer.h>
+#include <orhi/impl/vk/Device.h>
+#include <orhi/impl/vk/Fence.h>
+#include <orhi/impl/vk/Semaphore.h>
+#include <orhi/impl/vk/SwapChain.h>
+
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;

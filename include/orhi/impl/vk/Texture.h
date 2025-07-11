@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/api/TTexture.h>
-#include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Device.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
 

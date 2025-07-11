@@ -6,9 +6,11 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/debug/Assert.h>
 #include <orhi/impl/vk/Framebuffer.h>
+
+#include <orhi/debug/Assert.h>
 #include <orhi/impl/vk/RenderPass.h>
+
 #include <vulkan/vulkan.h>
 
 using namespace orhi::impl::vk;

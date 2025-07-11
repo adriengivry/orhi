@@ -6,23 +6,26 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
+#include <orhi/impl/vk/GraphicsPipeline.h>
+
+#include <orhi/data/ColorBlendStateDesc.h>
+#include <orhi/data/DepthStencilStateDesc.h>
+#include <orhi/data/DynamicStateDesc.h>
+#include <orhi/data/InputAssemblyStateDesc.h>
+#include <orhi/data/MultisampleStateDesc.h>
+#include <orhi/data/RasterizationStateDesc.h>
+#include <orhi/data/TessellationStateDesc.h>
+#include <orhi/data/VertexInputStateDesc.h>
+#include <orhi/data/ViewportStateDesc.h>
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/GraphicsPipeline.h>
-#include <orhi/impl/vk/details/Types.h>
-#include <orhi/impl/vk/ShaderModule.h>
-#include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/DescriptorSetLayout.h>
-#include <orhi/data/VertexInputStateDesc.h>
-#include <orhi/data/InputAssemblyStateDesc.h>
-#include <orhi/data/TessellationStateDesc.h>
-#include <orhi/data/ViewportStateDesc.h>
-#include <orhi/data/RasterizationStateDesc.h>
-#include <orhi/data/MultisampleStateDesc.h>
-#include <orhi/data/DepthStencilStateDesc.h>
-#include <orhi/data/ColorBlendStateDesc.h>
-#include <orhi/data/DynamicStateDesc.h>
+#include <orhi/impl/vk/RenderPass.h>
+#include <orhi/impl/vk/ShaderModule.h>
+#include <orhi/impl/vk/details/Types.h>
+
 #include <vulkan/vulkan.h>
+
 #include <array>
 
 using namespace orhi::impl::vk;

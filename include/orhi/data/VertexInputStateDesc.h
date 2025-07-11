@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include <orhi/data/VertexBindingDesc.h>
 #include <orhi/data/VertexAttributeDesc.h>
+#include <orhi/data/VertexBindingDesc.h>
+
 #include <span>
 
 namespace orhi::data

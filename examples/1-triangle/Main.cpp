@@ -4,31 +4,30 @@
 * @licence: MIT
 */
 
-#include <GLFW/glfw3.h>
+#include <orhi/CommandBuffer.h>
+#include <orhi/CommandPool.h>
+#include <orhi/except/OutOfDateSwapChain.h>
+#include <orhi/Fence.h>
+#include <orhi/Framebuffer.h>
+#include <orhi/GraphicsPipeline.h>
+#include <orhi/Instance.h>
+#include <orhi/Queue.h>
+#include <orhi/RenderPass.h>
+#include <orhi/Semaphore.h>
+#include <orhi/ShaderModule.h>
+#include <orhi/SwapChain.h>
 
+#include <GLFW/glfw3.h>
 #if defined(_WIN32) || defined(_WIN64)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 #endif
 
+#include <array>
 #include <cassert>
-#include <vector>
 #include <filesystem>
 #include <fstream>
-#include <array>
-
-#include <orhi/Instance.h>
-#include <orhi/RenderPass.h>
-#include <orhi/ShaderModule.h>
-#include <orhi/GraphicsPipeline.h>
-#include <orhi/Framebuffer.h>
-#include <orhi/Semaphore.h>
-#include <orhi/Fence.h>
-#include <orhi/SwapChain.h>
-#include <orhi/CommandPool.h>
-#include <orhi/CommandBuffer.h>
-#include <orhi/Queue.h>
-#include <orhi/except/OutOfDateSwapChain.h>
+#include <vector>
 
 namespace
 {

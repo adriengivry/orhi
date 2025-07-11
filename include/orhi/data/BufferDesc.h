@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include <cstdint>
 #include <orhi/types/EBufferUsageFlags.h>
+
+#include <cstdint>
 
 namespace orhi::data
 {

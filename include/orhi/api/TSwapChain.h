@@ -10,8 +10,8 @@
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/types/EGraphicsBackend.h>
 
-#include <vector>
 #include <optional>
+#include <vector>
 
 namespace orhi::api
 {
