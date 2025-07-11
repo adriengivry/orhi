@@ -26,7 +26,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TCommandBuffer final
 	{
 	public:
@@ -59,8 +59,8 @@ namespace orhi::api
 		* Begin a render pass
 		*/
 		void BeginRenderPass(
-			TRenderPass<Backend, ContextRegistry>& p_renderPass,
-			TFramebuffer<Backend, ContextRegistry>& p_framebuffer,
+			TRenderPass<ContextRegistry>& p_renderPass,
+			TFramebuffer<ContextRegistry>& p_framebuffer,
 			std::pair<uint32_t, uint32_t> p_extent
 		);
 
@@ -73,8 +73,8 @@ namespace orhi::api
 		* Copy buffer content from source to destination
 		*/
 		void CopyBuffer(
-			TBuffer<Backend, ContextRegistry>& p_src,
-			TBuffer<Backend, ContextRegistry>& p_dest,
+			TBuffer<ContextRegistry>& p_src,
+			TBuffer<ContextRegistry>& p_dest,
 			std::span<const data::BufferCopyDesc> p_regions = {}
 		);
 
@@ -82,8 +82,8 @@ namespace orhi::api
 		* Copy buffer content from source buffer to destination texture
 		*/
 		void CopyBufferToTexture(
-			TBuffer<Backend, ContextRegistry>& p_src,
-			TTexture<Backend, ContextRegistry>& p_dest,
+			TBuffer<ContextRegistry>& p_src,
+			TTexture<ContextRegistry>& p_dest,
 			std::span<const data::BufferTextureCopyDesc> p_regions = {}
 		);
 
@@ -91,7 +91,7 @@ namespace orhi::api
 		* Transition a texture from one layout to another
 		*/
 		void TransitionTextureLayout(
-			TTexture<Backend, ContextRegistry>& p_texture,
+			TTexture<ContextRegistry>& p_texture,
 			types::ETextureLayout p_layout
 		);
 
@@ -107,7 +107,7 @@ namespace orhi::api
 		* Bind index buffer
 		*/
 		void BindIndexBuffer(
-			const TBuffer<Backend, ContextRegistry>& p_indexBuffer,
+			const TBuffer<ContextRegistry>& p_indexBuffer,
 			uint64_t p_offset = 0,
 			types::EIndexType p_indexType = types::EIndexType::UINT32
 		);
@@ -116,7 +116,7 @@ namespace orhi::api
 		* Bind vertex buffers
 		*/
 		void BindVertexBuffers(
-			std::span<const std::reference_wrapper<TBuffer<Backend, ContextRegistry>>> p_buffers,
+			std::span<const std::reference_wrapper<TBuffer<ContextRegistry>>> p_buffers,
 			std::span<const uint64_t> p_offsets
 		);
 
@@ -124,7 +124,7 @@ namespace orhi::api
 		* Bind descriptor sets
 		*/
 		void BindDescriptorSets(
-			std::span<const std::reference_wrapper<TDescriptorSet<Backend, ContextRegistry>>> p_descriptorSets,
+			std::span<const std::reference_wrapper<TDescriptorSet<ContextRegistry>>> p_descriptorSets,
 			data::NativeHandle p_pipelineLayout
 		);
 

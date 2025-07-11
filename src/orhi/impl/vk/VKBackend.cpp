@@ -329,4 +329,6 @@ namespace orhi
 	}
 }
 
+template class orhi::api::TBackend<orhi::impl::vk::ContextRegistry>;
+
 #endif // #if defined(ORHI_COMPILE_VULKAN)

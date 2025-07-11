@@ -33,5 +33,5 @@ namespace orhi::impl::vk
 		std::pair<uint32_t, uint32_t> extent;
 	};
 
-	using SwapChain = api::TSwapChain<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using SwapChain = api::TSwapChain<ContextRegistry>;
 }

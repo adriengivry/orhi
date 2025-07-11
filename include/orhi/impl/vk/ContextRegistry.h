@@ -30,6 +30,7 @@ namespace orhi::impl::vk
 	struct TextureContext;
 
 	using ContextRegistry = orhi::api::TContextRegistry<
+		orhi::types::EGraphicsBackend::VULKAN,
 		BackendContext,
 		BufferContext,
 		CommandBufferContext,

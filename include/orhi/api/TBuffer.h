@@ -17,7 +17,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TBuffer final
 	{
 	public:
@@ -27,7 +27,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TBuffer(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			const data::BufferDesc& p_desc
 		);
 

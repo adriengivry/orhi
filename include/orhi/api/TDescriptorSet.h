@@ -16,7 +16,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TDescriptorSet final
 	{
 	public:
@@ -24,7 +24,7 @@ namespace orhi::api
 		* Creates a descriptor set
 		*/
 		TDescriptorSet(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			data::NativeHandle p_handle
 		);
 
@@ -37,7 +37,7 @@ namespace orhi::api
 		* Attaches a list of buffers and images to the descriptor set.
 		*/
 		void Write(
-			const std::unordered_map<uint32_t, data::DescriptorWriteDesc<Backend, ContextRegistry>>& p_writeDescs
+			const std::unordered_map<uint32_t, data::DescriptorWriteDesc<ContextRegistry>>& p_writeDescs
 		);
 
 		/**

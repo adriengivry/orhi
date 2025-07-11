@@ -31,5 +31,5 @@ namespace orhi::impl::vk
 		EVulkanDescriptorType type;
 	};
 
-	using Descriptor = api::TDescriptor<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using Descriptor = api::TDescriptor<ContextRegistry>;
 }

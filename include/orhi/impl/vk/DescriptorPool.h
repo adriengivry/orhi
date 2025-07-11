@@ -24,5 +24,5 @@ namespace orhi::impl::vk
 		std::list<DescriptorSet> descriptorSets;
 	};
 
-	using DescriptorPool = api::TDescriptorPool<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using DescriptorPool = api::TDescriptorPool<ContextRegistry>;
 }

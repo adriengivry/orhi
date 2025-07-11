@@ -18,7 +18,7 @@ namespace orhi
 	template<>
 	Framebuffer::TFramebuffer(
 		Device& p_device,
-		const data::FramebufferDesc<types::EGraphicsBackend::VULKAN, ContextRegistry>& p_desc
+		const data::FramebufferDesc<ContextRegistry>& p_desc
 	) :
 		m_context{
 			.device = p_device,
@@ -63,5 +63,7 @@ namespace orhi
 		return m_context.handle;
 	}
 }
+
+template class orhi::api::TFramebuffer<orhi::impl::vk::ContextRegistry>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

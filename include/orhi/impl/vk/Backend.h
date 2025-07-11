@@ -35,9 +35,6 @@ namespace orhi::impl::vk
 
 	struct DeviceContext;
 
-	// Legacy type alias (deprecated)
-	using Backend = api::TBackend<types::EGraphicsBackend::VULKAN, ContextRegistry>;
-	
-	// New type alias using ContextRegistry
-	using BackendNew = api::TBackend<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	// Updated type alias using ContextRegistry only
+	using Backend = api::TBackend<ContextRegistry>;
 }

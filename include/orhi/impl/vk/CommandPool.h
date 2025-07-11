@@ -23,5 +23,5 @@ namespace orhi::impl::vk
 		std::list<CommandBuffer> commandBuffers;
 	};
 
-	using CommandPool = api::TCommandPool<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using CommandPool = api::TCommandPool<ContextRegistry>;
 }

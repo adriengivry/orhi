@@ -216,7 +216,7 @@ namespace orhi
 		{
 			framebuffers.emplace_back(
 				m_context.device,
-				data::FramebufferDesc<types::EGraphicsBackend::VULKAN, ContextRegistry>{
+				data::FramebufferDesc<ContextRegistry>{
 					.attachments = std::to_array({ data::NativeHandle{m_context.imageViews[i]} }),
 					.renderPass = p_renderPass,
 					.extent = {
@@ -236,5 +236,7 @@ namespace orhi
 		return m_context.handle;
 	}
 }
+
+template class orhi::api::TSwapChain<orhi::impl::vk::ContextRegistry>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

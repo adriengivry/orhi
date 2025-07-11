@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkShaderModule handle;
 	};
 
-	using ShaderModule = api::TShaderModule<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using ShaderModule = api::TShaderModule<ContextRegistry>;
 }

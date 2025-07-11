@@ -21,7 +21,7 @@ namespace orhi::api
 	/**
 	* Backend class that wraps the selected graphics API's context.
 	*/
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TBackend final
 	{
 	public:
@@ -45,7 +45,7 @@ namespace orhi::api
 		* Create a logical device from the selected device ID
 		* @param p_deviceId
 		*/
-		TDevice<Backend, ContextRegistry>& CreateDevice(uint32_t p_deviceId);
+		TDevice<ContextRegistry>& CreateDevice(uint32_t p_deviceId);
 
 		/**
 		* Returns the underlying object's native handle

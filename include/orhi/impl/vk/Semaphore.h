@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkSemaphore handle;
 	};
 
-	using Semaphore = api::TSemaphore<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using Semaphore = api::TSemaphore<ContextRegistry>;
 }

@@ -16,7 +16,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TDescriptor final
 	{
 	public:
@@ -26,8 +26,8 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<Backend, ContextRegistry>& p_device,
-			const data::TextureViewDesc<Backend, ContextRegistry>& p_desc
+			TDevice<ContextRegistry>& p_device,
+			const data::TextureViewDesc<ContextRegistry>& p_desc
 		);
 
 		/**
@@ -36,7 +36,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TDescriptor(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			const data::SamplerDesc& p_desc
 		);
 

@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkFence handle;
 	};
 
-	using Fence = api::TFence<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using Fence = api::TFence<ContextRegistry>;
 }

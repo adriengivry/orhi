@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkDescriptorSetLayout handle;
 	};
 
-	using DescriptorSetLayout = api::TDescriptorSetLayout<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using DescriptorSetLayout = api::TDescriptorSetLayout<ContextRegistry>;
 }

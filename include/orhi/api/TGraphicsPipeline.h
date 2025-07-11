@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TGraphicsPipeline final
 	{
 	public:
@@ -20,8 +20,8 @@ namespace orhi::api
 		* Creates a graphics pipeline
 		*/
 		TGraphicsPipeline(
-			TDevice<Backend, ContextRegistry>& p_device,
-			const data::GraphicsPipelineDesc<Backend, ContextRegistry>& p_desc
+			TDevice<ContextRegistry>& p_device,
+			const data::GraphicsPipelineDesc<ContextRegistry>& p_desc
 		);
 
 		/**

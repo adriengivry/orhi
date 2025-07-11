@@ -13,7 +13,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TShaderModule final
 	{
 	public:
@@ -22,7 +22,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TShaderModule(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			const std::span<const std::byte> p_source
 		);
 

@@ -11,7 +11,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TFramebuffer final
 	{
 	public:
@@ -19,8 +19,8 @@ namespace orhi::api
 		* Creates a framebuffer
 		*/
 		TFramebuffer(
-			TDevice<Backend, ContextRegistry>& p_device,
-			const data::FramebufferDesc<Backend, ContextRegistry>& p_desc
+			TDevice<ContextRegistry>& p_device,
+			const data::FramebufferDesc<ContextRegistry>& p_desc
 		);
 
 		/**

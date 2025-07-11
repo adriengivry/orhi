@@ -6,13 +6,14 @@
 #pragma once
 
 #include <type_traits>
+#include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
 {
 	/**
 	* Registry structure that agglomerates all context types for a specific backend.
 	*/
-	template<typename TBackendContext, typename TBufferContext, typename TCommandBufferContext, 
+	template<types::EGraphicsBackend Backend, typename TBackendContext, typename TBufferContext, typename TCommandBufferContext, 
 		typename TCommandPoolContext, typename TDescriptorContext, typename TDescriptorPoolContext,
 		typename TDescriptorSetContext, typename TDescriptorSetLayoutContext, typename TDeviceContext,
 		typename TFenceContext, typename TFramebufferContext, typename TGraphicsPipelineContext,
@@ -20,6 +21,7 @@ namespace orhi::api
 		typename TShaderModuleContext, typename TSwapChainContext, typename TTextureContext>
 	struct TContextRegistry
 	{
+		static constexpr types::EGraphicsBackend BackendType = Backend;
 		using BackendContext = TBackendContext;
 		using BufferContext = TBufferContext;
 		using CommandBufferContext = TCommandBufferContext;

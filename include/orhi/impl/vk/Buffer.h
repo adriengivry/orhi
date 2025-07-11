@@ -26,5 +26,5 @@ namespace orhi::impl::vk
 		uint64_t allocatedBytes;
 	};
 
-	using Buffer = api::TBuffer<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using Buffer = api::TBuffer<ContextRegistry>;
 }

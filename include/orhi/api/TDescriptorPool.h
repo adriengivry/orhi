@@ -14,7 +14,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TDescriptorPool final
 	{
 	public:
@@ -22,7 +22,7 @@ namespace orhi::api
 		* Creates a descriptor pool
 		*/
 		TDescriptorPool(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			const data::DescriptorPoolDesc& p_desc
 		);
 
@@ -34,8 +34,8 @@ namespace orhi::api
 		/**
 		* Allocates descriptor sets
 		*/
-		std::vector<std::reference_wrapper<TDescriptorSet<Backend, ContextRegistry>>> AllocateDescriptorSets(
-			const TDescriptorSetLayout<Backend, ContextRegistry>& p_layout,
+		std::vector<std::reference_wrapper<TDescriptorSet<ContextRegistry>>> AllocateDescriptorSets(
+			const TDescriptorSetLayout<ContextRegistry>& p_layout,
 			uint32_t p_count
 		);
 

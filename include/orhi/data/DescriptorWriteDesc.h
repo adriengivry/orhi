@@ -15,28 +15,28 @@
 
 namespace orhi::data
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	struct TextureSamplerDescriptorWriteInfo
 	{
-		using Descriptor = api::TDescriptor<Backend, ContextRegistry>;
+		using Descriptor = api::TDescriptor<ContextRegistry>;
 
 		Descriptor& textureDescriptor;
 		Descriptor& samplerDescriptor;
 		types::EDescriptorType descriptorType = types::EDescriptorType::COMBINED_IMAGE_SAMPLER;
 	};
 
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	struct BufferDescriptorWriteInfo
 	{
-		using Buffer = api::TBuffer<Backend, ContextRegistry>;
+		using Buffer = api::TBuffer<ContextRegistry>;
 
 		Buffer& bufferDescriptor;
 		types::EDescriptorType descriptorType = types::EDescriptorType::UNIFORM_BUFFER;
 	};
 
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	using DescriptorWriteDesc = std::variant<
-		TextureSamplerDescriptorWriteInfo<Backend, ContextRegistry>,
-		BufferDescriptorWriteInfo<Backend, ContextRegistry>
+		TextureSamplerDescriptorWriteInfo<ContextRegistry>,
+		BufferDescriptorWriteInfo<ContextRegistry>
 	>;
 }

@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkFramebuffer handle;
 	};
 
-	using Framebuffer = api::TFramebuffer<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using Framebuffer = api::TFramebuffer<ContextRegistry>;
 }

@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TRenderPass final
 	{
 	public:
@@ -22,7 +22,7 @@ namespace orhi::api
 		* @param p_format
 		*/
 		TRenderPass(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			types::EFormat p_format
 		);
 

@@ -25,5 +25,5 @@ namespace orhi::impl::vk
 		VkPipeline handle;
 	};
 
-	using GraphicsPipeline = api::TGraphicsPipeline<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using GraphicsPipeline = api::TGraphicsPipeline<ContextRegistry>;
 }

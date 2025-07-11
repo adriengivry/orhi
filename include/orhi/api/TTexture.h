@@ -18,7 +18,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TTexture final
 	{
 	public:
@@ -28,7 +28,7 @@ namespace orhi::api
 		* @param p_desc
 		*/
 		TTexture(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			const data::TextureDesc& p_desc
 		);
 

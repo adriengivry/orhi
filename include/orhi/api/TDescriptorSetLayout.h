@@ -12,7 +12,7 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TDescriptorSetLayout final
 	{
 	public:
@@ -21,7 +21,7 @@ namespace orhi::api
 		* @param p_device
 		*/
 		TDescriptorSetLayout(
-			TDevice<Backend, ContextRegistry>& p_device,
+			TDevice<ContextRegistry>& p_device,
 			std::initializer_list<data::DescriptorBinding> p_bindings
 		);
 

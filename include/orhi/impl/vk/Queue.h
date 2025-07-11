@@ -23,5 +23,5 @@ namespace orhi::impl::vk
 		VkQueue handle;
 	};
 
-	using Queue = api::TQueue<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using Queue = api::TQueue<ContextRegistry>;
 }

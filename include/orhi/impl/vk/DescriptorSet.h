@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkDescriptorSet handle;
 	};
 
-	using DescriptorSet = api::TDescriptorSet<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using DescriptorSet = api::TDescriptorSet<ContextRegistry>;
 }

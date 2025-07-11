@@ -72,4 +72,6 @@ namespace orhi
 	}
 }
 
+template class orhi::api::TDescriptorSetLayout<orhi::impl::vk::ContextRegistry>;
+
 #endif // #if defined(ORHI_COMPILE_VULKAN)

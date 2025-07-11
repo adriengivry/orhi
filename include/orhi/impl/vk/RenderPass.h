@@ -21,5 +21,5 @@ namespace orhi::impl::vk
 		VkRenderPass handle;
 	};
 
-	using RenderPass = api::TRenderPass<types::EGraphicsBackend::VULKAN, ContextRegistry>;
+	using RenderPass = api::TRenderPass<ContextRegistry>;
 }

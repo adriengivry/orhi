@@ -12,14 +12,14 @@
 
 namespace orhi::api
 {
-	template<types::EGraphicsBackend Backend, typename ContextRegistry>
+	template<typename ContextRegistry>
 	class TSemaphore final
 	{
 	public:
 		/**
 		* Creates a semaphore
 		*/
-		TSemaphore(TDevice<Backend, ContextRegistry>& p_device);
+		TSemaphore(TDevice<ContextRegistry>& p_device);
 
 		/**
 		* Destroys the semaphore
