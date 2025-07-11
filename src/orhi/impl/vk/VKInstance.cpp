@@ -12,7 +12,7 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/Backend.h>
+#include <orhi/impl/vk/Instance.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/details/ExtensionManager.h>
 #include <orhi/impl/vk/details/ValidationLayerManager.h>
@@ -111,7 +111,7 @@ namespace
 namespace orhi
 {
 	template<>
-	Backend::TBackend(const data::BackendDesc& p_desc)
+	Instance::TInstance(const data::InstanceDesc& p_desc)
 	{
 		details::ExtensionManager extensionManager;
 		details::ValidationLayerManager validationLayerManager;
@@ -270,7 +270,7 @@ namespace orhi
 	}
 
 	template<>
-	Backend::~TBackend()
+	Instance::~TInstance()
 	{
 		g_debugMessenger.reset();
 		g_createdDevices.clear();
@@ -278,13 +278,13 @@ namespace orhi
 	}
 
 	template<>
-	const std::vector<data::DeviceInfo>& Backend::GetSuitableDevices() const
+	const std::vector<data::DeviceInfo>& Instance::GetSuitableDevices() const
 	{
 		return g_suitableDeviceInfos;
 	}
 
 	template<>
-	Device& Backend::CreateDevice(uint32_t p_deviceId)
+	Device& Instance::CreateDevice(uint32_t p_deviceId)
 	{
 		PhysicalDevice selectedDevice = [p_deviceId]() {
 			for (const PhysicalDevice& device : g_physicalDevices)
@@ -317,18 +317,18 @@ namespace orhi
 	}
 
 	template<>
-	data::NativeHandle Backend::GetNativeHandle() const
+	data::NativeHandle Instance::GetNativeHandle() const
 	{
 		return m_context.instance;
 	}
 
 	template<>
-	data::NativeHandle Backend::GetSurfaceHandle() const
+	data::NativeHandle Instance::GetSurfaceHandle() const
 	{
 		return m_context.surface;
 	}
 }
 
-template class orhi::api::TBackend<orhi::impl::vk::BackendTraits>;
+template class orhi::api::TInstance<orhi::impl::vk::BackendTraits>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

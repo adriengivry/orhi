@@ -24,7 +24,7 @@
 #include <fstream>
 #include <array>
 
-#include <orhi/Backend.h>
+#include <orhi/Instance.h>
 #include <orhi/RenderPass.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/GraphicsPipeline.h>
@@ -195,17 +195,17 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 	GLFWwindow* window = glfwCreateWindow(800, 600, "2-cube", nullptr, nullptr);
 
-	// Create backend and device
-	orhi::Backend backend(orhi::data::BackendDesc{
+	// Create instance and device
+	orhi::Instance instance(orhi::data::InstanceDesc{
 		.debug = true,
 		.extensions = GetGlfwRequiredExtensions(),
 		.win32_windowHandle = glfwGetWin32Window(window),
 		.win32_instanceHandle = GetModuleHandle(nullptr)
 	});
 
-	const auto& devices = backend.GetSuitableDevices();
+	const auto& devices = instance.GetSuitableDevices();
 	assert(!devices.empty());
-	auto& device = backend.CreateDevice(devices.front().id);
+	auto& device = instance.CreateDevice(devices.front().id);
 
 	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(GetWindowSize(window));
 
@@ -318,7 +318,7 @@ int main()
 
 		swapChain = std::make_unique<orhi::SwapChain>(
 			device,
-			backend.GetSurfaceHandle(),
+			instance.GetSurfaceHandle(),
 			windowSize,
 			optimalSwapChainDesc,
 			swapChain ? std::make_optional(std::ref(*swapChain)) : std::nullopt

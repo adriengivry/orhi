@@ -7,7 +7,7 @@
 #pragma once
 
 #include <memory>
-#include <orhi/api/TBackend.h>
+#include <orhi/api/TInstance.h>
 #include <orhi/impl/vk/BackendTraits.h>
 
 struct VkInstance_T;
@@ -24,7 +24,7 @@ typedef VkQueue_T* VkQueue;
 
 namespace orhi::impl::vk
 {
-	struct BackendContext 
+	struct InstanceContext 
 	{
 		VkInstance instance;
 		VkDevice device;
@@ -33,7 +33,5 @@ namespace orhi::impl::vk
 		VkQueue presentQueue;
 	};
 
-	struct DeviceContext;
-
-	using Backend = api::TBackend<BackendTraits>;
+	using Instance = api::TInstance<BackendTraits>;
 }

@@ -10,7 +10,7 @@
 
 namespace orhi::impl::vk
 {
-	struct BackendContext;
+	struct InstanceContext;
 	struct BufferContext;
 	struct CommandBufferContext;
 	struct CommandPoolContext;
@@ -31,7 +31,7 @@ namespace orhi::impl::vk
 
 	using BackendTraits = orhi::api::TBackendTraits<
 		orhi::types::EGraphicsBackend::VULKAN,
-		BackendContext,
+		InstanceContext,
 		BufferContext,
 		CommandBufferContext,
 		CommandPoolContext,
