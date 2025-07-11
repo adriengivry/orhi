@@ -27,7 +27,7 @@ namespace orhi::impl::vk
 		VkDeviceMemory memory;
 		types::EFormat format;
 		types::ETextureLayout layout;
-		data::Extent3D extent;
+		math::Extent3D extent;
 		uint64_t allocatedBytes;
 	};
 

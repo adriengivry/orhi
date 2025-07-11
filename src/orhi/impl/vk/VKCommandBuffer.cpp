@@ -75,7 +75,7 @@ namespace orhi
 	void CommandBuffer::BeginRenderPass(
 		RenderPass& p_renderPass,
 		Framebuffer& p_framebuffer,
-		std::pair<uint32_t, uint32_t> p_extent
+		math::Extent2D p_extent
 	)
 	{
 		VkClearValue clearColor = { {
@@ -88,10 +88,7 @@ namespace orhi
 			.framebuffer = p_framebuffer.GetNativeHandle().As<VkFramebuffer>(),
 			.renderArea = {
 				.offset = { 0, 0 },
-				.extent = {
-					p_extent.first,
-					p_extent.second
-				}
+				.extent = reinterpret_cast<VkExtent2D&>(p_extent)
 			},
 			.clearValueCount = 1,
 			.pClearValues = &clearColor
@@ -165,29 +162,14 @@ namespace orhi
 					.baseArrayLayer = 0,
 					.layerCount = 1
 				},
-				.imageOffset = {
-					.x = copyDesc.imageOffset.x,
-					.y = copyDesc.imageOffset.y,
-					.z = copyDesc.imageOffset.z
-				},
-				.imageExtent = {
-					.width = copyDesc.imageExtent.width,
-					.height = copyDesc.imageExtent.height,
-					.depth = copyDesc.imageExtent.depth
+				.imageOffset = reinterpret_cast<const VkOffset3D&>(copyDesc.imageRect.offset),
+				.imageExtent = reinterpret_cast<const VkExtent3D&>(copyDesc.imageRect.extent)
 				}
-				});
+			);
 		}
 
 		if (regions.empty())
 		{
-			data::Extent3D extent = p_dest.GetExtent();
-
-			VkExtent3D vkExtent = {
-				extent.width,
-				extent.height,
-				extent.depth
-			};
-
 			regions.push_back(VkBufferImageCopy{
 				.bufferOffset = 0,
 				.bufferRowLength = 0,
@@ -199,7 +181,7 @@ namespace orhi
 					.layerCount = 1
 				},
 				.imageOffset = { 0, 0, 0 },
-				.imageExtent = vkExtent
+				.imageExtent = reinterpret_cast<const VkExtent3D&>(p_dest.GetExtent())
 			});
 		}
 
@@ -361,19 +343,10 @@ namespace orhi
 
 	template<>
 	void CommandBuffer::SetScissor(
-		const data::Rect2D& p_scissor
+		const math::Rect2D& p_scissor
 	)
 	{
-		VkRect2D scissor{
-			.offset = {
-				p_scissor.offset.first,
-				p_scissor.offset.second
-			},
-			.extent = {
-				p_scissor.extent.first,
-				p_scissor.extent.second
-			}
-		};
+		VkRect2D scissor = reinterpret_cast<const VkRect2D&>(p_scissor);
 
 		vkCmdSetScissor(
 			m_context.handle,

@@ -119,11 +119,11 @@ namespace orhi
 	}
 
 	template<>
-	data::SwapChainDesc Device::GetOptimalSwapChainDesc(std::pair<uint32_t, uint32_t> p_windowSize)
+	data::SwapChainDesc Device::GetOptimalSwapChainDesc(const math::Extent2D& p_windowSize)
 	{
 		auto optimalConfig = details::SwapChainUtils::CalculateSwapChainOptimalConfig(
 			*m_context.swapChainSupportDetails,
-			{ p_windowSize.first, p_windowSize.second }
+			reinterpret_cast<const VkExtent2D&>(p_windowSize)
 		);
 
 		return data::SwapChainDesc{

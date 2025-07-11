@@ -267,17 +267,14 @@ namespace
 		return formattedViewports;
 	}
 
-	auto FormatScissors(const std::span<const orhi::data::Rect2D>& p_scissors)
+	auto FormatScissors(const std::span<const orhi::math::Rect2D>& p_scissors)
 	{
 		std::vector<VkRect2D> formattedScissors;
 		formattedScissors.reserve(p_scissors.size());
 
 		for (auto& scissor : p_scissors)
 		{
-			formattedScissors.push_back(VkRect2D{
-				.offset = { scissor.offset.first, scissor.offset.second },
-				.extent = { scissor.extent.first, scissor.extent.second }
-			});
+			formattedScissors.push_back(reinterpret_cast<const VkRect2D&>(p_scissors));
 		}
 
 		return formattedScissors;

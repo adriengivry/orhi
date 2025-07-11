@@ -47,7 +47,7 @@ namespace orhi
 	SwapChain::TSwapChain(
 		Device& p_device,
 		data::NativeHandle p_surface,
-		std::pair<uint32_t, uint32_t> p_windowSize,
+		const math::Extent2D& p_windowSize,
 		const data::SwapChainDesc& p_desc,
 		std::optional<std::reference_wrapper<SwapChain>> p_oldSwapChain
 	) : m_context{
@@ -65,10 +65,7 @@ namespace orhi
 			.minImageCount = CalculateSwapChainImageCount(m_context.desc),
 			.imageFormat = utils::EnumToValue<VkFormat>(m_context.desc.format),
 			.imageColorSpace = utils::EnumToValue<VkColorSpaceKHR>(m_context.desc.colorSpace),
-			.imageExtent = {
-				m_context.extent.first,
-				m_context.extent.second
-			},
+			.imageExtent = reinterpret_cast<VkExtent2D&>(m_context.extent),
 			.imageArrayLayers = 1, // always 1 unless we're developing a stereoscopic 3D application.
 
 			// It is also possible that we'll render images to a separate image first to perform operations like post-processing.
@@ -222,10 +219,7 @@ namespace orhi
 				data::FramebufferDesc<BackendTraits>{
 					.attachments = std::to_array({ data::NativeHandle{m_context.imageViews[i]} }),
 					.renderPass = p_renderPass,
-					.extent = {
-						m_context.extent.first,
-						m_context.extent.second
-					}
+					.extent = m_context.extent
 				}
 			);
 		}

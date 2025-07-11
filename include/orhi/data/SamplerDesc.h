@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include <orhi/data/Extent3D.h>
-
 #include <orhi/types/ECompareOp.h>
 #include <orhi/types/EFilter.h>
 #include <orhi/types/EFormat.h>

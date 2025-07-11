@@ -42,7 +42,7 @@
 
 namespace
 {
-	std::pair<uint32_t, uint32_t> GetWindowSize(GLFWwindow* window)
+	orhi::math::Extent2D GetWindowSize(GLFWwindow* window)
 	{
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
@@ -301,7 +301,7 @@ int main()
 	// Swap chain and framebuffers
 	std::vector<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
-	std::pair<uint32_t, uint32_t> windowSize;
+	orhi::math::Extent2D windowSize;
 	std::vector<SwapImageResources> swapImagesResources;
 
 	auto recreateSwapChain = [&] {
@@ -309,7 +309,7 @@ int main()
 		{
 			windowSize = GetWindowSize(window);
 			glfwWaitEvents();
-		} while (windowSize.first == 0U || windowSize.second == 0U);
+		} while (windowSize.width == 0U || windowSize.height == 0U);
 
 		device.WaitIdle();
 		framebuffers.clear();
@@ -443,8 +443,8 @@ int main()
 
 		commandBuffer.SetViewport({
 			.x = 0.0f, .y = 0.0f,
-			.width = static_cast<float>(windowSize.first),
-			.height = static_cast<float>(windowSize.second),
+			.width = static_cast<float>(windowSize.width),
+			.height = static_cast<float>(windowSize.height),
 			.minDepth = 0.0f, .maxDepth = 1.0f
 		});
 
@@ -459,7 +459,7 @@ int main()
 		UniformBufferObject uboData{
 			.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
 			.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
-			.proj = glm::perspective(glm::radians(45.0f), windowSize.first / (float)windowSize.second, 0.1f, 10.0f)
+			.proj = glm::perspective(glm::radians(45.0f), windowSize.width / (float)windowSize.height, 0.1f, 10.0f)
 		};
 
 		uboData.proj[1][1] *= -1;

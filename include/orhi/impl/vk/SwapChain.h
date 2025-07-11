@@ -30,7 +30,7 @@ namespace orhi::impl::vk
 		VkSwapchainKHR handle;
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
-		std::pair<uint32_t, uint32_t> extent;
+		math::Extent2D extent;
 	};
 
 	using SwapChain = api::TSwapChain<BackendTraits>;

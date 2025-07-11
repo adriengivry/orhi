@@ -8,6 +8,7 @@
 
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -38,14 +39,14 @@ namespace orhi::api
 		* @brief Creates a swap chain for the specified surface and window size
 		* @param p_device Reference to the device that will own this swap chain
 		* @param p_surface Native handle to the presentation surface
-		* @param p_windowSize Window dimensions as a pair of width and height
+		* @param p_windowSize Window dimensions
 		* @param p_desc Swap chain descriptor specifying format, present mode, and other properties
 		* @param p_oldSwapChain Optional reference to an old swap chain for resource reuse during recreation
 		*/
 		TSwapChain(
 			TDevice<BackendTraits>& p_device,
 			data::NativeHandle p_surface,
-			std::pair<uint32_t, uint32_t> p_windowSize,
+			const math::Extent2D& p_windowSize,
 			const data::SwapChainDesc& p_desc,
 			std::optional<std::reference_wrapper<TSwapChain<BackendTraits>>> p_oldSwapChain = std::nullopt
 		);

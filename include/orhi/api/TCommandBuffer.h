@@ -9,8 +9,8 @@
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
 #include <orhi/data/NativeHandle.h>
-#include <orhi/data/Rect2D.h>
 #include <orhi/data/ViewportDesc.h>
+#include <orhi/math/Rect2D.h>
 #include <orhi/types/ECommandBufferUsageFlags.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EIndexType.h>
@@ -79,7 +79,7 @@ namespace orhi::api
 		void BeginRenderPass(
 			TRenderPass<BackendTraits>& p_renderPass,
 			TFramebuffer<BackendTraits>& p_framebuffer,
-			std::pair<uint32_t, uint32_t> p_extent
+			math::Extent2D p_extent
 		);
 
 		/**
@@ -174,7 +174,7 @@ namespace orhi::api
 		* @brief Sets the scissor rectangle for rendering operations
 		* @param p_scissor Rectangle descriptor specifying the scissor test area
 		*/
-		void SetScissor(const data::Rect2D& p_scissor);
+		void SetScissor(const math::Rect2D& p_scissor);
 
 		/**
 		* @brief Submits a non-indexed draw command

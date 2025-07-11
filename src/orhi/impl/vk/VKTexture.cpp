@@ -35,11 +35,7 @@ namespace orhi
 			.flags = 0, // TODO: expose this setting
 			.imageType = utils::EnumToValue<VkImageType>(p_desc.type),
 			.format = utils::EnumToValue<VkFormat>(p_desc.format),
-			.extent = {
-				p_desc.extent.width,
-				p_desc.extent.height,
-				p_desc.extent.depth
-			},
+			.extent = reinterpret_cast<const VkExtent3D&>(p_desc.extent),
 			.mipLevels = p_desc.mipLevels,
 			.arrayLayers = p_desc.arrayLayers,
 			.samples = utils::EnumToValue<VkSampleCountFlagBits>(p_desc.samples),
@@ -200,7 +196,7 @@ namespace orhi
 	}
 
 	template<>
-	const data::Extent3D& Texture::GetExtent() const
+	const math::Extent3D& Texture::GetExtent() const
 	{
 		return m_context.extent;
 	}

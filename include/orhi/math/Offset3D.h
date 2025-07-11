@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include <cstdint>
-#include <tuple>
+#include <orhi/math/Vec3.h>
 
-namespace orhi::data
+namespace orhi::math
 {
 	/**
 	* @brief 3D offset representing X, Y, and Z coordinates
@@ -18,10 +17,5 @@ namespace orhi::data
 	* Commonly used for specifying starting positions in textures, copy operations,
 	* and other 3D spatial operations.
 	*/
-	struct Offset3D
-	{
-		int32_t x;
-		int32_t y;
-		int32_t z;
-	};
+	using Offset3D = Vec3i32;
 }

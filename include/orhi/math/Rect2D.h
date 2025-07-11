@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <cstdint>
-#include <tuple>
+#include <orhi/math/Offset2D.h>
+#include <orhi/math/Extent2D.h>
 
-namespace orhi::data
+namespace orhi::math
 {
 	/**
 	* @brief 2D rectangle defined by offset and extent
@@ -20,7 +20,7 @@ namespace orhi::data
 	*/
 	struct Rect2D
 	{
-		std::pair<int32_t, int32_t> offset;
-		std::pair<uint32_t, uint32_t> extent;
+		Offset2D offset;
+		Extent2D extent;
 	};
 }

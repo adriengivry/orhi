@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <orhi/data/Rect2D.h>
 #include <orhi/data/ViewportDesc.h>
+#include <orhi/math/Rect2D.h>
 
 #include <span>
 
@@ -23,6 +23,6 @@ namespace orhi::data
 	struct ViewportStateDesc
 	{
 		std::span<const ViewportDesc> viewports;
-		std::span<const Rect2D> scissors;
+		std::span<const math::Rect2D> scissors;
 	};
 }

@@ -10,6 +10,7 @@
 #include <span>
 
 #include <orhi/data/NativeHandle.h>
+#include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
@@ -33,6 +34,6 @@ namespace orhi::data
 	{
 		std::span<const NativeHandle> attachments;
 		api::TRenderPass<BackendTraits>& renderPass;
-		std::pair<uint32_t, uint32_t> extent;
+		math::Extent2D extent;
 	};
 }

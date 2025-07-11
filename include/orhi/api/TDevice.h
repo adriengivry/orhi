@@ -10,6 +10,7 @@
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/QueuesDesc.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
@@ -59,10 +60,10 @@ namespace orhi::api
 
 		/**
 		* @brief Gets optimal swap chain configuration for the specified window size
-		* @param p_windowSize Window dimensions as a pair of width and height
+		* @param p_windowSize Window dimensions
 		* @return Optimal swap chain descriptor with recommended settings
 		*/
-		data::SwapChainDesc GetOptimalSwapChainDesc(std::pair<uint32_t, uint32_t> p_windowSize);
+		data::SwapChainDesc GetOptimalSwapChainDesc(const math::Extent2D& p_windowSize);
 
 		/**
 		* @brief Gets information about available queue families

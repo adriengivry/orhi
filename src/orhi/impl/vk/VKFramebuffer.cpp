@@ -34,8 +34,8 @@ namespace orhi
 			.renderPass = p_desc.renderPass.GetNativeHandle().As<VkRenderPass>(),
 			.attachmentCount = 1,
 			.pAttachments = reinterpret_cast<const VkImageView*>(p_desc.attachments.data()), // data::NativeHandle same layout as VkImageView
-			.width = p_desc.extent.first,
-			.height = p_desc.extent.second,
+			.width = p_desc.extent.width,
+			.height = p_desc.extent.height,
 			.layers = 1
 		};
 

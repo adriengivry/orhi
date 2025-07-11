@@ -9,6 +9,7 @@
 #include <orhi/data/MemoryRange.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/TextureDesc.h>
+#include <orhi/math/Extent3D.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
@@ -102,7 +103,7 @@ namespace orhi::api
 		* @brief Gets the dimensions of the texture
 		* @return The texture's extent (width, height, depth)
 		*/
-		const data::Extent3D& GetExtent() const;
+		const math::Extent3D& GetExtent() const;
 
 		/**
 		* @brief Gets the native handle for backend-specific operations
