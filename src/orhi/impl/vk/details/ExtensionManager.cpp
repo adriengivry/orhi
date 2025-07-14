@@ -4,7 +4,10 @@
 * @licence: MIT
 */
 
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <orhi/impl/vk/details/ExtensionManager.h>
+
 #include <iostream>
 
 namespace orhi::impl::vk::details
@@ -78,3 +81,5 @@ namespace orhi::impl::vk::details
 		return filteredExtensions;
 	}
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

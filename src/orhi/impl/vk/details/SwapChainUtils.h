@@ -6,7 +6,10 @@
 
 #pragma once
 
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <vulkan/vulkan.h>
+
 #include <vector>
 
 namespace orhi::impl::vk::details
@@ -40,3 +43,5 @@ namespace orhi::impl::vk::details
 		static SwapChainOptimalConfig CalculateSwapChainOptimalConfig(const SwapChainSupportDetails& p_details, VkExtent2D p_windowExtent);
 	};
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

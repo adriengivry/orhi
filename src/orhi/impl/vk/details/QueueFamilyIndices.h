@@ -6,7 +6,10 @@
 
 #pragma once
 
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <vulkan/vulkan.h>
+
 #include <optional>
 #include <vector>
 
@@ -25,3 +28,5 @@ namespace orhi::impl::vk::details
 		QueueFamilyIndices() = default;
 	};
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

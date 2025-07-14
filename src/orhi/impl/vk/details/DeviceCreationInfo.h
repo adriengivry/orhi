@@ -6,12 +6,16 @@
 
 #pragma once
 
-#include <string>
-#include <span>
-#include <vector>
-#include <orhi/impl/vk/details/SwapChainUtils.h>
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <orhi/impl/vk/details/QueueFamilyIndices.h>
+#include <orhi/impl/vk/details/SwapChainUtils.h>
+
 #include <vulkan/vulkan.h>
+
+#include <span>
+#include <string>
+#include <vector>
 
 namespace orhi::impl::vk::details
 {
@@ -25,3 +29,5 @@ namespace orhi::impl::vk::details
 		std::vector<const char*> extensions;
 	};
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

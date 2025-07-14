@@ -6,11 +6,15 @@
 
 #pragma once
 
-#include <vector>
+#if defined(ORHI_COMPILE_VULKAN)
+
+#include <orhi/data/NativeHandle.h>
+
+#include <vulkan/vulkan.h>
+
 #include <filesystem>
 #include <span>
-#include <orhi/data/NativeHandle.h>
-#include <vulkan/vulkan.h>
+#include <vector>
 
 namespace orhi::impl::vk::details
 {
@@ -50,3 +54,5 @@ namespace orhi::impl::vk::details
 		);
 	};
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

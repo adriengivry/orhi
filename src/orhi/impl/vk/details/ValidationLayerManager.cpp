@@ -4,6 +4,8 @@
 * @licence: MIT
 */
 
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <orhi/impl/vk/details/ValidationLayerManager.h>
 
 #include <iostream>
@@ -67,3 +69,5 @@ namespace orhi::impl::vk::details
 		return filteredValidationLayers;
 	}
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

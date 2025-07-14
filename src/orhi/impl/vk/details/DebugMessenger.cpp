@@ -4,7 +4,10 @@
 * @licence: MIT
 */
 
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <orhi/impl/vk/details/DebugMessenger.h>
+
 #include <stdexcept>
 
 namespace
@@ -154,3 +157,5 @@ namespace orhi::impl::vk::details
 		DestroyDebugUtilsMessengerEXT(m_instance, m_handle, nullptr);
 	}
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

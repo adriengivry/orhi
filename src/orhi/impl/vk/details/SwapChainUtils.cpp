@@ -4,8 +4,12 @@
 * @licence: MIT
 */
 
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <orhi/impl/vk/details/SwapChainUtils.h>
+
 #include <orhi/debug/Assert.h>
+
 #include <algorithm>
 
 namespace
@@ -119,3 +123,5 @@ namespace orhi::impl::vk::details
 		};
 	}
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)

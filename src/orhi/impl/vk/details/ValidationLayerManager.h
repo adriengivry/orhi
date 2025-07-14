@@ -6,10 +6,13 @@
 
 #pragma once
 
-#include <string>
-#include <span>
-#include <vector>
+#if defined(ORHI_COMPILE_VULKAN)
+
 #include <vulkan/vulkan.h>
+
+#include <span>
+#include <string>
+#include <vector>
 
 namespace orhi::impl::vk::details
 {
@@ -52,3 +55,5 @@ namespace orhi::impl::vk::details
 		std::vector<VkLayerProperties> m_layers;
 	};
 }
+
+#endif // #if defined(ORHI_COMPILE_VULKAN)
