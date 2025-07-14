@@ -11,6 +11,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/except/OutOfDateSwapChain.h>
+#include <orhi/impl/vk/Descriptor.h>
 #include <orhi/impl/vk/Fence.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Semaphore.h>
@@ -179,6 +180,12 @@ namespace orhi
 	}
 
 	template<>
+	uint32_t SwapChain::GetImageCount() const
+	{
+		return static_cast<uint32_t>(m_context.images.size());
+	}
+
+	template<>
 	uint32_t SwapChain::AcquireNextImage(
 		std::optional<std::reference_wrapper<Semaphore>> p_semaphore,
 		std::optional<std::reference_wrapper<Fence>> p_fence,
@@ -207,17 +214,30 @@ namespace orhi
 	}
 
 	template<>
-	std::vector<Framebuffer> SwapChain::CreateFramebuffers(RenderPass& p_renderPass)
+	std::vector<Framebuffer> SwapChain::CreateFramebuffers(
+		RenderPass& p_renderPass,
+		std::span<const Descriptor> p_attachments
+	)
 	{
-		std::vector<Framebuffer> framebuffers;
-		framebuffers.reserve(m_context.imageViews.size());
+		const uint32_t imageCount = GetImageCount();
 
-		for (size_t i = 0; i < m_context.imageViews.size(); i++)
+		std::vector<Framebuffer> framebuffers;
+		framebuffers.reserve(imageCount);
+
+		for (size_t i = 0; i < imageCount; i++)
 		{
+			std::vector<data::NativeHandle> attachments;
+			attachments.push_back(data::NativeHandle{ m_context.imageViews[i] });
+
+			for (uint32_t j = 0; j < p_attachments.size() / imageCount; ++j)
+			{
+				attachments.push_back(p_attachments[j].GetNativeHandle());
+			}
+
 			framebuffers.emplace_back(
 				m_context.device,
 				data::FramebufferDesc<BackendTraits>{
-					.attachments = std::to_array({ data::NativeHandle{m_context.imageViews[i]} }),
+					.attachments = attachments,
 					.renderPass = p_renderPass,
 					.extent = m_context.extent
 				}

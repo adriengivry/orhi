@@ -63,6 +63,7 @@ group "examples"
 	include "1-triangle"
 	include "2-cube"
 	include "3-texture"
+	include "4-depth"
 group ""
 
 group "examples/deps"

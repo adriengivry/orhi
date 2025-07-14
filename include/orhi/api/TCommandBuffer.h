@@ -8,6 +8,7 @@
 
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
+#include <orhi/data/ClearValue.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/data/ViewportDesc.h>
 #include <orhi/math/Rect2D.h>
@@ -17,6 +18,7 @@
 #include <orhi/types/EPipelineBindPoint.h>
 #include <orhi/types/ETextureLayout.h>
 
+#include <initializer_list>
 #include <span>
 
 namespace orhi::api
@@ -75,11 +77,13 @@ namespace orhi::api
 		* @param p_renderPass The render pass to begin
 		* @param p_framebuffer The framebuffer to render to
 		* @param p_extent The rendering extent as a pair of width and height
+		* @param p_clearValues Optional array of clear values for attachments; if empty, no clearing is performed
 		*/
 		void BeginRenderPass(
 			TRenderPass<BackendTraits>& p_renderPass,
 			TFramebuffer<BackendTraits>& p_framebuffer,
-			math::Extent2D p_extent
+			math::Extent2D p_extent,
+			std::initializer_list<data::ClearValue> p_clearValues = {}
 		);
 
 		/**

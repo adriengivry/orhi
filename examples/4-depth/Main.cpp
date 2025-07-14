@@ -4,9 +4,11 @@
 * @licence: MIT
 */
 
+#include <orhi/BackendTraits.h>
 #include <orhi/Buffer.h>
 #include <orhi/CommandBuffer.h>
 #include <orhi/CommandPool.h>
+#include <orhi/Descriptor.h>
 #include <orhi/DescriptorPool.h>
 #include <orhi/DescriptorSet.h>
 #include <orhi/DescriptorSetLayout.h>
@@ -20,6 +22,7 @@
 #include <orhi/Semaphore.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/SwapChain.h>
+#include <orhi/Texture.h>
 
 #include <GLFW/glfw3.h>
 #if defined(_WIN32) || defined(_WIN64)
@@ -33,6 +36,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include <array>
 #include <cassert>
@@ -71,11 +75,16 @@ namespace
 		return buffer;
 	}
 
+	struct ObjectResources
+	{
+		std::reference_wrapper<orhi::Buffer> ubo;
+		std::reference_wrapper<orhi::DescriptorSet> descriptorSet;
+	};
+
 	struct FrameResources
 	{
 		orhi::CommandBuffer& commandBuffer;
-		orhi::Buffer& ubo;
-		orhi::DescriptorSet& descriptorSet;
+		std::array<ObjectResources, 2> objectResources;
 		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
 		std::unique_ptr<orhi::Fence> inFlightFence;
 	};
@@ -184,7 +193,20 @@ namespace
 		alignas(16) glm::mat4 model;
 		alignas(16) glm::mat4 view;
 		alignas(16) glm::mat4 proj;
+		alignas(16) glm::vec3 color;
 	};
+
+	glm::mat4 ComputeModelMatrix(
+		const glm::vec3& p_position,
+		const glm::quat& p_rotation,
+		const glm::vec3& p_scale
+	)
+	{
+		return
+			glm::translate(glm::mat4(1.0f), p_position) *
+			glm::mat4_cast(p_rotation) *
+			glm::scale(glm::mat4(1.0f), p_scale);
+	}
 }
 
 int main()
@@ -192,7 +214,7 @@ int main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "2-cube", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "4-depth", nullptr, nullptr);
 
 	// Create instance and device
 	orhi::Instance instance(orhi::data::InstanceDesc{
@@ -269,13 +291,17 @@ int main()
 	);
 
 	// Create render pass and pipeline
-	orhi::RenderPass renderPass{
-		device,
+	orhi::RenderPass renderPass{ device,
 		{
 			orhi::data::AttachmentDesc{
 				.type = orhi::types::EAttachmentType::COLOR,
 				.format = optimalSwapChainDesc.format,
 				.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR,
+			},
+			orhi::data::AttachmentDesc{
+				.type = orhi::types::EAttachmentType::DEPTH_STENCIL,
+				.format = orhi::types::EFormat::D32_SFLOAT,
+				.finalLayout = orhi::types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 			}
 		}
 	};
@@ -295,6 +321,10 @@ int main()
 				.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
 				.vertexAttributes = VertexInputDescription<Vertex>::GetAttributeDescriptions()
 			},
+			.depthStencilState = {
+				.depthTestEnable = true,
+				.depthWriteEnable = true
+			},
 			.colorBlendState = {
 				.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
 			},
@@ -309,6 +339,8 @@ int main()
 
 	// Swap chain and framebuffers
 	std::vector<orhi::Framebuffer> framebuffers;
+	std::vector<std::unique_ptr<orhi::Texture>> depthTextures;
+	std::vector<orhi::Descriptor> depthDescriptors;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
 	std::vector<SwapImageResources> swapImagesResources;
@@ -323,6 +355,8 @@ int main()
 		device.WaitIdle();
 		framebuffers.clear();
 		swapImagesResources.clear();
+		depthTextures.clear();
+		depthDescriptors.clear();
 
 		swapChain = std::make_unique<orhi::SwapChain>(
 			device,
@@ -332,7 +366,37 @@ int main()
 			swapChain ? std::make_optional(std::ref(*swapChain)) : std::nullopt
 		);
 
-		framebuffers = swapChain->CreateFramebuffers(renderPass);
+		const uint32_t imageCount = swapChain->GetImageCount();
+
+		depthTextures.reserve(imageCount);
+		depthDescriptors.reserve(imageCount);
+		swapImagesResources.reserve(imageCount);
+
+		for (uint32_t i = 0; i < imageCount; ++i)
+		{
+			depthTextures.emplace_back(
+				std::make_unique<orhi::Texture>(
+					device,
+					orhi::data::TextureDesc{
+						.extent = { windowSize.width, windowSize.height, 1 },
+						.format = orhi::types::EFormat::D32_SFLOAT,
+						.type = orhi::types::ETextureType::TEXTURE_2D,
+						.usage = orhi::types::ETextureUsageFlags::DEPTH_STENCIL_ATTACHMENT_BIT
+					}
+				)
+			);
+			depthTextures.back()->Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
+			depthDescriptors.emplace_back(
+				device,
+				orhi::data::TextureViewDesc<orhi::BackendTraits>{
+					.texture = *depthTextures.back(),
+					.format = orhi::types::EFormat::D32_SFLOAT,
+					.aspectFlags = orhi::types::ETextureAspectFlags::DEPTH,
+				}
+			);
+		}
+
+		framebuffers = swapChain->CreateFramebuffers(renderPass, depthDescriptors);
 
 		swapImagesResources.reserve(framebuffers.size());
 		for (uint32_t i = 0; i < framebuffers.size(); ++i)
@@ -348,12 +412,14 @@ int main()
 
 	// Command buffers and synchronization
 	constexpr uint8_t k_maxFramesInFlight = 2;
+	constexpr uint8_t k_objectCount = 2;
+	constexpr size_t k_objectDataCount = k_maxFramesInFlight * k_objectCount;
 	assert(framebuffers.size() >= k_maxFramesInFlight);
 
-	// Create UBOs (one for each frame)
+	// Create UBOs (one per object per frame)
 	std::vector<orhi::Buffer> ubos;
-	ubos.reserve(k_maxFramesInFlight);
-	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
+	ubos.reserve(k_objectDataCount);
+	for (uint8_t i = 0; i < k_objectDataCount; ++i)
 	{
 		auto& ubo = ubos.emplace_back(
 			device,
@@ -371,9 +437,9 @@ int main()
 		device,
 		orhi::data::DescriptorPoolDesc{
 			.flags = orhi::types::EDescriptorPoolCreateFlags::NONE,
-			.maxSets = k_maxFramesInFlight,
+			.maxSets = k_objectDataCount,
 			.poolSizes = {
-				{ orhi::types::EDescriptorType::UNIFORM_BUFFER, k_maxFramesInFlight }
+				{ orhi::types::EDescriptorType::UNIFORM_BUFFER, k_objectDataCount }
 			}
 		}
 	);
@@ -381,11 +447,11 @@ int main()
 	// Create a descriptor set for each frame
 	auto descriptorSets = descriptorPool->AllocateDescriptorSets(
 		*descriptorSetLayout,
-		k_maxFramesInFlight
+		k_objectDataCount
 	);
 
 	// Update each descriptor set (attach each uniform buffer to each descriptor set)
-	for (size_t i = 0; i < k_maxFramesInFlight; i++)
+	for (size_t i = 0; i < k_objectDataCount; i++)
 	{
 		descriptorSets[i].get().Write(
 			{
@@ -398,7 +464,7 @@ int main()
 				}
 			}
 		);
-	}
+	}	
 
 	orhi::CommandPool commandPool{ device };
 	auto commandBuffers = commandPool.AllocateCommandBuffers(k_maxFramesInFlight);
@@ -420,10 +486,20 @@ int main()
 	framesResources.reserve(k_maxFramesInFlight);
 	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
+		const uint32_t objectResourceIndex = i * k_objectCount;
+
 		framesResources.emplace_back(
 			commandBuffers[i],
-			ubos[i],
-			descriptorSets[i],
+			std::array<ObjectResources, 2>{
+				ObjectResources{
+					.ubo = ubos[objectResourceIndex + 0],
+					.descriptorSet = descriptorSets[objectResourceIndex + 0]
+				},
+				ObjectResources{
+					.ubo = ubos[objectResourceIndex + 1],
+					.descriptorSet = descriptorSets[objectResourceIndex + 1]
+				}
+			},
 			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Fence>(device, true)
 		);
@@ -451,8 +527,12 @@ int main()
 			renderPass,
 			swapImageResources.framebuffer,
 			windowSize,
-			{ orhi::data::ColorClearValue{0.0f, 0.0f, 0.0f, 1.0f} }
+			{
+				orhi::data::ColorClearValue{ 0.0f, 0.0f, 0.0f, 1.0f },
+				orhi::data::DepthStencilClearValue{ 1.0f, 0 }
+			}
 		);
+
 		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline);
 
 		commandBuffer.SetViewport({
@@ -467,19 +547,6 @@ int main()
 			.extent = windowSize
 		});
 
-		const float time = static_cast<float>(glfwGetTime());
-
-		// Update UBO data each frame
-		UniformBufferObject uboData{
-			.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
-			.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
-			.proj = glm::perspective(glm::radians(45.0f), windowSize.width / (float)windowSize.height, 0.1f, 10.0f)
-		};
-
-		uboData.proj[1][1] *= -1;
-
-		frameResources.ubo.Upload(&uboData);
-
 		commandBuffer.BindVertexBuffers(
 			std::to_array({ std::ref(*deviceVertexBuffer) }),
 			std::to_array<uint64_t>({ 0 })
@@ -489,13 +556,52 @@ int main()
 			*deviceIndexBuffer
 		);
 
-		commandBuffer.BindDescriptorSets(
-			std::to_array({ std::ref(frameResources.descriptorSet) }),
-			pipeline.GetLayoutHandle()
-		);
+		const float time = static_cast<float>(glfwGetTime());
 
-		commandBuffer.DrawIndexed(static_cast<uint32_t>(k_indices.size()));
+		// Prepare common UBO data
+		UniformBufferObject uboData{
+			.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+			.proj = glm::perspective(glm::radians(45.0f), windowSize.width / (float)windowSize.height, 0.1f, 10.0f)
+		};
 
+		uboData.proj[1][1] *= -1;
+
+		// Update and draw each object
+		for (size_t i = 0; i < frameResources.objectResources.size(); ++i)
+		{
+			auto& objectResources = frameResources.objectResources[i];
+
+			commandBuffer.BindDescriptorSets(
+				std::to_array({ objectResources.descriptorSet }),
+				pipeline.GetLayoutHandle()
+			);
+
+			// Center object
+			if (i == 0)
+			{
+				uboData.model = ComputeModelMatrix(
+					glm::vec3(0.0f, 0.0f, 0.0f),
+					glm::quat(glm::vec3(0.0f, 0.0f, time * glm::radians(90.0f))),
+					glm::vec3(1.0f)
+				);
+				uboData.color = glm::vec3(1.0f, 0.0f, 0.0f); // Red color
+			}
+			// Orbiting object
+			else if (i == 1)
+			{
+				uboData.model = ComputeModelMatrix(
+					glm::vec3(std::sin(time), std::cos(time), 0.0f),
+					glm::quat(glm::vec3(0.0f, time * -glm::radians(90.0f), 0.0f)),
+					glm::vec3(0.25f)
+				);
+				uboData.color = glm::vec3(0.0f, 1.0f, 0.0f); // Green color
+			}
+
+			objectResources.ubo.get().Upload(&uboData);
+
+			commandBuffer.DrawIndexed(static_cast<uint32_t>(k_indices.size()));
+		}
+		
 		commandBuffer.EndRenderPass();
 		commandBuffer.End();
 

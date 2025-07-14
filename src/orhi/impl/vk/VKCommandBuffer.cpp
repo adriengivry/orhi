@@ -75,12 +75,40 @@ namespace orhi
 	void CommandBuffer::BeginRenderPass(
 		RenderPass& p_renderPass,
 		Framebuffer& p_framebuffer,
-		math::Extent2D p_extent
+		math::Extent2D p_extent,
+		std::initializer_list<data::ClearValue> p_clearValues
 	)
 	{
-		VkClearValue clearColor = { {
-			{ 0.0f, 0.0f, 0.0f, 1.0f }
-		} };
+		std::vector<VkClearValue> clearValues;
+		clearValues.reserve(p_clearValues.size());
+
+		for (const auto& clearValue : p_clearValues)
+		{
+			if (auto colorClearValue = std::get_if<data::ColorClearValue>(&clearValue); colorClearValue)
+			{
+				clearValues.push_back(VkClearValue{
+					.color = {
+						colorClearValue->x,
+						colorClearValue->y,
+						colorClearValue->z,
+						colorClearValue->w
+					}
+				});
+			}
+			else if (auto depthStencilClearValue = std::get_if<data::DepthStencilClearValue>(&clearValue); depthStencilClearValue)
+			{
+				clearValues.push_back(VkClearValue{
+					.depthStencil = {
+						.depth = depthStencilClearValue->depth,
+						.stencil = depthStencilClearValue->stencil
+					}
+				});
+			}
+			else
+			{
+				ORHI_ASSERT(false, "Unsupported clear value type");
+			}
+		}
 
 		VkRenderPassBeginInfo renderPassInfo{
 			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
@@ -90,8 +118,8 @@ namespace orhi
 				.offset = { 0, 0 },
 				.extent = reinterpret_cast<VkExtent2D&>(p_extent)
 			},
-			.clearValueCount = 1,
-			.pClearValues = &clearColor
+			.clearValueCount = static_cast<uint32_t>(clearValues.size()),
+			.pClearValues = clearValues.data()
 		};
 
 		vkCmdBeginRenderPass(

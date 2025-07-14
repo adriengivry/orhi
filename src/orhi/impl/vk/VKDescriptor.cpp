@@ -36,7 +36,7 @@ namespace orhi
 			.viewType = VK_IMAGE_VIEW_TYPE_2D,
 			.format = utils::EnumToValue<VkFormat>(p_desc.format),
 			.subresourceRange = {
-				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+				.aspectMask = utils::EnumToValue<VkImageAspectFlags>(p_desc.aspectFlags),
 				.baseMipLevel = 0,
 				.levelCount = p_desc.mipLevels,
 				.baseArrayLayer = 0,

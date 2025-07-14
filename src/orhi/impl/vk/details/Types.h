@@ -36,6 +36,7 @@
 #include <orhi/types/EShaderStageFlags.h>  
 #include <orhi/types/EStencilOp.h>  
 #include <orhi/types/ESurfaceTransformFlags.h>  
+#include <orhi/types/ETextureAspectFlags.h>  
 #include <orhi/types/ETextureLayout.h>  
 #include <orhi/types/ETextureTiling.h>  
 #include <orhi/types/ETextureType.h>  
@@ -835,6 +836,17 @@ struct orhi::utils::MappingFor<orhi::types::ESamplerMipmapMode, VkSamplerMipmapM
 	using type = std::tuple<
 		EnumValuePair<EnumType::NEAREST, VK_SAMPLER_MIPMAP_MODE_NEAREST>,
 		EnumValuePair<EnumType::LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR>
+	>;
+};
+
+template <>
+struct orhi::utils::MappingFor<orhi::types::ETextureAspectFlags, VkImageAspectFlags>
+{
+	using EnumType = orhi::types::ETextureAspectFlags;
+	using type = std::tuple<
+		EnumValuePair<EnumType::COLOR, VK_IMAGE_ASPECT_COLOR_BIT>,
+		EnumValuePair<EnumType::DEPTH, VK_IMAGE_ASPECT_DEPTH_BIT>,
+		EnumValuePair<EnumType::STENCIL, VK_IMAGE_ASPECT_STENCIL_BIT>
 	>;
 };
 

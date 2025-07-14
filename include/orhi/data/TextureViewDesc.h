@@ -7,9 +7,8 @@
 #pragma once
 
 #include <orhi/types/EFormat.h>
+#include <orhi/types/ETextureAspectFlags.h>
 #include <orhi/types/ETextureType.h>
-
-#include <cstdint>
 
 namespace orhi::api
 {
@@ -33,6 +32,7 @@ namespace orhi::data
 		api::TTexture<BackendTraits>& texture;
 		types::EFormat format = types::EFormat::R8G8B8A8_SRGB;
 		types::ETextureType type = types::ETextureType::TEXTURE_2D;
+		types::ETextureAspectFlags aspectFlags = types::ETextureAspectFlags::COLOR;
 		uint32_t mipLevels = 1;
 		uint32_t arrayLayers = 1;
 	};

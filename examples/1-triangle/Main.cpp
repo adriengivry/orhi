@@ -96,7 +96,16 @@ int main()
 	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(GetWindowSize(window));
 
 	// Create render pass and pipeline
-	orhi::RenderPass renderPass{ device, optimalSwapChainDesc.format };
+	orhi::RenderPass renderPass{
+		device,
+		{
+			orhi::data::AttachmentDesc{
+				.type = orhi::types::EAttachmentType::COLOR,
+				.format = optimalSwapChainDesc.format,
+				.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR,
+			}
+		}
+	};
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
 	
@@ -195,7 +204,13 @@ int main()
 		auto& commandBuffer = frameResources.commandBuffer;
 		commandBuffer.Reset();
 		commandBuffer.Begin();
-		commandBuffer.BeginRenderPass(renderPass, swapImageResources.framebuffer, windowSize);
+		commandBuffer.BeginRenderPass(
+			renderPass,
+			swapImageResources.framebuffer,
+			windowSize,
+			{ orhi::data::ColorClearValue{0.0f, 0.0f, 0.0f, 1.0f} }
+		);
+
 		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline);
 
 		commandBuffer.SetViewport({

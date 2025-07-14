@@ -6,9 +6,12 @@
 
 #pragma once
 
+#include <orhi/data/AttachmentDesc.h>
 #include <orhi/data/NativeHandle.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EGraphicsBackend.h>
+
+#include <initializer_list>
 
 namespace orhi::api
 {
@@ -28,13 +31,13 @@ namespace orhi::api
 	{
 	public:
 		/**
-		* @brief Creates a render pass with a single color attachment
+		* @brief Creates a render pass with the specified attachments
 		* @param p_device Reference to the device that will own this render pass
-		* @param p_format Format of the color attachment
+		* @param p_attachments Attachments to be used in the render pass, such as color, depth, and stencil
 		*/
 		TRenderPass(
 			TDevice<BackendTraits>& p_device,
-			types::EFormat p_format
+			std::initializer_list<data::AttachmentDesc> p_attachments
 		);
 
 		/**

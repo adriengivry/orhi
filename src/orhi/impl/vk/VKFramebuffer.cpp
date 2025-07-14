@@ -27,12 +27,10 @@ namespace orhi
 			.handle = VK_NULL_HANDLE
 		}
 	{
-		auto t = p_desc.attachments.data();
-
 		VkFramebufferCreateInfo framebufferInfo{
 			.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 			.renderPass = p_desc.renderPass.GetNativeHandle().As<VkRenderPass>(),
-			.attachmentCount = 1,
+			.attachmentCount = static_cast<uint32_t>(p_desc.attachments.size()),
 			.pAttachments = reinterpret_cast<const VkImageView*>(p_desc.attachments.data()), // data::NativeHandle same layout as VkImageView
 			.width = p_desc.extent.width,
 			.height = p_desc.extent.height,

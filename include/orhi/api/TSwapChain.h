@@ -12,10 +12,12 @@
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
+#include <span>
 #include <vector>
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDescriptor;
 	template<typename BackendTraits> class TDevice;
 	template<typename BackendTraits> class TFence;
 	template<typename BackendTraits> class TFramebuffer;
@@ -57,12 +59,20 @@ namespace orhi::api
 		~TSwapChain();
 
 		/**
+		* @brief Returns the number of images in the swap chain
+		* @return Number of images available for rendering
+		*/
+		uint32_t GetImageCount() const;
+
+		/**
 		* @brief Creates framebuffers for each swap chain image
 		* @param p_renderPass The render pass that the framebuffers will be compatible with
+		* @param p_attachments Optional attachments to include in the framebuffers (e.g., depth/stencil)
 		* @return Vector of framebuffers, one for each swap chain image
 		*/
 		std::vector<orhi::api::TFramebuffer<BackendTraits>> CreateFramebuffers(
-			TRenderPass<BackendTraits>& p_renderPass
+			TRenderPass<BackendTraits>& p_renderPass,
+			std::span<const TDescriptor<BackendTraits>> p_attachments = {}
 		);
 
 		/**
