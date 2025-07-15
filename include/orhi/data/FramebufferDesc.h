@@ -7,7 +7,7 @@
 #pragma once
 
 #include <cstdint>
-#include <span>
+#include <initializer_list>
 
 #include <orhi/data/NativeHandle.h>
 #include <orhi/math/Extent2D.h>
@@ -15,6 +15,7 @@
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDescriptor;
 	template<typename BackendTraits> class TRenderPass;
 }
 
@@ -32,7 +33,7 @@ namespace orhi::data
 	template<typename BackendTraits>
 	struct FramebufferDesc
 	{
-		std::span<const NativeHandle> attachments;
+		std::initializer_list<std::reference_wrapper<api::TDescriptor<BackendTraits>>> attachments;
 		api::TRenderPass<BackendTraits>& renderPass;
 		math::Extent2D extent;
 	};

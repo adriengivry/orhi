@@ -37,7 +37,7 @@ namespace orhi::api
 		*/
 		TDescriptor(
 			TDevice<BackendTraits>& p_device,
-			const data::TextureViewDesc<BackendTraits>& p_desc
+			const data::TextureViewDesc& p_desc
 		);
 
 		/**

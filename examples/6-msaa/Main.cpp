@@ -176,6 +176,7 @@ int main()
 
 		colorTextures.reserve(imageCount);
 		colorDescriptors.reserve(imageCount);
+		framebuffers.reserve(imageCount);
 
 		for (uint32_t i = 0; i < imageCount; ++i)
 		{
@@ -194,18 +195,25 @@ int main()
 			colorTextures.back()->Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
 			colorDescriptors.emplace_back(
 				device,
-				orhi::data::TextureViewDesc<orhi::BackendTraits>{
-				.texture = *colorTextures.back(),
+				orhi::data::TextureViewDesc{
+					.texture = colorTextures.back()->GetNativeHandle(),
 					.format = optimalSwapChainDesc.format,
 					.aspectFlags = orhi::types::ETextureAspectFlags::COLOR,
 				}
 			);
-		}
 
-		framebuffers = swapChain->CreateFramebuffers(
-			renderPass,
-			colorDescriptors
-		);
+			framebuffers.emplace_back(
+				device,
+				orhi::data::FramebufferDesc<orhi::BackendTraits>{
+					.attachments = {
+						colorDescriptors.back(),
+						swapChain->GetImageDescriptor(i)
+					},
+					.renderPass = renderPass,
+					.extent = windowSize
+				}
+			);
+		}
 
 		swapImagesResources.reserve(framebuffers.size());
 		for (uint32_t i = 0; i < framebuffers.size(); ++i)

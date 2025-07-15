@@ -65,17 +65,10 @@ namespace orhi::api
 		uint32_t GetImageCount() const;
 
 		/**
-		* @brief Creates framebuffers for each swap chain image
-		* @param p_renderPass The render pass that the framebuffers will be compatible with
-		* @param p_attachments Optional attachments to include in the framebuffers (e.g., color/depth/stencil)
-		* @param p_useSwapChainImagesAsColorAttachment Whether to use swap chain images as color attachments
-		* @return Vector of framebuffers, one for each swap chain image
+		* @brief Gets the descriptor for a specific swap chain image
+		* @return Reference to the descriptor for the specified image index
 		*/
-		std::vector<orhi::api::TFramebuffer<BackendTraits>> CreateFramebuffers(
-			TRenderPass<BackendTraits>& p_renderPass,
-			std::span<const TDescriptor<BackendTraits>> p_attachments = {},
-			bool p_useSwapChainImagesAsColorAttachment = true
-		);
+		TDescriptor<BackendTraits>& GetImageDescriptor(uint32_t p_index);
 
 		/**
 		* @brief Acquires the index of the next available swap chain image

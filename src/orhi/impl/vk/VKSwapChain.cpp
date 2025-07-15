@@ -8,6 +8,7 @@
 
 #include <orhi/impl/vk/SwapChain.h>
 
+#include <orhi/data/TextureViewDesc.h>
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/except/OutOfDateSwapChain.h>
@@ -126,9 +127,20 @@ namespace orhi
 		);
 
 		// Create image views
-		m_context.imageViews.resize(m_context.images.size());
+		m_context.imageDescriptors.reserve(m_context.images.size());
+
 		for (size_t i = 0; i < m_context.images.size(); i++)
 		{
+			m_context.imageDescriptors.emplace_back(
+				m_context.device,
+				data::TextureViewDesc{
+					.texture = m_context.images[i],
+					.format = m_context.desc.format,
+					.type = types::ETextureType::TEXTURE_2D,
+					.aspectFlags = types::ETextureAspectFlags::COLOR,
+				}
+			);
+			/*
 			VkImageViewCreateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 				.image = m_context.images[i],
@@ -155,22 +167,16 @@ namespace orhi
 				nullptr,
 				&m_context.imageViews[i]
 			);
-			
+
 			ORHI_ASSERT(imageCreationResult == VK_SUCCESS, "Failed to create image view");
+			*/
 		}
 	}
 
 	template<>
 	SwapChain::~TSwapChain()
 	{
-		for (auto view : m_context.imageViews)
-		{
-			vkDestroyImageView(
-				m_context.device.GetNativeHandle().As<VkDevice>(),
-				view,
-				nullptr
-			);
-		}
+		m_context.imageDescriptors.clear();
 
 		vkDestroySwapchainKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
@@ -183,6 +189,12 @@ namespace orhi
 	uint32_t SwapChain::GetImageCount() const
 	{
 		return static_cast<uint32_t>(m_context.images.size());
+	}
+
+	template<>
+	Descriptor& SwapChain::GetImageDescriptor(uint32_t p_index)
+	{
+		return m_context.imageDescriptors[p_index];
 	}
 
 	template<>
@@ -211,45 +223,6 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to acquire next image");
 
 		return imageIndex;
-	}
-
-	template<>
-	std::vector<Framebuffer> SwapChain::CreateFramebuffers(
-		RenderPass& p_renderPass,
-		std::span<const Descriptor> p_attachments,
-		bool p_useSwapChainImagesAsColorAttachment
-	)
-	{
-		const uint32_t imageCount = GetImageCount();
-
-		std::vector<Framebuffer> framebuffers;
-		framebuffers.reserve(imageCount);
-
-		for (size_t i = 0; i < imageCount; i++)
-		{
-			std::vector<data::NativeHandle> attachments;
-
-			for (uint32_t j = 0; j < p_attachments.size() / imageCount; ++j)
-			{
-				attachments.push_back(p_attachments[j].GetNativeHandle());
-			}
-
-			if (p_useSwapChainImagesAsColorAttachment)
-			{
-				attachments.push_back(data::NativeHandle{ m_context.imageViews[i] });
-			}
-
-			framebuffers.emplace_back(
-				m_context.device,
-				data::FramebufferDesc<BackendTraits>{
-					.attachments = attachments,
-					.renderPass = p_renderPass,
-					.extent = m_context.extent
-				}
-			);
-		}
-
-		return framebuffers;
 	}
 
 	template<>
