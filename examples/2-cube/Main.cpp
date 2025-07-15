@@ -387,17 +387,15 @@ int main()
 	// Update each descriptor set (attach each uniform buffer to each descriptor set)
 	for (size_t i = 0; i < k_maxFramesInFlight; i++)
 	{
-		descriptorSets[i].get().Write(
+		descriptorSets[i].get().Write({
 			{
-				{
-					0,
-					orhi::data::BufferDescriptorWriteInfo{
-						.bufferDescriptor = ubos[i],
-						.descriptorType = orhi::types::EDescriptorType::UNIFORM_BUFFER
-					}
+				0,
+				orhi::data::BufferDescriptorWriteInfo{
+					.bufferDescriptor = ubos[i],
+					.descriptorType = orhi::types::EDescriptorType::UNIFORM_BUFFER
 				}
 			}
-		);
+		});
 	}
 
 	orhi::CommandPool commandPool{ device };

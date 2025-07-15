@@ -291,7 +291,8 @@ int main()
 	);
 
 	// Create render pass and pipeline
-	orhi::RenderPass renderPass{ device,
+	orhi::RenderPass renderPass{
+		device,
 		{
 			orhi::data::AttachmentDesc{
 				.type = orhi::types::EAttachmentType::COLOR,
@@ -453,18 +454,16 @@ int main()
 	// Update each descriptor set (attach each uniform buffer to each descriptor set)
 	for (size_t i = 0; i < k_objectDataCount; i++)
 	{
-		descriptorSets[i].get().Write(
+		descriptorSets[i].get().Write({
 			{
-				{
-					0,
-					orhi::data::BufferDescriptorWriteInfo{
-						.bufferDescriptor = ubos[i],
-						.descriptorType = orhi::types::EDescriptorType::UNIFORM_BUFFER
-					}
+				0,
+				orhi::data::BufferDescriptorWriteInfo{
+					.bufferDescriptor = ubos[i],
+					.descriptorType = orhi::types::EDescriptorType::UNIFORM_BUFFER
 				}
 			}
-		);
-	}	
+		});
+	}
 
 	orhi::CommandPool commandPool{ device };
 	auto commandBuffers = commandPool.AllocateCommandBuffers(k_maxFramesInFlight);
