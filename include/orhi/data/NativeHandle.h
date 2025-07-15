@@ -39,7 +39,7 @@ namespace orhi::data
 		* @return The handle cast to the specified type
 		*/
 		template<class T>
-		inline T As() { return static_cast<T>(m_handle); }
+		inline T As() const { return static_cast<T>(m_handle); }
 
 	private:
 		void* m_handle = nullptr;

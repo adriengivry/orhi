@@ -104,6 +104,12 @@ namespace orhi::api
 		*/
 		data::NativeHandle GetNativeHandle() const;
 
+		/**
+		* @brief Implicit conversion operator to the native handle type
+		* @return Native handle to the underlying texture object
+		*/
+		operator data::NativeHandle() const { return GetNativeHandle(); }
+
 	private:
 		BackendTraits::TextureContext m_context;
 	};

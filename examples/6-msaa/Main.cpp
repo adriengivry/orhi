@@ -4,10 +4,11 @@
 * @licence: MIT
 */
 
+#include <orhi/except/OutOfDateSwapChain.h>
 #include <orhi/BackendTraits.h>
 #include <orhi/CommandBuffer.h>
 #include <orhi/CommandPool.h>
-#include <orhi/except/OutOfDateSwapChain.h>
+#include <orhi/Descriptor.h>
 #include <orhi/Fence.h>
 #include <orhi/Framebuffer.h>
 #include <orhi/GraphicsPipeline.h>
@@ -17,6 +18,7 @@
 #include <orhi/Semaphore.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/SwapChain.h>
+#include <orhi/Texture.h>
 
 #include <GLFW/glfw3.h>
 #if defined(_WIN32) || defined(_WIN64)
@@ -80,7 +82,7 @@ int main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "1-triangle", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "6-msaa", nullptr, nullptr);
 
 	// Create instance and device
 	orhi::Instance instance(orhi::data::InstanceDesc{
@@ -103,6 +105,12 @@ int main()
 			orhi::data::AttachmentDesc{
 				.type = orhi::types::EAttachmentType::COLOR,
 				.format = optimalSwapChainDesc.format,
+				.finalLayout = orhi::types::ETextureLayout::COLOR_ATTACHMENT_OPTIMAL,
+				.samples = device.GetInfo().maxSampleCount
+			},
+			orhi::data::AttachmentDesc{
+				.type = orhi::types::EAttachmentType::RESOLVE,
+				.format = optimalSwapChainDesc.format,
 				.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR,
 			}
 		}
@@ -118,6 +126,11 @@ int main()
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
 			.renderPass = renderPass,
+			.multisampleState = {
+				.rasterizationSamples = device.GetInfo().maxSampleCount,
+				.sampleShadingEnable = true,
+				.minSampleShading = 0.2f
+			},
 			.colorBlendState = {
 				.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
 			},
@@ -132,6 +145,8 @@ int main()
 
 	// Swap chain and framebuffers
 	std::vector<orhi::Framebuffer> framebuffers;
+	std::vector<orhi::Texture> colorTextures;
+	std::vector<orhi::Descriptor> colorDescriptors;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
 	std::vector<SwapImageResources> swapImagesResources;
@@ -147,6 +162,8 @@ int main()
 
 		framebuffers.clear();
 		swapImagesResources.clear();
+		colorTextures.clear();
+		colorDescriptors.clear();
 
 		swapChain = std::make_unique<orhi::SwapChain>(
 			device,
@@ -158,15 +175,41 @@ int main()
 
 		const uint32_t imageCount = swapChain->GetImageCount();
 
+		colorTextures.reserve(imageCount);
+		colorDescriptors.reserve(imageCount);
 		framebuffers.reserve(imageCount);
-		swapImagesResources.reserve(imageCount);
+		swapImagesResources.reserve(framebuffers.size());
 
 		for (uint32_t i = 0; i < imageCount; ++i)
 		{
+			auto& colorTexture = colorTextures.emplace_back(
+				device,
+				orhi::data::TextureDesc{
+					.extent = { windowSize.width, windowSize.height, 1 },
+					.format = optimalSwapChainDesc.format,
+					.type = orhi::types::ETextureType::TEXTURE_2D,
+					.usage = orhi::types::ETextureUsageFlags::COLOR_ATTACHMENT_BIT,
+					.samples = device.GetInfo().maxSampleCount,
+				}
+			);
+			colorTexture.Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
+			
+			auto& colorDescriptor = colorDescriptors.emplace_back(
+				device,
+				orhi::data::TextureViewDesc{
+					.texture = colorTexture,
+					.format = optimalSwapChainDesc.format,
+					.aspectFlags = orhi::types::ETextureAspectFlags::COLOR,
+				}
+			);
+
 			auto& framebuffer = framebuffers.emplace_back(
 				device,
 				orhi::data::FramebufferDesc<orhi::BackendTraits>{
-					.attachments = { swapChain->GetImageDescriptor(i) },
+					.attachments = {
+						colorDescriptor,
+						swapChain->GetImageDescriptor(i)
+					},
 					.renderPass = renderPass,
 					.extent = windowSize
 				}
@@ -221,7 +264,10 @@ int main()
 			renderPass,
 			swapImageResources.framebuffer,
 			windowSize,
-			{ orhi::data::ColorClearValue{0.0f, 0.0f, 0.0f, 1.0f} }
+			{
+				orhi::data::ColorClearValue{0.0f, 0.0f, 0.0f, 1.0f}, // For the color attachment
+				orhi::data::ColorClearValue{0.0f, 0.0f, 0.0f, 1.0f} // For the resolve attachment
+			}
 		);
 
 		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline);

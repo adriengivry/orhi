@@ -9,6 +9,7 @@
 #include <orhi/api/TSwapChain.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/impl/vk/BackendTraits.h>
+#include <orhi/impl/vk/Descriptor.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/Framebuffer.h>
 
@@ -29,7 +30,7 @@ namespace orhi::impl::vk
 		data::SwapChainDesc desc;
 		VkSwapchainKHR handle;
 		std::vector<VkImage> images;
-		std::vector<VkImageView> imageViews;
+		std::vector<Descriptor> imageDescriptors;
 		math::Extent2D extent;
 	};
 

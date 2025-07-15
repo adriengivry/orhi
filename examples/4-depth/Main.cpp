@@ -340,7 +340,7 @@ int main()
 
 	// Swap chain and framebuffers
 	std::vector<orhi::Framebuffer> framebuffers;
-	std::vector<std::unique_ptr<orhi::Texture>> depthTextures;
+	std::vector<orhi::Texture> depthTextures;
 	std::vector<orhi::Descriptor> depthDescriptors;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
@@ -354,6 +354,7 @@ int main()
 		} while (windowSize.width == 0U || windowSize.height == 0U);
 
 		device.WaitIdle();
+
 		framebuffers.clear();
 		swapImagesResources.clear();
 		depthTextures.clear();
@@ -372,38 +373,44 @@ int main()
 		depthTextures.reserve(imageCount);
 		depthDescriptors.reserve(imageCount);
 		swapImagesResources.reserve(imageCount);
+		framebuffers.reserve(imageCount);
 
 		for (uint32_t i = 0; i < imageCount; ++i)
 		{
-			depthTextures.emplace_back(
-				std::make_unique<orhi::Texture>(
-					device,
-					orhi::data::TextureDesc{
-						.extent = { windowSize.width, windowSize.height, 1 },
-						.format = orhi::types::EFormat::D32_SFLOAT,
-						.type = orhi::types::ETextureType::TEXTURE_2D,
-						.usage = orhi::types::ETextureUsageFlags::DEPTH_STENCIL_ATTACHMENT_BIT
-					}
-				)
-			);
-			depthTextures.back()->Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
-			depthDescriptors.emplace_back(
+			auto& depthTexture = depthTextures.emplace_back(
 				device,
-				orhi::data::TextureViewDesc<orhi::BackendTraits>{
-					.texture = *depthTextures.back(),
+				orhi::data::TextureDesc{
+					.extent = { windowSize.width, windowSize.height, 1 },
+					.format = orhi::types::EFormat::D32_SFLOAT,
+					.type = orhi::types::ETextureType::TEXTURE_2D,
+					.usage = orhi::types::ETextureUsageFlags::DEPTH_STENCIL_ATTACHMENT_BIT
+				}
+			);
+			depthTexture.Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
+			
+			auto& depthDescriptor = depthDescriptors.emplace_back(
+				device,
+				orhi::data::TextureViewDesc{
+					.texture = depthTexture,
 					.format = orhi::types::EFormat::D32_SFLOAT,
 					.aspectFlags = orhi::types::ETextureAspectFlags::DEPTH,
 				}
 			);
-		}
 
-		framebuffers = swapChain->CreateFramebuffers(renderPass, depthDescriptors);
+			auto& framebuffer = framebuffers.emplace_back(
+				device,
+				orhi::data::FramebufferDesc<orhi::BackendTraits>{
+					.attachments = {
+						swapChain->GetImageDescriptor(i),
+						depthDescriptor
+					},
+					.renderPass = renderPass,
+					.extent = windowSize
+				}
+			);
 
-		swapImagesResources.reserve(framebuffers.size());
-		for (uint32_t i = 0; i < framebuffers.size(); ++i)
-		{
 			swapImagesResources.emplace_back(
-				framebuffers[i],
+				framebuffer,
 				std::make_unique<orhi::Semaphore>(device)
 			);
 		}

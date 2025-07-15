@@ -4,6 +4,7 @@
 * @licence: MIT
 */
 
+#include <orhi/BackendTraits.h>
 #include <orhi/Buffer.h>
 #include <orhi/CommandBuffer.h>
 #include <orhi/CommandPool.h>
@@ -318,13 +319,24 @@ int main()
 			swapChain ? std::make_optional(std::ref(*swapChain)) : std::nullopt
 		);
 
-		framebuffers = swapChain->CreateFramebuffers(renderPass);
+		const uint32_t imageCount = swapChain->GetImageCount();
 
-		swapImagesResources.reserve(framebuffers.size());
-		for (uint32_t i = 0; i < framebuffers.size(); ++i)
+		framebuffers.reserve(imageCount);
+		swapImagesResources.reserve(imageCount);
+
+		for (uint32_t i = 0; i < imageCount; ++i)
 		{
 			swapImagesResources.emplace_back(
-				framebuffers[i],
+				framebuffers.emplace_back(
+					device,
+					orhi::data::FramebufferDesc<orhi::BackendTraits>{
+						.attachments = {
+							swapChain->GetImageDescriptor(i)
+						},
+						.renderPass = renderPass,
+						.extent = windowSize
+					}
+				),
 				std::make_unique<orhi::Semaphore>(device)
 			);
 		}

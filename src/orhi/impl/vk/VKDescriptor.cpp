@@ -23,7 +23,7 @@ namespace orhi
 	template<>
 	Descriptor::TDescriptor(
 		Device& p_device,
-		const data::TextureViewDesc<BackendTraits>& p_desc
+		const data::TextureViewDesc& p_desc
 	) : m_context{
 		.device = p_device,
 		.handle = VK_NULL_HANDLE,
@@ -32,7 +32,7 @@ namespace orhi
 	{
 		VkImageViewCreateInfo viewInfo{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-			.image = p_desc.texture.GetNativeHandle().As<VkImage>(),
+			.image = p_desc.texture.As<VkImage>(),
 			.viewType = VK_IMAGE_VIEW_TYPE_2D,
 			.format = utils::EnumToValue<VkFormat>(p_desc.format),
 			.subresourceRange = {

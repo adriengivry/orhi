@@ -16,6 +16,7 @@ namespace orhi::types
 	enum class EAttachmentType : uint8_t
 	{
 		COLOR,
-		DEPTH_STENCIL
+		DEPTH_STENCIL,
+		RESOLVE
 	};
 }

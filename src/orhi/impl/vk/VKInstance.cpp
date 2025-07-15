@@ -20,6 +20,7 @@
 #include <orhi/impl/vk/details/ExtensionManager.h>
 #include <orhi/impl/vk/details/QueueFamilyIndices.h>
 #include <orhi/impl/vk/details/SwapChainUtils.h>
+#include <orhi/impl/vk/details/Types.h>
 #include <orhi/impl/vk/details/ValidationLayerManager.h>
 
 #include <vulkan/vulkan.h>
@@ -95,6 +96,22 @@ namespace
 		return p_device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 	}
 
+	VkSampleCountFlags GetMaxSampleCount(VkPhysicalDeviceProperties p_deviceProperties)
+	{
+		const VkSampleCountFlags counts =
+			p_deviceProperties.limits.framebufferColorSampleCounts &
+			p_deviceProperties.limits.framebufferDepthSampleCounts;
+
+		if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
+		if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
+		if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }
+		if (counts & VK_SAMPLE_COUNT_8_BIT) { return VK_SAMPLE_COUNT_8_BIT; }
+		if (counts & VK_SAMPLE_COUNT_4_BIT) { return VK_SAMPLE_COUNT_4_BIT; }
+		if (counts & VK_SAMPLE_COUNT_2_BIT) { return VK_SAMPLE_COUNT_2_BIT; }
+
+		return VK_SAMPLE_COUNT_1_BIT;
+	}
+
 	orhi::data::DeviceInfo GenerateDeviceInfo(
 		VkPhysicalDevice device,
 		VkPhysicalDeviceProperties properties,
@@ -106,7 +123,8 @@ namespace
 
 		return {
 			.id = deviceId++,
-			.maxSamplerAnisotropy = properties.limits.maxSamplerAnisotropy
+			.maxSamplerAnisotropy = properties.limits.maxSamplerAnisotropy,
+			.maxSampleCount = orhi::utils::ValueToEnum<orhi::types::ESampleCountFlags>(GetMaxSampleCount(properties))
 		};
 	}
 }

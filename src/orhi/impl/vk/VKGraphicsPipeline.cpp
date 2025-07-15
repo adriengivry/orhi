@@ -135,7 +135,7 @@ namespace
 	{
 		return VkPipelineMultisampleStateCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-			.rasterizationSamples = orhi::utils::EnumToValue<VkSampleCountFlagBits>(p_desc.rasterizationSamples),
+			.rasterizationSamples = static_cast<VkSampleCountFlagBits>(orhi::utils::EnumToValue<VkSampleCountFlags>(p_desc.rasterizationSamples)),
 			.sampleShadingEnable = p_desc.sampleShadingEnable ? VK_TRUE : VK_FALSE,
 			.minSampleShading = p_desc.minSampleShading,
 			.pSampleMask = p_desc.pSampleMask,

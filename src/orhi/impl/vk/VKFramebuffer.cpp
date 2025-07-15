@@ -9,6 +9,7 @@
 #include <orhi/impl/vk/Framebuffer.h>
 
 #include <orhi/debug/Assert.h>
+#include <orhi/impl/vk/Descriptor.h>
 #include <orhi/impl/vk/RenderPass.h>
 
 #include <vulkan/vulkan.h>
@@ -27,11 +28,19 @@ namespace orhi
 			.handle = VK_NULL_HANDLE
 		}
 	{
+		std::vector<VkImageView> imageViews;
+		imageViews.reserve(p_desc.attachments.size());
+
+		for (const auto& attachment : p_desc.attachments)
+		{
+			imageViews.push_back(attachment.get().GetNativeHandle().As<VkImageView>());
+		}
+
 		VkFramebufferCreateInfo framebufferInfo{
 			.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 			.renderPass = p_desc.renderPass.GetNativeHandle().As<VkRenderPass>(),
-			.attachmentCount = static_cast<uint32_t>(p_desc.attachments.size()),
-			.pAttachments = reinterpret_cast<const VkImageView*>(p_desc.attachments.data()), // data::NativeHandle same layout as VkImageView
+			.attachmentCount = static_cast<uint32_t>(imageViews.size()),
+			.pAttachments = imageViews.data(),
 			.width = p_desc.extent.width,
 			.height = p_desc.extent.height,
 			.layers = 1

@@ -6,14 +6,10 @@
 
 #pragma once
 
+#include <orhi/data/NativeHandle.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureAspectFlags.h>
 #include <orhi/types/ETextureType.h>
-
-namespace orhi::api
-{
-	template<typename BackendTraits> class TTexture;
-}
 
 namespace orhi::data
 {
@@ -26,10 +22,9 @@ namespace orhi::data
 	* 
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
-	template<typename BackendTraits>
 	struct TextureViewDesc
 	{
-		api::TTexture<BackendTraits>& texture;
+		data::NativeHandle texture;
 		types::EFormat format = types::EFormat::R8G8B8A8_SRGB;
 		types::ETextureType type = types::ETextureType::TEXTURE_2D;
 		types::ETextureAspectFlags aspectFlags = types::ETextureAspectFlags::COLOR;

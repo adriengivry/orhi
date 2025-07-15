@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <orhi/types/ESampleCountFlags.h>
 
 namespace orhi::data
 {
@@ -20,5 +20,6 @@ namespace orhi::data
 	{
 		uint32_t id;
 		float maxSamplerAnisotropy;
+		types::ESampleCountFlags maxSampleCount;
 	};
 }
