@@ -82,7 +82,7 @@ int main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "1-triangle", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "6-msaa", nullptr, nullptr);
 
 	// Create instance and device
 	orhi::Instance instance(orhi::data::InstanceDesc{
