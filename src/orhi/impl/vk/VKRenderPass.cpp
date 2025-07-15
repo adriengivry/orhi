@@ -34,6 +34,7 @@ namespace orhi
 
 		attachmentsRefs[types::EAttachmentType::COLOR] = {};
 		attachmentsRefs[types::EAttachmentType::DEPTH_STENCIL] = {};
+		attachmentsRefs[types::EAttachmentType::RESOLVE] = {};
 
 		uint32_t attachmentIndex = 0;
 
@@ -41,7 +42,7 @@ namespace orhi
 		{
 			attachments.push_back(VkAttachmentDescription{
 				.format = utils::EnumToValue<VkFormat>(attachment.format),
-				.samples = VK_SAMPLE_COUNT_1_BIT,
+				.samples = static_cast<VkSampleCountFlagBits>(utils::EnumToValue<VkSampleCountFlags>(attachment.samples)),
 				.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
 				.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
 				.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
@@ -50,9 +51,9 @@ namespace orhi
 				.finalLayout = utils::EnumToValue<VkImageLayout>(attachment.finalLayout)
 			});
 
-			const auto layout = attachment.type == types::EAttachmentType::COLOR
-				? VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-				: VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+			const auto layout = attachment.type == types::EAttachmentType::DEPTH_STENCIL
+				? VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+				: VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 			attachmentsRefs[attachment.type].push_back(VkAttachmentReference{
 				.attachment = attachmentIndex++,
@@ -72,7 +73,8 @@ namespace orhi
 			// with the layout(location = 0) out vec4 outColor directive!
 			// Here we have an array of one element (no actual array, just ptr to element)
 			.pColorAttachments = attachmentsRefs[types::EAttachmentType::COLOR].data(),
-			.pDepthStencilAttachment = attachmentsRefs[types::EAttachmentType::DEPTH_STENCIL].data(),
+			.pResolveAttachments = attachmentsRefs[types::EAttachmentType::RESOLVE].data(),
+			.pDepthStencilAttachment = attachmentsRefs[types::EAttachmentType::DEPTH_STENCIL].data()
 		};
 
 		VkPipelineStageFlags stageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;

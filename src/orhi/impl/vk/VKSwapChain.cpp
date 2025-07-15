@@ -216,7 +216,8 @@ namespace orhi
 	template<>
 	std::vector<Framebuffer> SwapChain::CreateFramebuffers(
 		RenderPass& p_renderPass,
-		std::span<const Descriptor> p_attachments
+		std::span<const Descriptor> p_attachments,
+		bool p_useSwapChainImagesAsColorAttachment
 	)
 	{
 		const uint32_t imageCount = GetImageCount();
@@ -227,11 +228,15 @@ namespace orhi
 		for (size_t i = 0; i < imageCount; i++)
 		{
 			std::vector<data::NativeHandle> attachments;
-			attachments.push_back(data::NativeHandle{ m_context.imageViews[i] });
 
 			for (uint32_t j = 0; j < p_attachments.size() / imageCount; ++j)
 			{
 				attachments.push_back(p_attachments[j].GetNativeHandle());
+			}
+
+			if (p_useSwapChainImagesAsColorAttachment)
+			{
+				attachments.push_back(data::NativeHandle{ m_context.imageViews[i] });
 			}
 
 			framebuffers.emplace_back(

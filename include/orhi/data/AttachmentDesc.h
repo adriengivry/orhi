@@ -9,6 +9,7 @@
 #include <orhi/types/EAttachmentType.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
+#include <orhi/types/ESampleCountFlags.h>
 
 namespace orhi::data
 {
@@ -24,5 +25,6 @@ namespace orhi::data
 		types::EFormat format;
 		types::ETextureLayout initialLayout = types::ETextureLayout::UNDEFINED;
 		types::ETextureLayout finalLayout = types::ETextureLayout::UNDEFINED;
+		types::ESampleCountFlags samples = types::ESampleCountFlags::COUNT_1_BIT;
 	};
 }

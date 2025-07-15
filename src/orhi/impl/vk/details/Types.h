@@ -541,7 +541,7 @@ struct orhi::utils::MappingFor<orhi::types::EFrontFace, VkFrontFace>
 };
 
 template <>
-struct orhi::utils::MappingFor<orhi::types::ESampleCountFlags, VkSampleCountFlagBits>
+struct orhi::utils::MappingFor<orhi::types::ESampleCountFlags, VkSampleCountFlags>
 {
 	using EnumType = orhi::types::ESampleCountFlags;
 	using type = std::tuple<

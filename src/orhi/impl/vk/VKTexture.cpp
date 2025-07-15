@@ -38,7 +38,7 @@ namespace orhi
 			.extent = reinterpret_cast<const VkExtent3D&>(p_desc.extent),
 			.mipLevels = p_desc.mipLevels,
 			.arrayLayers = p_desc.arrayLayers,
-			.samples = utils::EnumToValue<VkSampleCountFlagBits>(p_desc.samples),
+			.samples = static_cast<VkSampleCountFlagBits>(utils::EnumToValue<VkSampleCountFlags>(p_desc.samples)),
 			.tiling = utils::EnumToValue<VkImageTiling>(p_desc.tiling),
 			.usage = utils::EnumToValue<VkImageUsageFlags>(p_desc.usage),
 			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
