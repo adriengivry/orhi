@@ -55,7 +55,6 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create image!");
 
 		m_context.format = p_desc.format;
-		m_context.layout = p_desc.initialLayout;
 		m_context.extent = p_desc.extent;
 	}
 
@@ -178,27 +177,21 @@ namespace orhi
 	}
 
 	template<>
-	void Texture::NotifyLayoutChange(types::ETextureLayout p_layout)
-	{
-		m_context.layout = p_layout;
-	}
-
-	template<>
 	types::EFormat Texture::GetFormat() const
 	{
 		return m_context.format;
 	}
 
 	template<>
-	types::ETextureLayout Texture::GetLayout() const
-	{
-		return m_context.layout;
-	}
-
-	template<>
 	const math::Extent3D& Texture::GetExtent() const
 	{
 		return m_context.extent;
+	}
+
+	template<>
+	uint32_t Texture::GetMipLevels() const
+	{
+		return m_context.mipLevels;
 	}
 
 	template<>

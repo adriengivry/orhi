@@ -154,7 +154,7 @@ int main()
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "3-texture", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "5-mipmaps", nullptr, nullptr);
 
 	// Create instance and device
 	orhi::Instance instance(orhi::data::InstanceDesc{
@@ -204,6 +204,7 @@ int main()
 	{
 		throw std::runtime_error("failed to load texture image!");
 	}
+	const uint32_t mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight))) + 1);
 
 	// Create a buffer to hold the texture data
 	std::unique_ptr<orhi::Buffer> pixelBuffer = std::make_unique<orhi::Buffer>(
@@ -231,7 +232,11 @@ int main()
 				1
 			},
 			.format = orhi::types::EFormat::R8G8B8A8_SRGB,
-			.usage = orhi::types::ETextureUsageFlags::SAMPLED_BIT | orhi::types::ETextureUsageFlags::TRANSFER_DST_BIT,
+			.usage =
+				orhi::types::ETextureUsageFlags::TRANSFER_SRC_BIT | // for mipmap generation
+				orhi::types::ETextureUsageFlags::SAMPLED_BIT |
+				orhi::types::ETextureUsageFlags::TRANSFER_DST_BIT,
+			.mipLevels = mipLevels
 		}
 	};
 	texture.Allocate(
@@ -345,12 +350,52 @@ int main()
 
 	transferBuffer.CopyBufferToTexture(*pixelBuffer, texture);
 
+	for (uint32_t i = 1; i < mipLevels; i++)
+	{
+		transferBuffer.TransitionTextureLayout(
+			texture,
+			orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL,
+			orhi::types::ETextureLayout::TRANSFER_SRC_OPTIMAL,
+			i - 1
+		);
+
+		transferBuffer.BlitTexture(
+			texture,
+			texture,
+			// Source region
+			orhi::data::TextureRegion{
+				.mipLevel = i - 1,
+				.rect = orhi::math::Rect3D{
+					.offset = { 0, 0, 0 },
+					.extent = {
+						static_cast<uint32_t>(texWidth >> (i - 1)),
+						static_cast<uint32_t>(texHeight >> (i - 1)),
+						1
+					}
+				}
+			},
+			// Destination region
+			orhi::data::TextureRegion{
+				.mipLevel = i,
+				.rect = orhi::math::Rect3D{
+					.offset = { 0, 0, 0 },
+					.extent = {
+						static_cast<uint32_t>(texWidth >> i),
+						static_cast<uint32_t>(texHeight >> i),
+						1
+					}
+				}
+			}
+		);
+	}
+
 	transferBuffer.TransitionTextureLayout(
 		texture,
-		orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL,
-		orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL
+		orhi::types::ETextureLayout::TRANSFER_SRC_OPTIMAL,
+		orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL,
+		mipLevels - 1
 	);
-
+	
 	transferBuffer.End();
 	device.GetGraphicsQueue().Submit({ transferBuffer });
 	device.WaitIdle();
@@ -358,14 +403,18 @@ int main()
 	auto textureDescriptor = std::make_unique<orhi::Descriptor>(
 		device,
 		orhi::data::TextureViewDesc{
-			.texture = texture
+			.texture = texture,
+			.mipLevels = mipLevels
 		}
 	);
 
 	auto samplerDescriptor = std::make_unique<orhi::Descriptor>(
 		device,
 		orhi::data::SamplerDesc{
-			.anisotropy = true
+			.anisotropy = true,
+			.mipLodBias = (mipLevels - 1) / 2.0f, // Force median mipmap level to visualize mipmapping
+			.minLod = 0.0f,
+			.maxLod = static_cast<float>(mipLevels - 1),
 		}
 	);
 

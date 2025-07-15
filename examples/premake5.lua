@@ -64,6 +64,7 @@ group "examples"
 	include "2-cube"
 	include "3-texture"
 	include "4-depth"
+	include "5-mipmaps"
 group ""
 
 group "examples/deps"

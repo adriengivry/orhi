@@ -10,6 +10,7 @@
 #include <orhi/data/BufferTextureCopyDesc.h>
 #include <orhi/data/ClearValue.h>
 #include <orhi/data/NativeHandle.h>
+#include <orhi/data/TextureRegion.h>
 #include <orhi/data/ViewportDesc.h>
 #include <orhi/math/Rect2D.h>
 #include <orhi/types/ECommandBufferUsageFlags.h>
@@ -108,22 +109,48 @@ namespace orhi::api
 		* @brief Copies data from a buffer to a texture
 		* @param p_src Source buffer containing the image data
 		* @param p_dest Destination texture to copy to
+		* @param p_layout (optional) Texture layout to transition to after copy, defaults to TRANSFER_DST_OPTIMAL
 		* @param p_regions Array of copy regions specifying buffer offset, texture subresource, and extent; if empty, copies entire buffer to texture
 		*/
 		void CopyBufferToTexture(
 			TBuffer<BackendTraits>& p_src,
 			TTexture<BackendTraits>& p_dest,
+			types::ETextureLayout p_layout = types::ETextureLayout::TRANSFER_DST_OPTIMAL,
 			std::span<const data::BufferTextureCopyDesc> p_regions = {}
 		);
 
 		/**
 		* @brief Transitions a texture from one layout to another
 		* @param p_texture The texture to transition
-		* @param p_layout The target layout to transition to
+		* @param p_oldLayout The current layout of the texture
+		* @param p_newLayout The new layout to transition the texture to
+		* @param p_mipLevel (optional) Base mip level to transition, defaults to 0 
+		* @param p_mipLevelCount (optional) Number of mip levels to transition, defaults to 1
 		*/
 		void TransitionTextureLayout(
 			TTexture<BackendTraits>& p_texture,
-			types::ETextureLayout p_layout
+			types::ETextureLayout p_oldLayout,
+			types::ETextureLayout p_newLayout,
+			uint32_t p_baseMipLevel = 0,
+			uint32_t p_mipLevelCount = 1
+		);
+
+		/**
+		* @brief Blits a texture from one region to another, potentially resizing it
+		* @param p_src Source texture to blit from
+		* @param p_dest Destination texture to blit to
+		* @param p_srcRegion Source region to blit from
+		* @param p_destRegion Destination region to blit to
+		* @param p_srcLayout (optional) Source texture layout, defaults to TRANSFER_SRC_OPTIMAL
+		* @param p_destLayout (optional) Destination texture layout, defaults to TRANSFER_DST_OPTIMAL
+		*/
+		void BlitTexture(
+			TTexture<BackendTraits>& p_src,
+			TTexture<BackendTraits>& p_dest,
+			const data::TextureRegion& p_srcRegion,
+			const data::TextureRegion& p_destRegion,
+			types::ETextureLayout p_srcLayout = types::ETextureLayout::TRANSFER_SRC_OPTIMAL,
+			types::ETextureLayout p_destLayout = types::ETextureLayout::TRANSFER_DST_OPTIMAL
 		);
 
 		/**

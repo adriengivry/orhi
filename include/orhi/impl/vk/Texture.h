@@ -26,7 +26,7 @@ namespace orhi::impl::vk
 		VkImage handle;
 		VkDeviceMemory memory;
 		types::EFormat format;
-		types::ETextureLayout layout;
+		uint32_t mipLevels;
 		math::Extent3D extent;
 		uint64_t allocatedBytes;
 	};

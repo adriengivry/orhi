@@ -173,6 +173,7 @@ namespace orhi
 	void CommandBuffer::CopyBufferToTexture(
 		Buffer& p_src,
 		Texture& p_dest,
+		types::ETextureLayout p_layout,
 		std::span<const data::BufferTextureCopyDesc> p_regions
 	)
 	{
@@ -217,7 +218,7 @@ namespace orhi
 			m_context.handle,
 			p_src.GetNativeHandle().As<VkBuffer>(),
 			p_dest.GetNativeHandle().As<VkImage>(),
-			utils::EnumToValue<VkImageLayout>(p_dest.GetLayout()),
+			utils::EnumToValue<VkImageLayout>(p_layout),
 			std::max(1U, static_cast<uint32_t>(p_regions.size())),
 			regions.data()
 		);
@@ -226,22 +227,23 @@ namespace orhi
 	template<>
 	void CommandBuffer::TransitionTextureLayout(
 		Texture& p_texture,
-		types::ETextureLayout p_layout
+		types::ETextureLayout p_oldLayout,
+		types::ETextureLayout p_newLayout,
+		uint32_t p_baseMipLevel,
+		uint32_t p_mipLevelCount
 	)
 	{
-		types::ETextureLayout oldLayout = p_texture.GetLayout();
-
 		VkImageMemoryBarrier barrier = {
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
 			.srcAccessMask = 0,
 			.dstAccessMask = 0,
-			.oldLayout = utils::EnumToValue<VkImageLayout>(oldLayout),
-			.newLayout = utils::EnumToValue<VkImageLayout>(p_layout),
+			.oldLayout = utils::EnumToValue<VkImageLayout>(p_oldLayout),
+			.newLayout = utils::EnumToValue<VkImageLayout>(p_newLayout),
 			.image = p_texture.GetNativeHandle().As<VkImage>(),
 			.subresourceRange = {
 				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-				.baseMipLevel = 0,
-				.levelCount = 1,
+				.baseMipLevel = p_baseMipLevel,
+				.levelCount = p_mipLevelCount,
 				.baseArrayLayer = 0,
 				.layerCount = 1
 			}
@@ -250,7 +252,7 @@ namespace orhi
 		VkPipelineStageFlags sourceStage;
 		VkPipelineStageFlags destinationStage;
 
-		if (oldLayout == types::ETextureLayout::UNDEFINED && p_layout == types::ETextureLayout::TRANSFER_DST_OPTIMAL)
+		if (p_oldLayout == types::ETextureLayout::UNDEFINED && p_newLayout == types::ETextureLayout::TRANSFER_DST_OPTIMAL)
 		{
 			barrier.srcAccessMask = 0;
 			barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -258,10 +260,34 @@ namespace orhi
 			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 			destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 		}
-		else if (oldLayout == types::ETextureLayout::TRANSFER_DST_OPTIMAL && p_layout == types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL)
+		else if (p_oldLayout == types::ETextureLayout::UNDEFINED && p_newLayout == types::ETextureLayout::TRANSFER_SRC_OPTIMAL)
+		{
+			barrier.srcAccessMask = 0;
+			barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (p_oldLayout == types::ETextureLayout::TRANSFER_DST_OPTIMAL && p_newLayout == types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL)
 		{
 			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
+		else if (p_oldLayout == types::ETextureLayout::TRANSFER_SRC_OPTIMAL && p_newLayout == types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL)
+		{
+			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
+		else if (p_oldLayout == types::ETextureLayout::TRANSFER_DST_OPTIMAL && p_newLayout == types::ETextureLayout::TRANSFER_SRC_OPTIMAL)
+		{
+			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
 
 			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
@@ -279,8 +305,6 @@ namespace orhi
 			0, nullptr, // No buffer barriers
 			1, &barrier // Image barrier
 		);
-
-		p_texture.NotifyLayoutChange(p_layout);
 	}
 
 	template<>
@@ -308,6 +332,66 @@ namespace orhi
 			p_indexBuffer.GetNativeHandle().As<VkBuffer>(),
 			0,
 			utils::EnumToValue<VkIndexType>(p_indexType)
+		);
+	}
+
+	template<>
+	void CommandBuffer::BlitTexture(
+		Texture& p_src,
+		Texture& p_dest,
+		const data::TextureRegion& p_srcRegion,
+		const data::TextureRegion& p_destRegion,
+		types::ETextureLayout p_srcLayout,
+		types::ETextureLayout p_destLayout
+	)
+	{
+		math::Rect3D srcRect = p_srcRegion.rect.value_or(
+			math::Rect3D{
+				.offset = { 0, 0, 0 },
+				.extent = p_src.GetExtent()
+			}
+		);
+
+		math::Rect3D dstRect = p_destRegion.rect.value_or(
+			math::Rect3D{
+				.offset = { 0, 0, 0 },
+				.extent = p_dest.GetExtent()
+			}
+		);
+
+		VkImageBlit blitRegion{
+			.srcSubresource = {
+				.aspectMask = utils::EnumToValue<VkImageAspectFlags>(p_srcRegion.aspectMask),
+				.mipLevel = p_srcRegion.mipLevel,
+				.baseArrayLayer = p_srcRegion.baseArrayLayer,
+				.layerCount = p_srcRegion.layerCount
+			},
+			.srcOffsets = {
+				{ static_cast<int32_t>(srcRect.offset.x), static_cast<int32_t>(srcRect.offset.y), 0 },
+				{ static_cast<int32_t>(srcRect.offset.x + srcRect.extent.width),
+				  static_cast<int32_t>(srcRect.offset.y + srcRect.extent.height), 1 }
+			},
+			.dstSubresource = {
+				.aspectMask = utils::EnumToValue<VkImageAspectFlags>(p_destRegion.aspectMask),
+				.mipLevel = p_destRegion.mipLevel,
+				.baseArrayLayer = p_destRegion.baseArrayLayer,
+				.layerCount = p_destRegion.layerCount
+			},
+			.dstOffsets = {
+				{ static_cast<int32_t>(dstRect.offset.x), static_cast<int32_t>(dstRect.offset.y), 0 },
+				{ static_cast<int32_t>(dstRect.offset.x + dstRect.extent.width),
+				  static_cast<int32_t>(dstRect.offset.y + dstRect.extent.height), 1 }
+			}
+		};
+
+		vkCmdBlitImage(
+			m_context.handle,
+			p_src.GetNativeHandle().As<VkImage>(),
+			utils::EnumToValue<VkImageLayout>(p_srcLayout),
+			p_dest.GetNativeHandle().As<VkImage>(),
+			utils::EnumToValue<VkImageLayout>(p_destLayout),
+			1, &blitRegion,
+			VK_FILTER_LINEAR // Use linear filtering for the blit operation
 		);
 	}
 

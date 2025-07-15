@@ -75,13 +75,6 @@ namespace orhi::api
 		void Upload(const void* p_data, std::optional<data::MemoryRange> p_memoryRange = std::nullopt);
 
 		/**
-		* @brief Notifies the texture that its layout has changed (internal use)
-		* @param p_layout The new texture layout
-		* @note This should be called by the backend after layout transitions and typically shouldn't be used manually
-		*/
-		void NotifyLayoutChange(types::ETextureLayout p_layout);
-
-		/**
 		* @brief Gets the number of bytes currently allocated for this texture
 		* @return The number of allocated bytes
 		*/
@@ -94,16 +87,16 @@ namespace orhi::api
 		types::EFormat GetFormat() const;
 
 		/**
-		* @brief Gets the current layout of the texture
-		* @return The texture's current layout state
-		*/
-		types::ETextureLayout GetLayout() const;
-
-		/**
 		* @brief Gets the dimensions of the texture
 		* @return The texture's extent (width, height, depth)
 		*/
 		const math::Extent3D& GetExtent() const;
+
+		/**
+		* @brief Gets the mip level count of the texture
+		* @return The number of mip levels in the texture
+		*/
+		uint32_t GetMipLevels() const;
 
 		/**
 		* @brief Gets the native handle for backend-specific operations
