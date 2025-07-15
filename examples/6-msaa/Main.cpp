@@ -145,7 +145,7 @@ int main()
 
 	// Swap chain and framebuffers
 	std::vector<orhi::Framebuffer> framebuffers;
-	std::vector<std::unique_ptr<orhi::Texture>> colorTextures;
+	std::vector<orhi::Texture> colorTextures;
 	std::vector<orhi::Descriptor> colorDescriptors;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
@@ -159,6 +159,7 @@ int main()
 		} while (windowSize.width == 0U || windowSize.height == 0U);
 
 		device.WaitIdle();
+
 		framebuffers.clear();
 		swapImagesResources.clear();
 		colorTextures.clear();
@@ -177,49 +178,45 @@ int main()
 		colorTextures.reserve(imageCount);
 		colorDescriptors.reserve(imageCount);
 		framebuffers.reserve(imageCount);
+		swapImagesResources.reserve(framebuffers.size());
 
 		for (uint32_t i = 0; i < imageCount; ++i)
 		{
-			colorTextures.emplace_back(
-				std::make_unique<orhi::Texture>(
-					device,
-					orhi::data::TextureDesc{
-						.extent = { windowSize.width, windowSize.height, 1 },
-						.format = optimalSwapChainDesc.format,
-						.type = orhi::types::ETextureType::TEXTURE_2D,
-						.usage = orhi::types::ETextureUsageFlags::COLOR_ATTACHMENT_BIT,
-						.samples = device.GetInfo().maxSampleCount,
-					}
-				)
+			auto& colorTexture = colorTextures.emplace_back(
+				device,
+				orhi::data::TextureDesc{
+					.extent = { windowSize.width, windowSize.height, 1 },
+					.format = optimalSwapChainDesc.format,
+					.type = orhi::types::ETextureType::TEXTURE_2D,
+					.usage = orhi::types::ETextureUsageFlags::COLOR_ATTACHMENT_BIT,
+					.samples = device.GetInfo().maxSampleCount,
+				}
 			);
-			colorTextures.back()->Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
-			colorDescriptors.emplace_back(
+			colorTexture.Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
+			
+			auto& colorDescriptor = colorDescriptors.emplace_back(
 				device,
 				orhi::data::TextureViewDesc{
-					.texture = colorTextures.back()->GetNativeHandle(),
+					.texture = colorTexture,
 					.format = optimalSwapChainDesc.format,
 					.aspectFlags = orhi::types::ETextureAspectFlags::COLOR,
 				}
 			);
 
-			framebuffers.emplace_back(
+			auto& framebuffer = framebuffers.emplace_back(
 				device,
 				orhi::data::FramebufferDesc<orhi::BackendTraits>{
 					.attachments = {
-						colorDescriptors.back(),
+						colorDescriptor,
 						swapChain->GetImageDescriptor(i)
 					},
 					.renderPass = renderPass,
 					.extent = windowSize
 				}
 			);
-		}
 
-		swapImagesResources.reserve(framebuffers.size());
-		for (uint32_t i = 0; i < framebuffers.size(); ++i)
-		{
 			swapImagesResources.emplace_back(
-				framebuffers[i],
+				framebuffer,
 				std::make_unique<orhi::Semaphore>(device)
 			);
 		}
