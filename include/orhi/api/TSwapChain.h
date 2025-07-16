@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/SwapChainDesc.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -34,7 +34,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TSwapChain final : public detail::BackendObject
+	class TSwapChain final : public impl::common::BackendObject
 	{
 	public:
 		/**
@@ -47,7 +47,7 @@ namespace orhi::api
 		*/
 		TSwapChain(
 			TDevice<BackendTraits>& p_device,
-			data::NativeHandle p_surface,
+			impl::common::NativeHandle p_surface,
 			const math::Extent2D& p_windowSize,
 			const data::SwapChainDesc& p_desc,
 			std::optional<std::reference_wrapper<TSwapChain<BackendTraits>>> p_oldSwapChain = std::nullopt

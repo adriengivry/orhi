@@ -6,11 +6,11 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/details/ExtensionManager.h>
+#include <orhi/impl/vk/detail/ExtensionManager.h>
 
 #include <iostream>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	template<>
 	void ExtensionManager::FetchExtensions<EExtensionHandler::Instance>(void*)

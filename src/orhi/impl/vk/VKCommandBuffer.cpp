@@ -16,8 +16,8 @@
 #include <orhi/impl/vk/GraphicsPipeline.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Texture.h>
-#include <orhi/impl/vk/details/MemoryUtils.h>
-#include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/detail/MemoryUtils.h>
+#include <orhi/impl/vk/detail/Types.h>
 
 #include <vulkan/vulkan.h>
 
@@ -27,7 +27,7 @@ namespace orhi
 {
 	template<>
 	CommandBuffer::TCommandBuffer(
-		data::NativeHandle p_handle
+		impl::common::NativeHandle p_handle
 	) : BackendObject{ p_handle }
 	{
 
@@ -402,7 +402,7 @@ namespace orhi
 		std::span<const uint64_t> p_offsets
 	)
 	{
-		std::vector<VkBuffer> buffers = details::MemoryUtils::PrepareArray<VkBuffer>(p_buffers);
+		std::vector<VkBuffer> buffers = detail::MemoryUtils::PrepareArray<VkBuffer>(p_buffers);
 
 		vkCmdBindVertexBuffers(
 			m_handle.As<VkCommandBuffer>(),
@@ -416,10 +416,10 @@ namespace orhi
 	template<>
 	void CommandBuffer::BindDescriptorSets(
 		std::span<const std::reference_wrapper<DescriptorSet>> p_descriptorSets,
-		data::NativeHandle p_pipelineLayout
+		impl::common::NativeHandle p_pipelineLayout
 	)
 	{
-		std::vector<VkDescriptorSet> descriptorSets = details::MemoryUtils::PrepareArray<VkDescriptorSet>(p_descriptorSets);
+		std::vector<VkDescriptorSet> descriptorSets = detail::MemoryUtils::PrepareArray<VkDescriptorSet>(p_descriptorSets);
 
 		vkCmdBindDescriptorSets(
 			m_handle.As<VkCommandBuffer>(),

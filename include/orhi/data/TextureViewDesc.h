@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/impl/common/NativeHandle.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureAspectFlags.h>
 #include <orhi/types/ETextureType.h>
@@ -24,7 +24,7 @@ namespace orhi::data
 	*/
 	struct TextureViewDesc
 	{
-		data::NativeHandle texture;
+		impl::common::NativeHandle texture;
 		types::EFormat format = types::EFormat::R8G8B8A8_SRGB;
 		types::ETextureType type = types::ETextureType::TEXTURE_2D;
 		types::ETextureAspectFlags aspectFlags = types::ETextureAspectFlags::COLOR;

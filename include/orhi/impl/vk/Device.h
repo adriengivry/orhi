@@ -28,7 +28,7 @@ struct VkPhysicalDeviceFeatures;
 
 namespace orhi::impl::vk
 {
-	namespace details
+	namespace detail
 	{
 		struct QueueFamilyIndices;
 		struct SwapChainSupportDetails;
@@ -42,8 +42,8 @@ namespace orhi::impl::vk
 		std::unique_ptr<Queue> presentQueue;
 		std::unique_ptr<VkPhysicalDeviceProperties> properties;
 		std::unique_ptr<VkPhysicalDeviceFeatures> features;
-		std::unique_ptr<details::QueueFamilyIndices> queueFamilyIndices;
-		std::unique_ptr<details::SwapChainSupportDetails> swapChainSupportDetails;
+		std::unique_ptr<detail::QueueFamilyIndices> queueFamilyIndices;
+		std::unique_ptr<detail::SwapChainSupportDetails> swapChainSupportDetails;
 		std::vector<const char*> extensions;
 	};
 

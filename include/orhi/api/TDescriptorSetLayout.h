@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/DescriptorBinding.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <initializer_list>
@@ -26,7 +26,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptorSetLayout final : public detail::BackendObject
+	class TDescriptorSetLayout final : public impl::common::BackendObject
 	{
 	public:
 		/**

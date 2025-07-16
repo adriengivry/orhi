@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/DescriptorWriteDesc.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EDescriptorType.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -28,7 +28,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptorSet final : public detail::BackendObject
+	class TDescriptorSet final : public impl::common::BackendObject
 	{
 	public:
 		/**
@@ -38,7 +38,7 @@ namespace orhi::api
 		*/
 		TDescriptorSet(
 			TDevice<BackendTraits>& p_device,
-			data::NativeHandle p_handle
+			impl::common::NativeHandle p_handle
 		);
 
 		/**

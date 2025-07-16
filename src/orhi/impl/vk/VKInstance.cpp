@@ -15,13 +15,13 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/Device.h>
-#include <orhi/impl/vk/details/DebugMessenger.h>
-#include <orhi/impl/vk/details/DeviceCreationInfo.h>
-#include <orhi/impl/vk/details/ExtensionManager.h>
-#include <orhi/impl/vk/details/QueueFamilyIndices.h>
-#include <orhi/impl/vk/details/SwapChainUtils.h>
-#include <orhi/impl/vk/details/Types.h>
-#include <orhi/impl/vk/details/ValidationLayerManager.h>
+#include <orhi/impl/vk/detail/DebugMessenger.h>
+#include <orhi/impl/vk/detail/DeviceCreationInfo.h>
+#include <orhi/impl/vk/detail/ExtensionManager.h>
+#include <orhi/impl/vk/detail/QueueFamilyIndices.h>
+#include <orhi/impl/vk/detail/SwapChainUtils.h>
+#include <orhi/impl/vk/detail/Types.h>
+#include <orhi/impl/vk/detail/ValidationLayerManager.h>
 
 #include <vulkan/vulkan.h>
 
@@ -39,24 +39,24 @@ namespace
 		VkPhysicalDevice physicalDevice;
 		VkPhysicalDeviceProperties properties;
 		VkPhysicalDeviceFeatures features;
-		details::ExtensionManager extensionManager;
-		details::QueueFamilyIndices queueFamilyIndices;
+		detail::ExtensionManager extensionManager;
+		detail::QueueFamilyIndices queueFamilyIndices;
 		orhi::data::DeviceInfo info;
-		details::SwapChainSupportDetails swapChainSupportDetails;
+		detail::SwapChainSupportDetails swapChainSupportDetails;
 	};
 
 	// Device creation
 	std::vector<PhysicalDevice> g_physicalDevices;
 	std::vector<orhi::data::DeviceInfo> g_suitableDeviceInfos;
-	std::vector<details::RequestedExtension> g_deviceRequestedExtensions;
+	std::vector<detail::RequestedExtension> g_deviceRequestedExtensions;
 
 	// Debug
-	std::unique_ptr<details::DebugMessenger> g_debugMessenger;
+	std::unique_ptr<detail::DebugMessenger> g_debugMessenger;
 
 	// Actual logical devices
 	std::list<Device> g_createdDevices;
 
-	bool IsSwapChainAdequate(const details::SwapChainSupportDetails& p_swapChainSupportDetails)
+	bool IsSwapChainAdequate(const detail::SwapChainSupportDetails& p_swapChainSupportDetails)
 	{
 		return
 			!p_swapChainSupportDetails.formats.empty() &&
@@ -85,7 +85,7 @@ namespace
 		}
 
 		// Store swap chain support details since they can be used for swap chain creation
-		p_device.swapChainSupportDetails = details::SwapChainUtils::QuerySwapChainDetails(p_device.physicalDevice, p_surface);
+		p_device.swapChainSupportDetails = detail::SwapChainUtils::QuerySwapChainDetails(p_device.physicalDevice, p_surface);
 
 		if (!IsSwapChainAdequate(p_device.swapChainSupportDetails))
 		{
@@ -134,10 +134,10 @@ namespace orhi
 	template<>
 	Instance::TInstance(const data::InstanceDesc& p_desc)
 	{
-		details::ExtensionManager extensionManager;
-		details::ValidationLayerManager validationLayerManager;
+		detail::ExtensionManager extensionManager;
+		detail::ValidationLayerManager validationLayerManager;
 
-		extensionManager.FetchExtensions<details::EExtensionHandler::Instance>();
+		extensionManager.FetchExtensions<detail::EExtensionHandler::Instance>();
 
 		extensionManager.LogExtensions();
 		validationLayerManager.LogValidationLayers();
@@ -146,7 +146,7 @@ namespace orhi
 			p_desc.debug &&
 			extensionManager.IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
-		std::vector<details::RequestedExtension> requestedExtensions;
+		std::vector<detail::RequestedExtension> requestedExtensions;
 
 		// (optional) extension for message callback
 		if (useDebugUtilsExtension)
@@ -159,7 +159,7 @@ namespace orhi
 			requestedExtensions.emplace_back(extension, true); // "true" to make it required
 		}
 
-		std::vector<details::RequestedValidationLayer> requestedValidationLayers;
+		std::vector<detail::RequestedValidationLayer> requestedValidationLayers;
 
 		if (useDebugUtilsExtension)
 		{
@@ -197,7 +197,7 @@ namespace orhi
 		if (useDebugUtilsExtension)
 		{
 			debugUtilsMessengerCreateInfo = std::make_unique<VkDebugUtilsMessengerCreateInfoEXT>(
-				details::DebugMessengerUtil::GenerateCreateInfo()
+				detail::DebugMessengerUtil::GenerateCreateInfo()
 			);
 
 			createInfo.pNext = debugUtilsMessengerCreateInfo.get();
@@ -216,7 +216,7 @@ namespace orhi
 		// If the debug utils extension is being used, setup the debug messenger
 		if (useDebugUtilsExtension)
 		{
-			g_debugMessenger = std::make_unique<details::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
+			g_debugMessenger = std::make_unique<detail::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
 		}
 
 		ORHI_ASSERT(p_desc.win32_windowHandle && p_desc.win32_instanceHandle, "incomplete surface desc");
@@ -261,7 +261,7 @@ namespace orhi
 				.properties = deviceProperties,
 				.features = deviceFeatures,
 				.extensionManager = {},
-				.queueFamilyIndices = details::QueueFamilyIndices::Create(physicalDevice, m_context.surface),
+				.queueFamilyIndices = detail::QueueFamilyIndices::Create(physicalDevice, m_context.surface),
 				.info = GenerateDeviceInfo(
 					physicalDevice,
 					deviceProperties,
@@ -271,7 +271,7 @@ namespace orhi
 				.swapChainSupportDetails = {}
 			});
 
-			device.extensionManager.FetchExtensions<details::EExtensionHandler::PhysicalDevice>(device.physicalDevice);
+			device.extensionManager.FetchExtensions<detail::EExtensionHandler::PhysicalDevice>(device.physicalDevice);
 		}
 
 		g_suitableDeviceInfos.reserve(g_physicalDevices.size());
@@ -322,7 +322,7 @@ namespace orhi
 
 		std::vector<const char*> extensions = selectedDevice.extensionManager.FilterExtensions(g_deviceRequestedExtensions);
 
-		const auto deviceCreationInfo = details::DeviceCreationInfo{
+		const auto deviceCreationInfo = detail::DeviceCreationInfo{
 			.physicalDevice = selectedDevice.physicalDevice,
 			.properties = selectedDevice.properties,
 			.features = selectedDevice.features,
@@ -338,7 +338,7 @@ namespace orhi
 	}
 
 	template<>
-	data::NativeHandle Instance::GetSurfaceHandle() const
+	impl::common::NativeHandle Instance::GetSurfaceHandle() const
 	{
 		return m_context.surface;
 	}

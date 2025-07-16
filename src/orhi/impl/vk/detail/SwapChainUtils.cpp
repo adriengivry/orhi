@@ -6,7 +6,7 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/details/SwapChainUtils.h>
+#include <orhi/impl/vk/detail/SwapChainUtils.h>
 
 #include <orhi/debug/Assert.h>
 
@@ -76,7 +76,7 @@ namespace
 	}
 }
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	SwapChainSupportDetails SwapChainUtils::QuerySwapChainDetails(VkPhysicalDevice p_device, VkSurfaceKHR p_surface)
 	{

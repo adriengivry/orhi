@@ -10,7 +10,7 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/detail/Types.h>
 #include <orhi/impl/vk/Buffer.h>
 #include <orhi/impl/vk/Descriptor.h>
 #include <orhi/utils/EnumMapper.h>
@@ -26,7 +26,7 @@ namespace orhi
 	template<>
 	DescriptorSet::TDescriptorSet(
 		Device& p_device,
-		data::NativeHandle p_handle
+		impl::common::NativeHandle p_handle
 	) :
 		BackendObject(p_handle),
 		m_context{

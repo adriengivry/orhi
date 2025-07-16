@@ -6,7 +6,7 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/details/DebugMessenger.h>
+#include <orhi/impl/vk/detail/DebugMessenger.h>
 
 #include <stdexcept>
 
@@ -115,7 +115,7 @@ namespace
 	}
 }
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	VkDebugUtilsMessengerCreateInfoEXT DebugMessengerUtil::GenerateCreateInfo()
 	{

@@ -10,7 +10,7 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/detail/Types.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/Texture.h>
 

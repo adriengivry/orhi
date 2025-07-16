@@ -8,7 +8,7 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/impl/common/NativeHandle.h>
 
 #include <vulkan/vulkan.h>
 
@@ -16,7 +16,7 @@
 #include <span>
 #include <vector>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	class MemoryUtils
 	{

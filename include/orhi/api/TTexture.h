@@ -8,7 +8,7 @@
 
 #include <orhi/data/MemoryRange.h>
 #include <orhi/data/TextureDesc.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/math/Extent3D.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EGraphicsBackend.h>
@@ -31,7 +31,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TTexture final : public detail::BackendObject
+	class TTexture final : public impl::common::BackendObject
 	{
 	public:
 		/**

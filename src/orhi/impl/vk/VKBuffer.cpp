@@ -10,8 +10,8 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/details/MemoryUtils.h>
-#include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/detail/MemoryUtils.h>
+#include <orhi/impl/vk/detail/Types.h>
 
 #include <vulkan/vulkan.h>
 
@@ -81,7 +81,7 @@ namespace orhi
 			&memRequirements
 		);
 
-		const auto memoryType = details::MemoryUtils::FindMemoryType(
+		const auto memoryType = detail::MemoryUtils::FindMemoryType(
 			m_context.device.GetAdapterNativeHandle().As<VkPhysicalDevice>(),
 			memRequirements.memoryTypeBits,
 			utils::EnumToValue<VkMemoryPropertyFlags>(p_properties)

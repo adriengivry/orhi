@@ -6,11 +6,11 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/details/ValidationLayerManager.h>
+#include <orhi/impl/vk/detail/ValidationLayerManager.h>
 
 #include <iostream>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	ValidationLayerManager::ValidationLayerManager()
 	{

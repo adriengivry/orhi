@@ -11,7 +11,7 @@
 #include <orhi/data/ClearValue.h>
 #include <orhi/data/TextureRegion.h>
 #include <orhi/data/ViewportDesc.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/math/Rect2D.h>
 #include <orhi/types/ECommandBufferUsageFlags.h>
 #include <orhi/types/EGraphicsBackend.h>
@@ -41,14 +41,14 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TCommandBuffer final : public detail::BackendObject
+	class TCommandBuffer final : public impl::common::BackendObject
 	{
 	public:
 		/**
 		* @brief Creates a command buffer from a native handle
 		* @param p_handle Native handle to the underlying command buffer object
 		*/
-		TCommandBuffer(data::NativeHandle p_handle);
+		TCommandBuffer(impl::common::NativeHandle p_handle);
 
 		/**
 		* @brief Destroys the command buffer and releases associated resources
@@ -192,7 +192,7 @@ namespace orhi::api
 		*/
 		void BindDescriptorSets(
 			std::span<const std::reference_wrapper<TDescriptorSet<BackendTraits>>> p_descriptorSets,
-			data::NativeHandle p_pipelineLayout
+			impl::common::NativeHandle p_pipelineLayout
 		);
 
 		/**

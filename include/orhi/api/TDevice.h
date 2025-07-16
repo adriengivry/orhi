@@ -9,7 +9,7 @@
 #include <orhi/data/DeviceInfo.h>
 #include <orhi/data/QueuesDesc.h>
 #include <orhi/data/SwapChainDesc.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -27,7 +27,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDevice final : public detail::BackendObject
+	class TDevice final : public impl::common::BackendObject
 	{
 	public:
 		/**
@@ -87,7 +87,7 @@ namespace orhi::api
 		* @brief Gets the native handle to the physical adapter
 		* @return Native handle to the underlying physical adapter/device
 		*/
-		data::NativeHandle GetAdapterNativeHandle() const;
+		impl::common::NativeHandle GetAdapterNativeHandle() const;
 
 	private:
 		BackendTraits::DeviceContext m_context;

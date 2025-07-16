@@ -6,17 +6,17 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/details/QueueFamilyIndices.h>
+#include <orhi/impl/vk/detail/QueueFamilyIndices.h>
 
 #include <orhi/debug/Assert.h>
 
 #include <set>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
-	details::QueueFamilyIndices QueueFamilyIndices::Create(VkPhysicalDevice device, VkSurfaceKHR p_surface)
+	detail::QueueFamilyIndices QueueFamilyIndices::Create(VkPhysicalDevice device, VkSurfaceKHR p_surface)
 	{
-		details::QueueFamilyIndices indices;
+		detail::QueueFamilyIndices indices;
 
 		uint32_t queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);

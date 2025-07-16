@@ -10,13 +10,13 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
-#include <orhi/impl/vk/details/DebugMessenger.h>
-#include <orhi/impl/vk/details/DeviceCreationInfo.h>
-#include <orhi/impl/vk/details/ExtensionManager.h>
-#include <orhi/impl/vk/details/QueueFamilyIndices.h>
-#include <orhi/impl/vk/details/SwapChainUtils.h>
-#include <orhi/impl/vk/details/Types.h>
-#include <orhi/impl/vk/details/ValidationLayerManager.h>
+#include <orhi/impl/vk/detail/DebugMessenger.h>
+#include <orhi/impl/vk/detail/DeviceCreationInfo.h>
+#include <orhi/impl/vk/detail/ExtensionManager.h>
+#include <orhi/impl/vk/detail/QueueFamilyIndices.h>
+#include <orhi/impl/vk/detail/SwapChainUtils.h>
+#include <orhi/impl/vk/detail/Types.h>
+#include <orhi/impl/vk/detail/ValidationLayerManager.h>
 
 #include <vulkan/vulkan.h>
 
@@ -33,13 +33,13 @@ namespace orhi
 		const data::DeviceInfo& p_deviceInfo,
 		const void* p_deviceCreationInfo
 	) : m_context{
-		.physicalDevice = static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->physicalDevice,
+		.physicalDevice = static_cast<const detail::DeviceCreationInfo*>(p_deviceCreationInfo)->physicalDevice,
 		.deviceInfo = p_deviceInfo,
-		.properties = std::make_unique<VkPhysicalDeviceProperties>(static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->properties),
-		.features = std::make_unique<VkPhysicalDeviceFeatures>(static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->features),
-		.queueFamilyIndices = std::make_unique<details::QueueFamilyIndices>(static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->queueFamilyIndices),
-		.swapChainSupportDetails = std::make_unique<details::SwapChainSupportDetails>(static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->swapChainSupportDetails),
-		.extensions = static_cast<const details::DeviceCreationInfo*>(p_deviceCreationInfo)->extensions
+		.properties = std::make_unique<VkPhysicalDeviceProperties>(static_cast<const detail::DeviceCreationInfo*>(p_deviceCreationInfo)->properties),
+		.features = std::make_unique<VkPhysicalDeviceFeatures>(static_cast<const detail::DeviceCreationInfo*>(p_deviceCreationInfo)->features),
+		.queueFamilyIndices = std::make_unique<detail::QueueFamilyIndices>(static_cast<const detail::DeviceCreationInfo*>(p_deviceCreationInfo)->queueFamilyIndices),
+		.swapChainSupportDetails = std::make_unique<detail::SwapChainSupportDetails>(static_cast<const detail::DeviceCreationInfo*>(p_deviceCreationInfo)->swapChainSupportDetails),
+		.extensions = static_cast<const detail::DeviceCreationInfo*>(p_deviceCreationInfo)->extensions
 	}
 	{
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -121,7 +121,7 @@ namespace orhi
 	template<>
 	data::SwapChainDesc Device::GetOptimalSwapChainDesc(const math::Extent2D& p_windowSize)
 	{
-		auto optimalConfig = details::SwapChainUtils::CalculateSwapChainOptimalConfig(
+		auto optimalConfig = detail::SwapChainUtils::CalculateSwapChainOptimalConfig(
 			*m_context.swapChainSupportDetails,
 			reinterpret_cast<const VkExtent2D&>(p_windowSize)
 		);
@@ -159,7 +159,7 @@ namespace orhi
 	}
 
 	template<>
-	data::NativeHandle Device::GetAdapterNativeHandle() const
+	impl::common::NativeHandle Device::GetAdapterNativeHandle() const
 	{
 		return m_context.physicalDevice;
 	}

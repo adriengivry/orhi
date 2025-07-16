@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/ECommandBufferLevel.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -27,7 +27,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TCommandPool final : public detail::BackendObject
+	class TCommandPool final : public impl::common::BackendObject
 	{
 	public:
 		/**

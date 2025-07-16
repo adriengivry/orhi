@@ -13,14 +13,14 @@
 #include <optional>
 #include <vector>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	struct QueueFamilyIndices
 	{
 		std::optional<uint32_t> graphicsFamily;
 		std::optional<uint32_t> presentFamily;
 		
-		static details::QueueFamilyIndices Create(VkPhysicalDevice device, VkSurfaceKHR p_surface);
+		static detail::QueueFamilyIndices Create(VkPhysicalDevice device, VkSurfaceKHR p_surface);
 		bool IsComplete() const;
 		std::vector<uint32_t> GetUniqueQueueIndices() const;
 

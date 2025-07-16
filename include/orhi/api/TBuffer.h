@@ -9,7 +9,7 @@
 #include <orhi/api/TBackendTraits.h>
 #include <orhi/data/BufferDesc.h>
 #include <orhi/data/MemoryRange.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
 
@@ -29,7 +29,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TBuffer final : public detail::BackendObject
+	class TBuffer final : public impl::common::BackendObject
 	{
 	public:
 		/**

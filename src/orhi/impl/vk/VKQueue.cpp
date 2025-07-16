@@ -11,7 +11,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/except/OutOfDateSwapChain.h>
-#include <orhi/impl/vk/details/MemoryUtils.h>
+#include <orhi/impl/vk/detail/MemoryUtils.h>
 #include <orhi/impl/vk/CommandBuffer.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/Fence.h>
@@ -26,8 +26,8 @@ namespace orhi
 {
 	template<>
 	Queue::TQueue(
-		data::NativeHandle p_device,
-		data::NativeHandle p_handle
+		impl::common::NativeHandle p_device,
+		impl::common::NativeHandle p_handle
 	) : BackendObject(p_handle),
 		m_context{
 		.device = p_device.As<VkDevice>()
@@ -44,9 +44,9 @@ namespace orhi
 	)
 	{
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-		const auto waitSemaphores = details::MemoryUtils::PrepareArray<VkSemaphore>(p_waitSemaphores);
-		const auto signalSemaphores = details::MemoryUtils::PrepareArray<VkSemaphore>(p_signalSemaphores);
-		const auto commandBuffers = details::MemoryUtils::PrepareArray<VkCommandBuffer>(p_commandBuffers);
+		const auto waitSemaphores = detail::MemoryUtils::PrepareArray<VkSemaphore>(p_waitSemaphores);
+		const auto signalSemaphores = detail::MemoryUtils::PrepareArray<VkSemaphore>(p_signalSemaphores);
+		const auto commandBuffers = detail::MemoryUtils::PrepareArray<VkCommandBuffer>(p_commandBuffers);
 
 		VkSubmitInfo submitInfo{
 			.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -75,7 +75,7 @@ namespace orhi
 		uint32_t p_swapChainIndice
 	)
 	{
-		const auto waitSemaphores = details::MemoryUtils::PrepareArray<VkSemaphore>(p_waitSemaphores);
+		const auto waitSemaphores = detail::MemoryUtils::PrepareArray<VkSemaphore>(p_waitSemaphores);
 		const auto swapChainHandle = p_swapChain.GetNativeHandle().As<VkSwapchainKHR>();
 
 		VkPresentInfoKHR presentInfo{

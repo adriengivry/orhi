@@ -12,7 +12,7 @@
 
 #include <vector>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	struct SwapChainSupportDetails
 	{

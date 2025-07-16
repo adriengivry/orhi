@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-namespace orhi::data
+namespace orhi::impl::common
 {
 	/**
 	* @brief Wrapper class for native graphics API handles

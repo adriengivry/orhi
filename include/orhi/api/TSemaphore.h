@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -25,7 +25,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TSemaphore final : public detail::BackendObject
+	class TSemaphore final : public impl::common::BackendObject
 	{
 	public:
 		/**

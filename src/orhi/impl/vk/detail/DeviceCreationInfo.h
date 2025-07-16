@@ -8,8 +8,8 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/details/QueueFamilyIndices.h>
-#include <orhi/impl/vk/details/SwapChainUtils.h>
+#include <orhi/impl/vk/detail/QueueFamilyIndices.h>
+#include <orhi/impl/vk/detail/SwapChainUtils.h>
 
 #include <vulkan/vulkan.h>
 
@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	struct DeviceCreationInfo
 	{

@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <initializer_list>
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/impl/common/NativeHandle.h>
 #include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 

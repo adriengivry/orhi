@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/impl/common/NativeHandle.h>
 
-namespace orhi::detail
+namespace orhi::impl::common
 {
 	/**
 	* @brief Base class for all backend-specific objects.
@@ -24,17 +24,17 @@ namespace orhi::detail
 		* @brief Gets the native handle of the backend object
 		* @return A handle to the underlying native object
 		*/
-		inline const data::NativeHandle GetNativeHandle() const { return m_handle; }
+		inline const impl::common::NativeHandle GetNativeHandle() const { return m_handle; }
 
 		/**
 		* @brief Implicit conversion to the native handle type
 		* @return The native handle of the backend object
 		*/
-		inline operator data::NativeHandle() const { return GetNativeHandle(); }
+		inline operator impl::common::NativeHandle() const { return GetNativeHandle(); }
 
 	protected:
 		BackendObject() = default;
-		BackendObject(data::NativeHandle p_handle) { m_handle = p_handle; }
+		BackendObject(impl::common::NativeHandle p_handle) { m_handle = p_handle; }
 		~BackendObject() = default;
 		BackendObject(const BackendObject&& p_object) = delete;
 		BackendObject& operator=(BackendObject&&) = delete;
@@ -42,6 +42,6 @@ namespace orhi::detail
 		BackendObject& operator=(const BackendObject&) = delete;
 
 	protected:
-		data::NativeHandle m_handle;
+		impl::common::NativeHandle m_handle;
 	};
 }

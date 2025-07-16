@@ -6,11 +6,11 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/details/MemoryUtils.h>
+#include <orhi/impl/vk/detail/MemoryUtils.h>
 
 #include <orhi/debug/Assert.h>
 
-namespace orhi::impl::vk::details
+namespace orhi::impl::vk::detail
 {
 	uint32_t MemoryUtils::FindMemoryType(VkPhysicalDevice p_physicalDevice, uint32_t p_typeFilter, VkMemoryPropertyFlags p_properties)
 	{

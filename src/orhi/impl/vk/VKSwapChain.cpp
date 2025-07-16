@@ -16,7 +16,7 @@
 #include <orhi/impl/vk/Fence.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Semaphore.h>
-#include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/detail/Types.h>
 
 #include <vulkan/vulkan.h>
 
@@ -48,7 +48,7 @@ namespace orhi
 	template<>
 	SwapChain::TSwapChain(
 		Device& p_device,
-		data::NativeHandle p_surface,
+		impl::common::NativeHandle p_surface,
 		const math::Extent2D& p_windowSize,
 		const data::SwapChainDesc& p_desc,
 		std::optional<std::reference_wrapper<SwapChain>> p_oldSwapChain

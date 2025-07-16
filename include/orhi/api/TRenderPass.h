@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/AttachmentDesc.h>
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -27,7 +27,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TRenderPass final : public detail::BackendObject
+	class TRenderPass final : public impl::common::BackendObject
 	{
 	public:
 		/**

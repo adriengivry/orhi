@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <span>
@@ -25,7 +25,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TShaderModule final : public detail::BackendObject
+	class TShaderModule final : public impl::common::BackendObject
 	{
 	public:
 		/**

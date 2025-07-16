@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/detail/BackendObject.h>
+#include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -28,7 +28,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TQueue final : public detail::BackendObject
+	class TQueue final : public impl::common::BackendObject
 	{
 	public:
 		/**
@@ -37,8 +37,8 @@ namespace orhi::api
 		* @param p_handle Native handle to the underlying queue object
 		*/
 		TQueue(
-			data::NativeHandle p_device,
-			data::NativeHandle p_handle
+			impl::common::NativeHandle p_device,
+			impl::common::NativeHandle p_handle
 		);
 
 		/**

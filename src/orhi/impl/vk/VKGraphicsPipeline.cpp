@@ -22,7 +22,7 @@
 #include <orhi/impl/vk/DescriptorSetLayout.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/ShaderModule.h>
-#include <orhi/impl/vk/details/Types.h>
+#include <orhi/impl/vk/detail/Types.h>
 
 #include <vulkan/vulkan.h>
 
@@ -410,7 +410,7 @@ namespace orhi
 	}
 
 	template<>
-	data::NativeHandle GraphicsPipeline::GetLayoutHandle() const
+	impl::common::NativeHandle GraphicsPipeline::GetLayoutHandle() const
 	{
 		return m_context.layout;
 	}
