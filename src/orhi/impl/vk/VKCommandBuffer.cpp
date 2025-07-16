@@ -291,7 +291,7 @@ namespace orhi
 			barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
 
 			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+			destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 		}
 		else
 		{
