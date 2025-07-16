@@ -28,9 +28,7 @@ namespace orhi
 	template<>
 	CommandBuffer::TCommandBuffer(
 		data::NativeHandle p_handle
-	) : m_context{
-		.handle = p_handle.As<VkCommandBuffer>()
-	}
+	) : Object{ p_handle }
 	{
 
 	}
@@ -44,7 +42,10 @@ namespace orhi
 	template<>
 	void CommandBuffer::Reset()
 	{
-		vkResetCommandBuffer(m_context.handle, 0);
+		vkResetCommandBuffer(
+			m_handle.As<VkCommandBuffer>(),
+			0
+		);
 	}
 
 	template<>
@@ -57,7 +58,7 @@ namespace orhi
 		};
 
 		VkResult result = vkBeginCommandBuffer(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			&beginInfo
 		);
 
@@ -67,7 +68,7 @@ namespace orhi
 	template<>
 	void CommandBuffer::End()
 	{
-		VkResult result = vkEndCommandBuffer(m_context.handle);
+		VkResult result = vkEndCommandBuffer(m_handle.As<VkCommandBuffer>());
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to record command buffer!");
 	}
 
@@ -123,7 +124,7 @@ namespace orhi
 		};
 
 		vkCmdBeginRenderPass(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			&renderPassInfo,
 			VK_SUBPASS_CONTENTS_INLINE
 		);
@@ -132,7 +133,7 @@ namespace orhi
 	template<>
 	void CommandBuffer::EndRenderPass()
 	{
-		vkCmdEndRenderPass(m_context.handle);
+		vkCmdEndRenderPass(m_handle.As<VkCommandBuffer>());
 	}
 
 	template<>
@@ -161,7 +162,7 @@ namespace orhi
 		}
 
 		vkCmdCopyBuffer(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			p_src.GetNativeHandle().As<VkBuffer>(),
 			p_dest.GetNativeHandle().As<VkBuffer>(),
 			std::max(1U, static_cast<uint32_t>(p_regions.size())),
@@ -215,7 +216,7 @@ namespace orhi
 		}
 
 		vkCmdCopyBufferToImage(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			p_src.GetNativeHandle().As<VkBuffer>(),
 			p_dest.GetNativeHandle().As<VkImage>(),
 			utils::EnumToValue<VkImageLayout>(p_layout),
@@ -298,7 +299,7 @@ namespace orhi
 		}
 
 		vkCmdPipelineBarrier(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			sourceStage, destinationStage,
 			0, // No flags
 			0, nullptr, // No memory barriers
@@ -314,7 +315,7 @@ namespace orhi
 	)
 	{
 		vkCmdBindPipeline(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			utils::EnumToValue<VkPipelineBindPoint>(p_bindPoint),
 			p_pipeline.GetNativeHandle().As<VkPipeline>()
 		);
@@ -328,7 +329,7 @@ namespace orhi
 	)
 	{
 		vkCmdBindIndexBuffer(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			p_indexBuffer.GetNativeHandle().As<VkBuffer>(),
 			0,
 			utils::EnumToValue<VkIndexType>(p_indexType)
@@ -385,7 +386,7 @@ namespace orhi
 		};
 
 		vkCmdBlitImage(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			p_src.GetNativeHandle().As<VkImage>(),
 			utils::EnumToValue<VkImageLayout>(p_srcLayout),
 			p_dest.GetNativeHandle().As<VkImage>(),
@@ -404,7 +405,7 @@ namespace orhi
 		std::vector<VkBuffer> buffers = details::MemoryUtils::PrepareArray<VkBuffer>(p_buffers);
 
 		vkCmdBindVertexBuffers(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			0,
 			1,
 			buffers.data(),
@@ -421,7 +422,7 @@ namespace orhi
 		std::vector<VkDescriptorSet> descriptorSets = details::MemoryUtils::PrepareArray<VkDescriptorSet>(p_descriptorSets);
 
 		vkCmdBindDescriptorSets(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			VK_PIPELINE_BIND_POINT_GRAPHICS,
 			p_pipelineLayout.As<VkPipelineLayout>(),
 			0,
@@ -447,7 +448,7 @@ namespace orhi
 		};
 
 		vkCmdSetViewport(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			0, 1,
 			&viewport
 		);
@@ -461,7 +462,7 @@ namespace orhi
 		VkRect2D scissor = reinterpret_cast<const VkRect2D&>(p_scissor);
 
 		vkCmdSetScissor(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			0, 1,
 			&scissor
 		);
@@ -474,7 +475,7 @@ namespace orhi
 	)
 	{
 		vkCmdDraw(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			p_vertexCount,
 			p_instanceCount,
 			0, 0
@@ -488,17 +489,11 @@ namespace orhi
 	)
 	{
 		vkCmdDrawIndexed(
-			m_context.handle,
+			m_handle.As<VkCommandBuffer>(),
 			p_indexCount,
 			p_instanceCount,
 			0, 0, 0
 		);
-	}
-
-	template<>
-	data::NativeHandle CommandBuffer::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

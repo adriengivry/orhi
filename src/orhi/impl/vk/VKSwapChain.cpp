@@ -55,7 +55,6 @@ namespace orhi
 	) : m_context{
 		.device = p_device,
 		.desc = p_desc,
-		.handle = VK_NULL_HANDLE,
 		.extent = p_windowSize
 	}
 	{
@@ -104,7 +103,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkSwapchainKHR&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create swap chain!");
@@ -113,7 +112,7 @@ namespace orhi
 		uint32_t imageCount;
 		vkGetSwapchainImagesKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			&imageCount,
 			nullptr
 		);
@@ -121,7 +120,7 @@ namespace orhi
 		m_context.images.resize(imageCount);
 		vkGetSwapchainImagesKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			&imageCount,
 			m_context.images.data()
 		);
@@ -180,7 +179,7 @@ namespace orhi
 
 		vkDestroySwapchainKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			nullptr
 		);
 	}
@@ -208,7 +207,7 @@ namespace orhi
 
 		VkResult result = vkAcquireNextImageKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			p_timeout.value_or(UINT64_MAX),
 			p_semaphore.has_value() ? p_semaphore->get().GetNativeHandle().As<VkSemaphore>() : VK_NULL_HANDLE,
 			p_fence.has_value() ? p_fence->get().GetNativeHandle().As<VkFence>() : VK_NULL_HANDLE,
@@ -223,12 +222,6 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to acquire next image");
 
 		return imageIndex;
-	}
-
-	template<>
-	data::NativeHandle SwapChain::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

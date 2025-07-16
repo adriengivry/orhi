@@ -23,8 +23,7 @@ namespace orhi
 		Device& p_device,
 		std::initializer_list<data::DescriptorBinding> p_bindings
 	) : m_context{
-		.device = p_device,
-		.handle = VK_NULL_HANDLE
+		.device = p_device
 	}
 	{
 		std::vector<VkDescriptorSetLayoutBinding> bindings;
@@ -51,7 +50,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&layoutInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkDescriptorSetLayout&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create descriptor set layout!");
@@ -62,15 +61,9 @@ namespace orhi
 	{
 		vkDestroyDescriptorSetLayout(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkDescriptorSetLayout>(),
 			nullptr
 		);
-	}
-
-	template<>
-	data::NativeHandle DescriptorSetLayout::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

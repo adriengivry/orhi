@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/GraphicsPipelineDesc.h>
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/Object.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
@@ -24,7 +24,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TGraphicsPipeline final
+	class TGraphicsPipeline final : public detail::Object
 	{
 	public:
 		/**
@@ -47,12 +47,6 @@ namespace orhi::api
 		* @return Native handle to the underlying pipeline layout object
 		*/
 		data::NativeHandle GetLayoutHandle() const;
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying graphics pipeline object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::GraphicsPipelineContext m_context;

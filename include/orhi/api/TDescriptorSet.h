@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/DescriptorWriteDesc.h>
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/Object.h>
 #include <orhi/types/EDescriptorType.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -28,7 +28,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptorSet final
+	class TDescriptorSet final : public detail::Object
 	{
 	public:
 		/**
@@ -53,12 +53,6 @@ namespace orhi::api
 		void Write(
 			const std::unordered_map<uint32_t, data::DescriptorWriteDesc<BackendTraits>>& p_writeDescs
 		);
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying descriptor set object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::DescriptorSetContext m_context;

@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/DescriptorBinding.h>
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/Object.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <initializer_list>
@@ -26,7 +26,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptorSetLayout final
+	class TDescriptorSetLayout final : public detail::Object
 	{
 	public:
 		/**
@@ -43,12 +43,6 @@ namespace orhi::api
 		* @brief Destroys the descriptor set layout and releases associated resources
 		*/
 		~TDescriptorSetLayout();
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying descriptor set layout object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::DescriptorSetLayoutContext m_context;

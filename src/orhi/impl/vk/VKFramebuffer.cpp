@@ -24,8 +24,7 @@ namespace orhi
 		const data::FramebufferDesc<BackendTraits>& p_desc
 	) :
 		m_context{
-			.device = p_device,
-			.handle = VK_NULL_HANDLE
+			.device = p_device
 		}
 	{
 		std::vector<VkImageView> imageViews;
@@ -50,7 +49,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&framebufferInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkFramebuffer&>()
 		);
 		
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create framebuffer!");
@@ -61,15 +60,9 @@ namespace orhi
 	{
 		vkDestroyFramebuffer(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkFramebuffer>(),
 			nullptr
 		);
-	}
-
-	template<>
-	data::NativeHandle Framebuffer::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

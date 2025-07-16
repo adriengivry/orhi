@@ -21,7 +21,6 @@ namespace orhi::impl::vk
 	struct DescriptorPoolContext
 	{
 		Device& device;
-		VkDescriptorPool handle;
 		std::list<DescriptorSet> descriptorSets;
 	};
 

@@ -28,9 +28,9 @@ namespace orhi
 	Queue::TQueue(
 		data::NativeHandle p_device,
 		data::NativeHandle p_handle
-	) : m_context{
-		.device = p_device.As<VkDevice>(),
-		.handle = p_handle.As<VkQueue>()
+	) : Object(p_handle),
+		m_context{
+		.device = p_device.As<VkDevice>()
 	}
 	{
 
@@ -60,7 +60,7 @@ namespace orhi
 		};
 
 		VkResult result = vkQueueSubmit(
-			m_context.handle,
+			m_handle.As<VkQueue>(),
 			1,
 			&submitInfo,
 			p_fence.has_value() ? p_fence.value().get().GetNativeHandle().As<VkFence>() : VK_NULL_HANDLE
@@ -92,7 +92,7 @@ namespace orhi
 		// https://docs.vulkan.org/guide/latest/swapchain_semaphore_reuse.html
 		// It seems like the debug validation layer didn't use to pick up this error when vulkan-tutorial was written.
 		VkResult result = vkQueuePresentKHR(
-			m_context.handle,
+			m_handle.As<VkQueue>(),
 			&presentInfo
 		);
 
@@ -108,12 +108,6 @@ namespace orhi
 	Queue::~TQueue()
 	{
 
-	}
-
-	template<>
-	data::NativeHandle Queue::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

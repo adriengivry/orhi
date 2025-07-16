@@ -20,7 +20,6 @@ namespace orhi::impl::vk
 	struct QueueContext
 	{
 		VkDevice device;
-		VkQueue handle;
 	};
 
 	using Queue = api::TQueue<BackendTraits>;

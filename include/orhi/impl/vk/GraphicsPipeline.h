@@ -22,7 +22,6 @@ namespace orhi::impl::vk
 	{
 		Device& device;
 		VkPipelineLayout layout;
-		VkPipeline handle;
 	};
 
 	using GraphicsPipeline = api::TGraphicsPipeline<BackendTraits>;

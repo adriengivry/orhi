@@ -18,7 +18,6 @@ namespace orhi::impl::vk
 	struct FramebufferContext
 	{
 		Device& device;
-		VkFramebuffer handle;
 	};
 
 	using Framebuffer = api::TFramebuffer<BackendTraits>;

@@ -18,7 +18,6 @@ namespace orhi::impl::vk
 	struct ShaderModuleContext
 	{
 		Device& device;
-		VkShaderModule handle;
 	};
 
 	using ShaderModule = api::TShaderModule<BackendTraits>;

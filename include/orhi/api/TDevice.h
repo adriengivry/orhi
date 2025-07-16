@@ -7,9 +7,9 @@
 #pragma once
 
 #include <orhi/data/DeviceInfo.h>
-#include <orhi/data/NativeHandle.h>
 #include <orhi/data/QueuesDesc.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/detail/Object.h>
 #include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -27,7 +27,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDevice final
+	class TDevice final : public detail::Object
 	{
 	public:
 		/**
@@ -50,13 +50,13 @@ namespace orhi::api
 		* @brief Gets the graphics queue for rendering operations
 		* @return Graphics queue object for submitting rendering commands
 		*/
-		TQueue<BackendTraits> GetGraphicsQueue() const;
+		TQueue<BackendTraits>& GetGraphicsQueue() const;
 
 		/**
 		* @brief Gets the present queue for displaying rendered images
 		* @return Present queue object for presenting to the swap chain
 		*/
-		TQueue<BackendTraits> GetPresentQueue() const;
+		TQueue<BackendTraits>& GetPresentQueue() const;
 
 		/**
 		* @brief Gets optimal swap chain configuration for the specified window size
@@ -82,12 +82,6 @@ namespace orhi::api
 		* @return Device information including capabilities, limits, and properties
 		*/
 		const data::DeviceInfo& GetInfo() const;
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying logical device object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 		/**
 		* @brief Gets the native handle to the physical adapter

@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/AttachmentDesc.h>
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/Object.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -27,7 +27,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TRenderPass final
+	class TRenderPass final : public detail::Object
 	{
 	public:
 		/**
@@ -44,12 +44,6 @@ namespace orhi::api
 		* @brief Destroys the render pass and releases associated resources
 		*/
 		~TRenderPass();
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying render pass object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::RenderPassContext m_context;

@@ -18,7 +18,6 @@ namespace orhi::impl::vk
 	struct FenceContext
 	{
 		Device& device;
-		VkFence handle;
 	};
 
 	using Fence = api::TFence<BackendTraits>;

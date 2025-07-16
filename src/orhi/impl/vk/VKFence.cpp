@@ -19,8 +19,7 @@ namespace orhi
 {
 	Fence::TFence(Device& p_device, bool p_createSignaled) :
 		m_context{
-			.device = p_device,
-			.handle = VK_NULL_HANDLE
+			.device = p_device
 		}
 	{
 		VkFenceCreateInfo createInfo{
@@ -32,7 +31,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkFence&>()
 		);
 		
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create fence");
@@ -42,7 +41,7 @@ namespace orhi
 	{
 		vkDestroyFence(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkFence>(),
 			nullptr
 		);
 	}
@@ -53,7 +52,7 @@ namespace orhi
 		vkWaitForFences(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			1UL,
-			&m_context.handle,
+			&m_handle.ReinterpretAs<VkFence&>(),
 			VK_TRUE,
 			p_timeout.value_or(std::numeric_limits<decltype(p_timeout)::value_type>::max())
 		);
@@ -65,14 +64,8 @@ namespace orhi
 		vkResetFences(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			1,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkFence&>()
 		);
-	}
-
-	template<>
-	data::NativeHandle Fence::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

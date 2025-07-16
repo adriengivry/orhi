@@ -21,7 +21,6 @@ namespace orhi::impl::vk
 	struct CommandPoolContext
 	{
 		Device& device;
-		VkCommandPool handle;
 		std::list<CommandBuffer> commandBuffers;
 	};
 

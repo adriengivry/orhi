@@ -23,8 +23,7 @@ namespace orhi
 	CommandPool::TCommandPool(
 		Device& p_device
 	) : m_context{
-		.device = p_device,
-		.handle = VK_NULL_HANDLE
+		.device = p_device
 	}
 	{
 		VkCommandPoolCreateInfo createInfo{
@@ -38,7 +37,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkCommandPool&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create command pool");
@@ -49,7 +48,7 @@ namespace orhi
 	{
 		vkDestroyCommandPool(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkCommandPool>(),
 			nullptr
 		);
 	}
@@ -65,7 +64,7 @@ namespace orhi
 
 		VkCommandBufferAllocateInfo allocInfo{
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-			.commandPool = m_context.handle,
+			.commandPool = m_handle.As<VkCommandPool>(),
 			.level = utils::EnumToValue<VkCommandBufferLevel>(p_level),
 			.commandBufferCount = p_count
 		};
@@ -90,12 +89,6 @@ namespace orhi
 		}
 
 		return output;
-	}
-
-	template<>
-	data::NativeHandle CommandPool::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

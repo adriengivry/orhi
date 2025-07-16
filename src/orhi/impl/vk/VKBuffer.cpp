@@ -25,7 +25,6 @@ namespace orhi
 		const data::BufferDesc& p_desc
 	) : m_context{
 		.device = p_device,
-		.handle = VK_NULL_HANDLE,
 		.memory = VK_NULL_HANDLE,
 		.allocatedBytes = 0ULL
 	}
@@ -41,7 +40,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&bufferInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkBuffer&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create buffer!");
@@ -57,7 +56,7 @@ namespace orhi
 
 		vkDestroyBuffer(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkBuffer>(),
 			nullptr
 		);
 	}
@@ -78,7 +77,7 @@ namespace orhi
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkBuffer>(),
 			&memRequirements
 		);
 
@@ -105,7 +104,7 @@ namespace orhi
 
 		vkBindBufferMemory(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkBuffer>(),
 			m_context.memory,
 			0
 		);
@@ -163,12 +162,6 @@ namespace orhi
 	uint64_t Buffer::GetAllocatedBytes() const
 	{
 		return m_context.allocatedBytes;
-	}
-
-	template<>
-	data::NativeHandle Buffer::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

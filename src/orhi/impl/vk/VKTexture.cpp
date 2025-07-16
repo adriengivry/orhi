@@ -25,7 +25,6 @@ namespace orhi
 		const data::TextureDesc& p_desc
 	) : m_context{
 		.device = p_device,
-		.handle = VK_NULL_HANDLE,
 		.memory = VK_NULL_HANDLE,
 		.allocatedBytes = 0ULL
 	}
@@ -49,7 +48,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkImage&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create image!");
@@ -68,7 +67,7 @@ namespace orhi
 
 		vkDestroyImage(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkImage>(),
 			nullptr
 		);
 	}
@@ -89,7 +88,7 @@ namespace orhi
 		VkMemoryRequirements memRequirements;
 		vkGetImageMemoryRequirements(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkImage>(),
 			&memRequirements
 		);
 
@@ -116,7 +115,7 @@ namespace orhi
 
 		vkBindImageMemory(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkImage>(),
 			m_context.memory,
 			0
 		);
@@ -192,12 +191,6 @@ namespace orhi
 	uint32_t Texture::GetMipLevels() const
 	{
 		return m_context.mipLevels;
-	}
-
-	template<>
-	data::NativeHandle Texture::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

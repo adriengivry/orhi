@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/DescriptorPoolDesc.h>
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/Object.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <vector>
@@ -28,7 +28,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptorPool final
+	class TDescriptorPool final : public detail::Object
 	{
 	public:
 		/**
@@ -56,12 +56,6 @@ namespace orhi::api
 			const TDescriptorSetLayout<BackendTraits>& p_layout,
 			uint32_t p_count
 		);
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying descriptor pool object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::DescriptorPoolContext m_context;

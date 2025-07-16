@@ -27,7 +27,6 @@ namespace orhi::impl::vk
 	struct DescriptorContext
 	{
 		Device& device;
-		data::NativeHandle handle;
 		EVulkanDescriptorType type;
 	};
 

@@ -9,9 +9,9 @@
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
 #include <orhi/data/ClearValue.h>
-#include <orhi/data/NativeHandle.h>
 #include <orhi/data/TextureRegion.h>
 #include <orhi/data/ViewportDesc.h>
+#include <orhi/detail/Object.h>
 #include <orhi/math/Rect2D.h>
 #include <orhi/types/ECommandBufferUsageFlags.h>
 #include <orhi/types/EGraphicsBackend.h>
@@ -41,7 +41,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TCommandBuffer final
+	class TCommandBuffer final : public detail::Object
 	{
 	public:
 		/**
@@ -220,12 +220,6 @@ namespace orhi::api
 		* @param p_instanceCount Number of instances to draw
 		*/
 		void DrawIndexed(uint32_t p_indexCount, uint32_t p_instanceCount = 1);
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying command buffer object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::CommandBufferContext m_context;

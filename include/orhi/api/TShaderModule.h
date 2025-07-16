@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/Object.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <span>
@@ -25,7 +25,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TShaderModule final
+	class TShaderModule final : public detail::Object
 	{
 	public:
 		/**
@@ -42,12 +42,6 @@ namespace orhi::api
 		* @brief Destroys the shader module and releases associated resources
 		*/
 		~TShaderModule();
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying shader module object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::ShaderModuleContext m_context;

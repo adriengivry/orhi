@@ -206,7 +206,7 @@ namespace orhi
 		VkResult result = vkCreateInstance(
 			&createInfo,
 			nullptr,
-			&m_context.instance
+			&m_handle.ReinterpretAs<VkInstance&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create instance!");
@@ -216,7 +216,7 @@ namespace orhi
 		// If the debug utils extension is being used, setup the debug messenger
 		if (useDebugUtilsExtension)
 		{
-			g_debugMessenger = std::make_unique<details::DebugMessenger>(m_context.instance, *debugUtilsMessengerCreateInfo);
+			g_debugMessenger = std::make_unique<details::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
 		}
 
 		ORHI_ASSERT(p_desc.win32_windowHandle && p_desc.win32_instanceHandle, "incomplete surface desc");
@@ -229,7 +229,7 @@ namespace orhi
 		};
 
 		result = vkCreateWin32SurfaceKHR(
-			m_context.instance,
+			m_handle.As<VkInstance>(),
 			&surfaceCreateInfo,
 			nullptr,
 			&m_context.surface
@@ -241,12 +241,12 @@ namespace orhi
 #endif
 
 		uint32_t deviceCount = 0;
-		vkEnumeratePhysicalDevices(m_context.instance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(m_handle.As<VkInstance>(), &deviceCount, nullptr);
 
 		ORHI_ASSERT(deviceCount > 0, "failed to find GPUs with Vulkan support!");
 
 		std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
-		vkEnumeratePhysicalDevices(m_context.instance, &deviceCount, physicalDevices.data());
+		vkEnumeratePhysicalDevices(m_handle.As<VkInstance>(), &deviceCount, physicalDevices.data());
 
 		for (VkPhysicalDevice physicalDevice : physicalDevices)
 		{
@@ -295,7 +295,7 @@ namespace orhi
 	{
 		g_debugMessenger.reset();
 		g_createdDevices.clear();
-		vkDestroyInstance(m_context.instance, nullptr);
+		vkDestroyInstance(m_handle.As<VkInstance>(), nullptr);
 	}
 
 	template<>
@@ -335,12 +335,6 @@ namespace orhi
 			selectedDevice.info,
 			&deviceCreationInfo
 		);
-	}
-
-	template<>
-	data::NativeHandle Instance::GetNativeHandle() const
-	{
-		return m_context.instance;
 	}
 
 	template<>

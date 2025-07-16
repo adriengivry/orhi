@@ -26,7 +26,6 @@ namespace orhi
 		const data::DescriptorPoolDesc& p_desc
 	) : m_context{
 		.device = p_device,
-		.handle = VK_NULL_HANDLE
 	}
 	{
 		ORHI_ASSERT(p_desc.maxSets > 0, "Max set count must be > 0");
@@ -58,7 +57,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkDescriptorPool&>()
 		);
 		
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create descriptor pool");
@@ -69,7 +68,7 @@ namespace orhi
 	{
 		vkDestroyDescriptorPool(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkDescriptorPool>(),
 			nullptr
 		);
 	}
@@ -87,7 +86,7 @@ namespace orhi
 
 		VkDescriptorSetAllocateInfo allocInfo{
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-			.descriptorPool = m_context.handle,
+			.descriptorPool = m_handle.As<VkDescriptorPool>(),
 			.descriptorSetCount = p_count,
 			.pSetLayouts = layouts.data()
 		};
@@ -113,12 +112,6 @@ namespace orhi
 		}
 
 		return output;
-	}
-
-	template<>
-	data::NativeHandle DescriptorPool::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

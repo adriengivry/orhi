@@ -26,7 +26,6 @@ namespace orhi
 		const data::TextureViewDesc& p_desc
 	) : m_context{
 		.device = p_device,
-		.handle = VK_NULL_HANDLE,
 		.type = EVulkanDescriptorType::IMAGE_VIEW
 	}
 	{
@@ -48,7 +47,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&viewInfo,
 			nullptr,
-			&reinterpret_cast<VkImageView&>(m_context.handle)
+			&m_handle.ReinterpretAs<VkImageView&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create texture image view!");
@@ -60,7 +59,6 @@ namespace orhi
 		const data::SamplerDesc& p_desc
 	) : m_context{
 		.device = p_device,
-		.handle = VK_NULL_HANDLE,
 		.type = EVulkanDescriptorType::SAMPLER
 	}
 	{
@@ -87,7 +85,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&samplerInfo,
 			nullptr,
-			&reinterpret_cast<VkSampler&>(m_context.handle)
+			&m_handle.ReinterpretAs<VkSampler&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create sampler!");
@@ -101,7 +99,7 @@ namespace orhi
 		case EVulkanDescriptorType::IMAGE_VIEW:
 			vkDestroyImageView(
 				m_context.device.GetNativeHandle().As<VkDevice>(),
-				m_context.handle.As<VkImageView>(),
+				m_handle.As<VkImageView>(),
 				nullptr
 			);
 			break;
@@ -109,17 +107,11 @@ namespace orhi
 		case EVulkanDescriptorType::SAMPLER:
 			vkDestroySampler(
 				m_context.device.GetNativeHandle().As<VkDevice>(),
-				m_context.handle.As<VkSampler>(),
+				m_handle.As<VkSampler>(),
 				nullptr
 			);
 			break;
 		}
-	}
-
-	template<>
-	data::NativeHandle Descriptor::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

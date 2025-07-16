@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <orhi/data/NativeHandle.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/detail/Object.h>
 #include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -34,7 +34,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TSwapChain final
+	class TSwapChain final : public detail::Object
 	{
 	public:
 		/**
@@ -83,12 +83,6 @@ namespace orhi::api
 			std::optional<std::reference_wrapper<TFence<BackendTraits>>> p_fence = std::nullopt,
 			std::optional<uint64_t> p_timeout = std::nullopt
 		);
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying swap chain object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::SwapChainContext m_context;

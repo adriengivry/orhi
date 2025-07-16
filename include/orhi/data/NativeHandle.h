@@ -41,6 +41,14 @@ namespace orhi::data
 		template<class T>
 		inline T As() const { return static_cast<T>(m_handle); }
 
+		/**
+		* Converts the handle to a specific type
+		* @tparam T The type to cast the handle to
+		* @return The handle cast to the specified type
+		*/
+		template<class T>
+		inline T ReinterpretAs() { return reinterpret_cast<T>(m_handle); }
+
 	private:
 		void* m_handle = nullptr;
 	};

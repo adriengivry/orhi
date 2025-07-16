@@ -28,7 +28,6 @@ namespace orhi::impl::vk
 	{
 		Device& device;
 		data::SwapChainDesc desc;
-		VkSwapchainKHR handle;
 		std::vector<VkImage> images;
 		std::vector<Descriptor> imageDescriptors;
 		math::Extent2D extent;

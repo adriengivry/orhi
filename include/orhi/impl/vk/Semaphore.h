@@ -18,7 +18,6 @@ namespace orhi::impl::vk
 	struct SemaphoreContext
 	{
 		Device& device;
-		VkSemaphore handle;
 	};
 
 	using Semaphore = api::TSemaphore<BackendTraits>;
