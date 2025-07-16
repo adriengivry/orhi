@@ -356,18 +356,23 @@ int main()
 	transferBuffer.TransitionTextureLayout(
 		texture,
 		orhi::types::ETextureLayout::UNDEFINED,
-		orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL
+		orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL,
+		0,
+		mipLevels
 	);
 
 	transferBuffer.CopyBufferToTexture(*pixelBuffer, texture);
 
 	for (uint32_t i = 1; i < mipLevels; i++)
 	{
+		const uint32_t srcIndex = i - 1;
+		const uint32_t dstIndex = i;
+
 		transferBuffer.TransitionTextureLayout(
 			texture,
 			orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL,
 			orhi::types::ETextureLayout::TRANSFER_SRC_OPTIMAL,
-			i - 1
+			srcIndex
 		);
 
 		transferBuffer.BlitTexture(
@@ -375,19 +380,19 @@ int main()
 			texture,
 			// Source region
 			orhi::data::TextureRegion{
-				.mipLevel = i - 1,
+				.mipLevel = srcIndex,
 				.rect = orhi::math::Rect3D{
 					.offset = { 0, 0, 0 },
 					.extent = {
-						static_cast<uint32_t>(texWidth >> (i - 1)),
-						static_cast<uint32_t>(texHeight >> (i - 1)),
+						static_cast<uint32_t>(texWidth >> (srcIndex)),
+						static_cast<uint32_t>(texHeight >> (srcIndex)),
 						1
 					}
 				}
 			},
 			// Destination region
 			orhi::data::TextureRegion{
-				.mipLevel = i,
+				.mipLevel = dstIndex,
 				.rect = orhi::math::Rect3D{
 					.offset = { 0, 0, 0 },
 					.extent = {
@@ -398,11 +403,18 @@ int main()
 				}
 			}
 		);
+
+		transferBuffer.TransitionTextureLayout(
+			texture,
+			orhi::types::ETextureLayout::TRANSFER_SRC_OPTIMAL,
+			orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL,
+			srcIndex
+		);
 	}
 
 	transferBuffer.TransitionTextureLayout(
 		texture,
-		orhi::types::ETextureLayout::TRANSFER_SRC_OPTIMAL,
+		orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL,
 		orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL,
 		mipLevels - 1
 	);
