@@ -20,20 +20,26 @@ namespace orhi::detail
 	class BackendObject
 	{
 	public:
-		BackendObject(data::NativeHandle p_handle) { m_handle = p_handle; }
-		BackendObject() = default;
-		~BackendObject() = default;
+		/**
+		* @brief Gets the native handle of the backend object
+		* @return A handle to the underlying native object
+		*/
+		inline const data::NativeHandle GetNativeHandle() const { return m_handle; }
 
-		// Non-movable
+		/**
+		* @brief Implicit conversion to the native handle type
+		* @return The native handle of the backend object
+		*/
+		inline operator data::NativeHandle() const { return GetNativeHandle(); }
+
+	protected:
+		BackendObject() = default;
+		BackendObject(data::NativeHandle p_handle) { m_handle = p_handle; }
+		~BackendObject() = default;
 		BackendObject(const BackendObject&& p_object) = delete;
 		BackendObject& operator=(BackendObject&&) = delete;
-
-		// Non-copyable
 		BackendObject(const BackendObject&) = delete;
 		BackendObject& operator=(const BackendObject&) = delete;
-
-		const data::NativeHandle GetNativeHandle() const { return m_handle; }
-		inline operator data::NativeHandle () { return GetNativeHandle(); }
 
 	protected:
 		data::NativeHandle m_handle;
