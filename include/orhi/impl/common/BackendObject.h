@@ -24,17 +24,17 @@ namespace orhi::impl::common
 		* @brief Gets the native handle of the backend object
 		* @return A handle to the underlying native object
 		*/
-		inline const impl::common::NativeHandle GetNativeHandle() const { return m_handle; }
+		inline const NativeHandle GetNativeHandle() const { return m_handle; }
 
 		/**
 		* @brief Implicit conversion to the native handle type
 		* @return The native handle of the backend object
 		*/
-		inline operator impl::common::NativeHandle() const { return GetNativeHandle(); }
+		inline operator NativeHandle() const { return GetNativeHandle(); }
 
 	protected:
 		BackendObject() = default;
-		BackendObject(impl::common::NativeHandle p_handle) { m_handle = p_handle; }
+		BackendObject(NativeHandle p_handle) { m_handle = p_handle; }
 		~BackendObject() = default;
 		BackendObject(const BackendObject&& p_object) = delete;
 		BackendObject& operator=(BackendObject&&) = delete;
@@ -42,6 +42,6 @@ namespace orhi::impl::common
 		BackendObject& operator=(const BackendObject&) = delete;
 
 	protected:
-		impl::common::NativeHandle m_handle;
+		NativeHandle m_handle;
 	};
 }
