@@ -115,11 +115,15 @@ namespace orhi
 	template<>
 	void Buffer::Deallocate()
 	{
+		ORHI_ASSERT(IsAllocated(), "Cannot deallocate a buffer that isn't allocated");
+
 		vkFreeMemory(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			m_context.memory,
 			nullptr
 		);
+
+		m_context.memory = VK_NULL_HANDLE;
 	}
 
 	template<>

@@ -126,11 +126,15 @@ namespace orhi
 	template<>
 	void Texture::Deallocate()
 	{
+		ORHI_ASSERT(IsAllocated(), "Cannot deallocate a texture that isn't allocated");
+
 		vkFreeMemory(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			m_context.memory,
 			nullptr
 		);
+
+		m_context.memory = VK_NULL_HANDLE;
 	}
 
 	template<>
