@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/SwapChainDesc.h>
-#include <orhi/detail/Object.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/math/Extent2D.h>
 #include <orhi/types/EGraphicsBackend.h>
 
@@ -34,7 +34,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TSwapChain final : public detail::Object
+	class TSwapChain final : public detail::BackendObject
 	{
 	public:
 		/**

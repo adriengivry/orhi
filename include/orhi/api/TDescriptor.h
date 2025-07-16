@@ -9,7 +9,7 @@
 #include <orhi/data/MemoryRange.h>
 #include <orhi/data/SamplerDesc.h>
 #include <orhi/data/TextureViewDesc.h>
-#include <orhi/detail/Object.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -27,7 +27,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptor final : public detail::Object
+	class TDescriptor final : public detail::BackendObject
 	{
 	public:
 		/**

@@ -82,9 +82,9 @@ namespace orhi
 		for (auto allocatedCommandBuffer : allocatedCommandBuffers)
 		{
 			output.emplace_back(
-				m_context.commandBuffers.emplace_back(CommandBuffer{
+				m_context.commandBuffers.emplace_back(
 					allocatedCommandBuffer
-				})
+				)
 			);
 		}
 

@@ -339,9 +339,9 @@ int main()
 	};
 
 	// Swap chain and framebuffers
-	std::vector<orhi::Framebuffer> framebuffers;
-	std::vector<orhi::Texture> depthTextures;
-	std::vector<orhi::Descriptor> depthDescriptors;
+	std::deque<orhi::Framebuffer> framebuffers;
+	std::deque<orhi::Texture> depthTextures;
+	std::deque<orhi::Descriptor> depthDescriptors;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
 	std::vector<SwapImageResources> swapImagesResources;
@@ -370,10 +370,7 @@ int main()
 
 		const uint32_t imageCount = swapChain->GetImageCount();
 
-		depthTextures.reserve(imageCount);
-		depthDescriptors.reserve(imageCount);
 		swapImagesResources.reserve(imageCount);
-		framebuffers.reserve(imageCount);
 
 		for (uint32_t i = 0; i < imageCount; ++i)
 		{
@@ -425,8 +422,7 @@ int main()
 	assert(framebuffers.size() >= k_maxFramesInFlight);
 
 	// Create UBOs (one per object per frame)
-	std::vector<orhi::Buffer> ubos;
-	ubos.reserve(k_objectDataCount);
+	std::deque<orhi::Buffer> ubos;
 	for (uint8_t i = 0; i < k_objectDataCount; ++i)
 	{
 		auto& ubo = ubos.emplace_back(

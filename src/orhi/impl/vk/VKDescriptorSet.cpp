@@ -27,13 +27,14 @@ namespace orhi
 	DescriptorSet::TDescriptorSet(
 		Device& p_device,
 		data::NativeHandle p_handle
-	) : m_context{
+	) :
+		BackendObject(p_handle),
+		m_context{
 		.device = p_device
 	}
 	{
 
 	}
-
 
 	template<>
 	DescriptorSet::~TDescriptorSet()

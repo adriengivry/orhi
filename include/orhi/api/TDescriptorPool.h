@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/DescriptorPoolDesc.h>
-#include <orhi/detail/Object.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <vector>
@@ -28,7 +28,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptorPool final : public detail::Object
+	class TDescriptorPool final : public detail::BackendObject
 	{
 	public:
 		/**

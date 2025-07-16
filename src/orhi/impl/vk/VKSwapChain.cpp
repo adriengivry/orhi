@@ -125,11 +125,9 @@ namespace orhi
 			m_context.images.data()
 		);
 
-		// Create image views
-		m_context.imageDescriptors.reserve(m_context.images.size());
-
-		for (size_t i = 0; i < m_context.images.size(); i++)
+		for (size_t i = 0; i < imageCount; i++)
 		{
+			// TODO: Add VK_COMPONENT_SWIZZLE_IDENTITY to each component
 			m_context.imageDescriptors.emplace_back(
 				m_context.device,
 				data::TextureViewDesc{
@@ -139,36 +137,6 @@ namespace orhi
 					.aspectFlags = types::ETextureAspectFlags::COLOR,
 				}
 			);
-			/*
-			VkImageViewCreateInfo createInfo{
-				.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-				.image = m_context.images[i],
-				.viewType = VK_IMAGE_VIEW_TYPE_2D,
-				.format = utils::EnumToValue<VkFormat>(m_context.desc.format),
-				.components = {
-					.r = VK_COMPONENT_SWIZZLE_IDENTITY,
-					.g = VK_COMPONENT_SWIZZLE_IDENTITY,
-					.b = VK_COMPONENT_SWIZZLE_IDENTITY,
-					.a = VK_COMPONENT_SWIZZLE_IDENTITY
-				},
-				.subresourceRange = {
-					.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-					.baseMipLevel = 0,
-					.levelCount = 1,
-					.baseArrayLayer = 0,
-					.layerCount = 1
-				}
-			};
-
-			VkResult imageCreationResult = vkCreateImageView(
-				m_context.device.GetNativeHandle().As<VkDevice>(),
-				&createInfo,
-				nullptr,
-				&m_context.imageViews[i]
-			);
-
-			ORHI_ASSERT(imageCreationResult == VK_SUCCESS, "Failed to create image view");
-			*/
 		}
 	}
 

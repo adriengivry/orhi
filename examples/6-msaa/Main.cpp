@@ -144,9 +144,9 @@ int main()
 	};
 
 	// Swap chain and framebuffers
-	std::vector<orhi::Framebuffer> framebuffers;
-	std::vector<orhi::Texture> colorTextures;
-	std::vector<orhi::Descriptor> colorDescriptors;
+	std::deque<orhi::Framebuffer> framebuffers;
+	std::deque<orhi::Texture> colorTextures;
+	std::deque<orhi::Descriptor> colorDescriptors;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
 	std::vector<SwapImageResources> swapImagesResources;
@@ -175,9 +175,6 @@ int main()
 
 		const uint32_t imageCount = swapChain->GetImageCount();
 
-		colorTextures.reserve(imageCount);
-		colorDescriptors.reserve(imageCount);
-		framebuffers.reserve(imageCount);
 		swapImagesResources.reserve(framebuffers.size());
 
 		for (uint32_t i = 0; i < imageCount; ++i)

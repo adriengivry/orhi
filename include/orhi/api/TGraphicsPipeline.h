@@ -7,7 +7,7 @@
 #pragma once
 
 #include <orhi/data/GraphicsPipelineDesc.h>
-#include <orhi/detail/Object.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
@@ -24,7 +24,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TGraphicsPipeline final : public detail::Object
+	class TGraphicsPipeline final : public detail::BackendObject
 	{
 	public:
 		/**

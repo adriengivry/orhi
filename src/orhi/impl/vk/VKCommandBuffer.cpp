@@ -28,7 +28,7 @@ namespace orhi
 	template<>
 	CommandBuffer::TCommandBuffer(
 		data::NativeHandle p_handle
-	) : Object{ p_handle }
+	) : BackendObject{ p_handle }
 	{
 
 	}

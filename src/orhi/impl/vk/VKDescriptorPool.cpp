@@ -104,10 +104,10 @@ namespace orhi
 		for (auto allocatedDescriptorSet : allocatedDescriptorSets)
 		{
 			output.emplace_back(
-				m_context.descriptorSets.emplace_back(DescriptorSet{
+				m_context.descriptorSets.emplace_back(
 					m_context.device,
 					allocatedDescriptorSet
-				})
+				)
 			);
 		}
 

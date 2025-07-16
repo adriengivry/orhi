@@ -23,18 +23,18 @@ namespace orhi::data
 	{
 	public:
 		/**
-		* Default constructor creating an empty handle
+		* @brief Default constructor creating an empty handle
 		*/
 		NativeHandle() : m_handle(nullptr) {}
 
 		/**
-		* Constructor from a raw pointer
+		* @brief Constructor from a raw pointer
 		* @param p_ptr Raw pointer to the native handle
 		*/
 		NativeHandle(void* p_ptr) : m_handle(p_ptr) {}
 
 		/**
-		* Converts the handle to a specific type
+		* @brief Converts the handle to a specific type
 		* @tparam T The type to cast the handle to
 		* @return The handle cast to the specified type
 		*/
@@ -42,7 +42,7 @@ namespace orhi::data
 		inline T As() const { return static_cast<T>(m_handle); }
 
 		/**
-		* Converts the handle to a specific type
+		* @brief Converts the handle to a specific type
 		* @tparam T The type to cast the handle to
 		* @return The handle cast to the specified type
 		*/

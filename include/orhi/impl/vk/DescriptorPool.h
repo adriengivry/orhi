@@ -11,7 +11,7 @@
 #include <orhi/impl/vk/DescriptorSet.h>
 #include <orhi/impl/vk/Device.h>
 
-#include <list>
+#include <deque>
 
 struct VkDescriptorPool_T;
 typedef VkDescriptorPool_T* VkDescriptorPool;
@@ -21,7 +21,7 @@ namespace orhi::impl::vk
 	struct DescriptorPoolContext
 	{
 		Device& device;
-		std::list<DescriptorSet> descriptorSets;
+		std::deque<DescriptorSet> descriptorSets;
 	};
 
 	using DescriptorPool = api::TDescriptorPool<BackendTraits>;

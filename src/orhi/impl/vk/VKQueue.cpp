@@ -28,7 +28,7 @@ namespace orhi
 	Queue::TQueue(
 		data::NativeHandle p_device,
 		data::NativeHandle p_handle
-	) : Object(p_handle),
+	) : BackendObject(p_handle),
 		m_context{
 		.device = p_device.As<VkDevice>()
 	}
