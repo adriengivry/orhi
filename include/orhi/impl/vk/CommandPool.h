@@ -11,7 +11,7 @@
 #include <orhi/impl/vk/CommandBuffer.h>
 #include <orhi/impl/vk/Device.h>
 
-#include <list>
+#include <deque>
 
 struct VkCommandPool_T;
 typedef VkCommandPool_T* VkCommandPool;
@@ -21,8 +21,7 @@ namespace orhi::impl::vk
 	struct CommandPoolContext
 	{
 		Device& device;
-		VkCommandPool handle;
-		std::list<CommandBuffer> commandBuffers;
+		std::deque<CommandBuffer> commandBuffers;
 	};
 
 	using CommandPool = api::TCommandPool<BackendTraits>;

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -25,7 +25,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TSemaphore final
+	class TSemaphore final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -44,12 +44,6 @@ namespace orhi::api
 		* @param p_timeout Optional timeout in nanoseconds; if not provided, waits indefinitely
 		*/
 		void Wait(std::optional<uint64_t> p_timeout = std::nullopt);
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying semaphore object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::SemaphoreContext m_context;

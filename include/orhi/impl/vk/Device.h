@@ -36,7 +36,6 @@ namespace orhi::impl::vk
 
 	struct DeviceContext
 	{
-		VkDevice device = nullptr;
 		VkPhysicalDevice physicalDevice = nullptr;
 		data::DeviceInfo deviceInfo;
 		std::unique_ptr<Queue> graphicsQueue;

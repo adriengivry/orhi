@@ -19,8 +19,7 @@ namespace orhi
 {
 	Semaphore::TSemaphore(Device& p_device) :
 		m_context{
-			.device = p_device,
-			.handle = VK_NULL_HANDLE
+			.device = p_device
 	}
 	{
 		VkSemaphoreCreateInfo createInfo{
@@ -31,7 +30,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkSemaphore&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create semaphore");
@@ -41,7 +40,7 @@ namespace orhi
 	{
 		vkDestroySemaphore(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSemaphore>(),
 			nullptr
 		);
 	}
@@ -52,7 +51,7 @@ namespace orhi
 		VkSemaphoreWaitInfo waitInfo{
 			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO,
 			.semaphoreCount = 1,
-			.pSemaphores = &m_context.handle
+			.pSemaphores = &m_handle.ReinterpretAs<VkSemaphore&>()
 		};
 
 		vkWaitSemaphores(
@@ -60,12 +59,6 @@ namespace orhi
 			&waitInfo,
 			p_timeout.value_or(std::numeric_limits<decltype(p_timeout)::value_type>::max())
 		);
-	}
-
-	template<>
-	data::NativeHandle Semaphore::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

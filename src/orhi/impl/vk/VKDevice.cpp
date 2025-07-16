@@ -76,22 +76,22 @@ namespace orhi
 			m_context.physicalDevice,
 			&createInfo,
 			nullptr,
-			&m_context.device
+			&m_handle.ReinterpretAs<VkDevice&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create logical device!");
 
 		VkQueue graphicsQueue, presentQueue;
-		vkGetDeviceQueue(m_context.device, m_context.queueFamilyIndices->graphicsFamily.value(), 0, &graphicsQueue);
-		vkGetDeviceQueue(m_context.device, m_context.queueFamilyIndices->presentFamily.value(), 0, &presentQueue);
+		vkGetDeviceQueue(m_handle.As<VkDevice>(), m_context.queueFamilyIndices->graphicsFamily.value(), 0, &graphicsQueue);
+		vkGetDeviceQueue(m_handle.As<VkDevice>(), m_context.queueFamilyIndices->presentFamily.value(), 0, &presentQueue);
 
 		m_context.graphicsQueue = std::unique_ptr<Queue>(new Queue(
-			m_context.device,
+			m_handle.As<VkDevice>(),
 			graphicsQueue
 		));
 
 		m_context.presentQueue = std::unique_ptr<Queue>(new Queue(
-			m_context.device,
+			m_handle.As<VkDevice>(),
 			presentQueue
 		));
 	}
@@ -103,17 +103,17 @@ namespace orhi
 		m_context.presentQueue.reset();
 
 		vkDestroyDevice(
-			m_context.device,
+			m_handle.As<VkDevice>(),
 			nullptr
 		);
 	}
 
-	Queue Device::GetGraphicsQueue() const
+	Queue& Device::GetGraphicsQueue() const
 	{
 		return *m_context.graphicsQueue;
 	}
 
-	Queue Device::GetPresentQueue() const
+	Queue& Device::GetPresentQueue() const
 	{
 		return *m_context.presentQueue;
 	}
@@ -149,19 +149,13 @@ namespace orhi
 	template<>
 	void Device::WaitIdle() const
 	{
-		vkDeviceWaitIdle(m_context.device);
+		vkDeviceWaitIdle(m_handle.As<VkDevice>());
 	}
 
 	template<>
 	const data::DeviceInfo& Device::GetInfo() const
 	{
 		return m_context.deviceInfo;
-	}
-
-	template<>
-	data::NativeHandle Device::GetNativeHandle() const
-	{
-		return m_context.device;
 	}
 
 	template<>

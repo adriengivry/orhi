@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -25,7 +25,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TFence final
+	class TFence final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -51,12 +51,6 @@ namespace orhi::api
 		* @note The fence must be signaled before it can be reset
 		*/
 		void Reset();
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying fence object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::FenceContext m_context;

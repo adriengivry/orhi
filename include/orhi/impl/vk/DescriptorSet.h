@@ -18,7 +18,6 @@ namespace orhi::impl::vk
 	struct DescriptorSetContext
 	{
 		Device& device;
-		VkDescriptorSet handle;
 	};
 
 	using DescriptorSet = api::TDescriptorSet<BackendTraits>;

@@ -27,7 +27,6 @@ namespace orhi::impl::vk
 {
 	struct InstanceContext 
 	{
-		VkInstance instance;
 		VkDevice device;
 		VkSurfaceKHR surface;
 		VkQueue graphicsQueue;

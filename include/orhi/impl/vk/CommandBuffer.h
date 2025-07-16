@@ -14,10 +14,6 @@ typedef VkCommandBuffer_T* VkCommandBuffer;
 
 namespace orhi::impl::vk
 {
-	struct CommandBufferContext
-	{
-		VkCommandBuffer handle;
-	};
-
+	struct CommandBufferContext {};
 	using CommandBuffer = api::TCommandBuffer<BackendTraits>;
 }

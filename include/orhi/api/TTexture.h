@@ -7,8 +7,8 @@
 #pragma once
 
 #include <orhi/data/MemoryRange.h>
-#include <orhi/data/NativeHandle.h>
 #include <orhi/data/TextureDesc.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/math/Extent3D.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/EGraphicsBackend.h>
@@ -31,7 +31,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TTexture final
+	class TTexture final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -97,18 +97,6 @@ namespace orhi::api
 		* @return The number of mip levels in the texture
 		*/
 		uint32_t GetMipLevels() const;
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying texture object
-		*/
-		data::NativeHandle GetNativeHandle() const;
-
-		/**
-		* @brief Implicit conversion operator to the native handle type
-		* @return Native handle to the underlying texture object
-		*/
-		operator data::NativeHandle() const { return GetNativeHandle(); }
 
 	private:
 		BackendTraits::TextureContext m_context;

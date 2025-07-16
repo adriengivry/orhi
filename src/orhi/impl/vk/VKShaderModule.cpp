@@ -22,8 +22,7 @@ namespace orhi
 		Device& p_device,
 		const std::span<const std::byte> p_source
 	) : m_context{
-		.device = p_device,
-		.handle = VK_NULL_HANDLE
+		.device = p_device
 	}
 	{
 		VkShaderModuleCreateInfo createInfo{
@@ -36,7 +35,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkShaderModule&>()
 		);
 		
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create shader module!");
@@ -47,15 +46,9 @@ namespace orhi
 	{
 		vkDestroyShaderModule(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkShaderModule>(),
 			nullptr
 		);
-	}
-
-	template<>
-	data::NativeHandle ShaderModule::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

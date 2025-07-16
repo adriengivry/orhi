@@ -7,6 +7,7 @@
 #pragma once
 
 #include <orhi/data/FramebufferDesc.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 namespace orhi::api
@@ -23,7 +24,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TFramebuffer final
+	class TFramebuffer final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -40,12 +41,6 @@ namespace orhi::api
 		* @brief Destroys the framebuffer and releases associated resources
 		*/
 		~TFramebuffer();
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying framebuffer object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::FramebufferContext m_context;

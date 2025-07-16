@@ -9,7 +9,7 @@
 #include <orhi/api/TBackendTraits.h>
 #include <orhi/data/BufferDesc.h>
 #include <orhi/data/MemoryRange.h>
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EMemoryPropertyFlags.h>
 
@@ -29,7 +29,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TBuffer final
+	class TBuffer final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -77,12 +77,6 @@ namespace orhi::api
 		* @return The number of allocated bytes
 		*/
 		uint64_t GetAllocatedBytes() const;
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying buffer object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::BufferContext m_context;

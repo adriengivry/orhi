@@ -13,6 +13,8 @@
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/Framebuffer.h>
 
+#include <deque>
+
 struct VkSwapchainKHR_T;
 typedef VkSwapchainKHR_T* VkSwapchainKHR;
 
@@ -28,9 +30,8 @@ namespace orhi::impl::vk
 	{
 		Device& device;
 		data::SwapChainDesc desc;
-		VkSwapchainKHR handle;
 		std::vector<VkImage> images;
-		std::vector<Descriptor> imageDescriptors;
+		std::deque<Descriptor> imageDescriptors;
 		math::Extent2D extent;
 	};
 

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/data/NativeHandle.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -28,7 +28,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TQueue final
+	class TQueue final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -71,12 +71,6 @@ namespace orhi::api
 			TSwapChain<BackendTraits>& p_swapChain,
 			uint32_t p_swapChainIndice
 		);
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying queue object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::QueueContext m_context;

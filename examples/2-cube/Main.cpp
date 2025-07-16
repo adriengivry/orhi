@@ -309,7 +309,7 @@ int main()
 	};
 
 	// Swap chain and framebuffers
-	std::vector<orhi::Framebuffer> framebuffers;
+	std::deque<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
 	std::vector<SwapImageResources> swapImagesResources;
@@ -336,7 +336,6 @@ int main()
 
 		const uint32_t imageCount = swapChain->GetImageCount();
 
-		framebuffers.reserve(imageCount);
 		swapImagesResources.reserve(imageCount);
 
 		for (uint32_t i = 0; i < imageCount; ++i)
@@ -364,8 +363,7 @@ int main()
 	assert(framebuffers.size() >= k_maxFramesInFlight);
 
 	// Create UBOs (one for each frame)
-	std::vector<orhi::Buffer> ubos;
-	ubos.reserve(k_maxFramesInFlight);
+	std::deque<orhi::Buffer> ubos;
 	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
 		auto& ubo = ubos.emplace_back(

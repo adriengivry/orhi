@@ -18,7 +18,6 @@ namespace orhi::impl::vk
 	struct DescriptorSetLayoutContext
 	{
 		Device& device;
-		VkDescriptorSetLayout handle;
 	};
 
 	using DescriptorSetLayout = api::TDescriptorSetLayout<BackendTraits>;

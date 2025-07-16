@@ -55,7 +55,6 @@ namespace orhi
 	) : m_context{
 		.device = p_device,
 		.desc = p_desc,
-		.handle = VK_NULL_HANDLE,
 		.extent = p_windowSize
 	}
 	{
@@ -104,7 +103,7 @@ namespace orhi
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkSwapchainKHR&>()
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create swap chain!");
@@ -113,7 +112,7 @@ namespace orhi
 		uint32_t imageCount;
 		vkGetSwapchainImagesKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			&imageCount,
 			nullptr
 		);
@@ -121,16 +120,14 @@ namespace orhi
 		m_context.images.resize(imageCount);
 		vkGetSwapchainImagesKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			&imageCount,
 			m_context.images.data()
 		);
 
-		// Create image views
-		m_context.imageDescriptors.reserve(m_context.images.size());
-
-		for (size_t i = 0; i < m_context.images.size(); i++)
+		for (size_t i = 0; i < imageCount; i++)
 		{
+			// TODO: Add VK_COMPONENT_SWIZZLE_IDENTITY to each component
 			m_context.imageDescriptors.emplace_back(
 				m_context.device,
 				data::TextureViewDesc{
@@ -140,36 +137,6 @@ namespace orhi
 					.aspectFlags = types::ETextureAspectFlags::COLOR,
 				}
 			);
-			/*
-			VkImageViewCreateInfo createInfo{
-				.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-				.image = m_context.images[i],
-				.viewType = VK_IMAGE_VIEW_TYPE_2D,
-				.format = utils::EnumToValue<VkFormat>(m_context.desc.format),
-				.components = {
-					.r = VK_COMPONENT_SWIZZLE_IDENTITY,
-					.g = VK_COMPONENT_SWIZZLE_IDENTITY,
-					.b = VK_COMPONENT_SWIZZLE_IDENTITY,
-					.a = VK_COMPONENT_SWIZZLE_IDENTITY
-				},
-				.subresourceRange = {
-					.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-					.baseMipLevel = 0,
-					.levelCount = 1,
-					.baseArrayLayer = 0,
-					.layerCount = 1
-				}
-			};
-
-			VkResult imageCreationResult = vkCreateImageView(
-				m_context.device.GetNativeHandle().As<VkDevice>(),
-				&createInfo,
-				nullptr,
-				&m_context.imageViews[i]
-			);
-
-			ORHI_ASSERT(imageCreationResult == VK_SUCCESS, "Failed to create image view");
-			*/
 		}
 	}
 
@@ -180,7 +147,7 @@ namespace orhi
 
 		vkDestroySwapchainKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			nullptr
 		);
 	}
@@ -208,7 +175,7 @@ namespace orhi
 
 		VkResult result = vkAcquireNextImageKHR(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkSwapchainKHR>(),
 			p_timeout.value_or(UINT64_MAX),
 			p_semaphore.has_value() ? p_semaphore->get().GetNativeHandle().As<VkSemaphore>() : VK_NULL_HANDLE,
 			p_fence.has_value() ? p_fence->get().GetNativeHandle().As<VkFence>() : VK_NULL_HANDLE,
@@ -223,12 +190,6 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to acquire next image");
 
 		return imageIndex;
-	}
-
-	template<>
-	data::NativeHandle SwapChain::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

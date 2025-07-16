@@ -18,7 +18,6 @@ namespace orhi::impl::vk
 	struct RenderPassContext
 	{
 		Device& device;
-		VkRenderPass handle;
 	};
 
 	using RenderPass = api::TRenderPass<BackendTraits>;

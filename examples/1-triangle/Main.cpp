@@ -131,7 +131,7 @@ int main()
 	};
 
 	// Swap chain and framebuffers
-	std::vector<orhi::Framebuffer> framebuffers;
+	std::deque<orhi::Framebuffer> framebuffers;
 	std::unique_ptr<orhi::SwapChain> swapChain;
 	orhi::math::Extent2D windowSize;
 	std::vector<SwapImageResources> swapImagesResources;
@@ -158,7 +158,6 @@ int main()
 
 		const uint32_t imageCount = swapChain->GetImageCount();
 
-		framebuffers.reserve(imageCount);
 		swapImagesResources.reserve(imageCount);
 
 		for (uint32_t i = 0; i < imageCount; ++i)

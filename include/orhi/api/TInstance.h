@@ -8,8 +8,8 @@
 
 #include <orhi/data/DeviceInfo.h>
 #include <orhi/data/InstanceDesc.h>
-#include <orhi/data/NativeHandle.h>
 #include <orhi/data/SwapChainDesc.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <unordered_map>
@@ -29,7 +29,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TInstance final
+	class TInstance final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -55,12 +55,6 @@ namespace orhi::api
 		* @return Reference to the created logical device
 		*/
 		TDevice<BackendTraits>& CreateDevice(uint32_t p_deviceId);
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying graphics instance
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 		/**
 		* @brief Gets the native handle to the presentation surface

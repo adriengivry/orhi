@@ -27,14 +27,14 @@ namespace orhi
 	DescriptorSet::TDescriptorSet(
 		Device& p_device,
 		data::NativeHandle p_handle
-	) : m_context{
-		.device = p_device,
-		.handle = p_handle.As<VkDescriptorSet>()
+	) :
+		BackendObject(p_handle),
+		m_context{
+		.device = p_device
 	}
 	{
 
 	}
-
 
 	template<>
 	DescriptorSet::~TDescriptorSet()
@@ -58,7 +58,9 @@ namespace orhi
 		for (const auto& [binding, writeDesc] : p_writeDescs)
 		{
 			std::visit([&](const auto& desc) {
-				using T = std::decay_t<decltype(desc)>;						if constexpr (std::is_same_v<T, data::BufferDescriptorWriteInfo<BackendTraits>>)
+				using T = std::decay_t<decltype(desc)>;
+				
+				if constexpr (std::is_same_v<T, data::BufferDescriptorWriteInfo<BackendTraits>>)
 				{
 					// Handle buffer descriptor
 					VkDescriptorBufferInfo bufferInfo{
@@ -70,7 +72,7 @@ namespace orhi
 
 					VkWriteDescriptorSet descriptorWrite{
 						.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-						.dstSet = m_context.handle,
+						.dstSet = m_handle.As<VkDescriptorSet>(),
 						.dstBinding = binding,
 						.dstArrayElement = 0,
 						.descriptorCount = 1,
@@ -80,7 +82,8 @@ namespace orhi
 						.pTexelBufferView = nullptr
 					};
 					descriptorWrites.push_back(descriptorWrite);
-				}						else if constexpr (std::is_same_v<T, data::TextureSamplerDescriptorWriteInfo<BackendTraits>>)
+				}
+				else if constexpr (std::is_same_v<T, data::TextureSamplerDescriptorWriteInfo<BackendTraits>>)
 				{
 					// Handle texture/sampler descriptor
 					VkDescriptorImageInfo imageInfo{
@@ -92,7 +95,7 @@ namespace orhi
 
 					VkWriteDescriptorSet descriptorWrite{
 						.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-						.dstSet = m_context.handle,
+						.dstSet = m_handle.As<VkDescriptorSet>(),
 						.dstBinding = binding,
 						.dstArrayElement = 0,
 						.descriptorCount = 1,
@@ -116,12 +119,6 @@ namespace orhi
 				nullptr
 			);
 		}
-	}
-
-	template<>
-	data::NativeHandle DescriptorSet::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

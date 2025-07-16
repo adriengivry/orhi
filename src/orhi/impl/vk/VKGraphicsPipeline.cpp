@@ -310,8 +310,7 @@ namespace orhi
 		const data::GraphicsPipelineDesc<BackendTraits>& p_desc
 	) : m_context{
 		.device = p_device,
-		.layout = VK_NULL_HANDLE,
-		.handle = VK_NULL_HANDLE
+		.layout = VK_NULL_HANDLE
 	}
 	{
 		// Collect and format pipeline components
@@ -388,7 +387,7 @@ namespace orhi
 			1,
 			&createInfo,
 			nullptr,
-			&m_context.handle
+			&m_handle.ReinterpretAs<VkPipeline&>()
 		);
 		
 		ORHI_ASSERT(pipelineCreationResult == VK_SUCCESS, "failed to create graphics pipeline!");
@@ -405,7 +404,7 @@ namespace orhi
 
 		vkDestroyPipeline(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.handle,
+			m_handle.As<VkPipeline>(),
 			nullptr
 		);
 	}
@@ -414,12 +413,6 @@ namespace orhi
 	data::NativeHandle GraphicsPipeline::GetLayoutHandle() const
 	{
 		return m_context.layout;
-	}
-
-	template<>
-	data::NativeHandle GraphicsPipeline::GetNativeHandle() const
-	{
-		return m_context.handle;
 	}
 }
 

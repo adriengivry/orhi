@@ -7,9 +7,9 @@
 #pragma once
 
 #include <orhi/data/MemoryRange.h>
-#include <orhi/data/NativeHandle.h>
 #include <orhi/data/SamplerDesc.h>
 #include <orhi/data/TextureViewDesc.h>
+#include <orhi/detail/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
 
 #include <optional>
@@ -27,7 +27,7 @@ namespace orhi::api
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TDescriptor final
+	class TDescriptor final : public detail::BackendObject
 	{
 	public:
 		/**
@@ -54,12 +54,6 @@ namespace orhi::api
 		* @brief Destroys the descriptor and releases associated resources
 		*/
 		~TDescriptor();
-
-		/**
-		* @brief Gets the native handle for backend-specific operations
-		* @return Native handle to the underlying descriptor object
-		*/
-		data::NativeHandle GetNativeHandle() const;
 
 	private:
 		BackendTraits::DescriptorContext m_context;

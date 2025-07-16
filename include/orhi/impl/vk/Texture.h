@@ -23,7 +23,6 @@ namespace orhi::impl::vk
 	struct TextureContext
 	{
 		Device& device;
-		VkImage handle;
 		VkDeviceMemory memory;
 		types::EFormat format;
 		uint32_t mipLevels;

@@ -21,7 +21,6 @@ namespace orhi::impl::vk
 	struct BufferContext
 	{
 		Device& device;
-		VkBuffer handle;
 		VkDeviceMemory memory;
 		uint64_t allocatedBytes;
 	};
