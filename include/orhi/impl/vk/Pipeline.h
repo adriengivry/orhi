@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/api/TGraphicsPipeline.h>
+#include <orhi/api/TPipeline.h>
 #include <orhi/impl/vk/BackendTraits.h>
 #include <orhi/impl/vk/Device.h>
 
@@ -18,11 +18,11 @@ typedef VkPipelineLayout_T* VkPipelineLayout;
 
 namespace orhi::impl::vk
 {
-	struct GraphicsPipelineContext 
+	struct PipelineContext 
 	{
 		Device& device;
 		VkPipelineLayout layout;
 	};
 
-	using GraphicsPipeline = api::TGraphicsPipeline<BackendTraits>;
+	using Pipeline = api::TPipeline<BackendTraits>;
 }

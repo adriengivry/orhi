@@ -18,12 +18,27 @@ namespace orhi::api
 	* to backend-specific implementation types. Each graphics backend (Vulkan, DirectX, etc.)
 	* provides its own specialization of this traits struct.
 	*/
-	template<types::EGraphicsBackend BackendType, typename TBackendContext, typename TBufferContext, typename TCommandBufferContext,
-		typename TCommandPoolContext, typename TDescriptorContext, typename TDescriptorPoolContext,
-		typename TDescriptorSetContext, typename TDescriptorSetLayoutContext, typename TDeviceContext,
-		typename TFenceContext, typename TFramebufferContext, typename TGraphicsPipelineContext,
-		typename TQueueContext, typename TRenderPassContext, typename TSemaphoreContext,
-		typename TShaderModuleContext, typename TSwapChainContext, typename TTextureContext>
+	template<
+		types::EGraphicsBackend BackendType,
+		typename TBackendContext,
+		typename TBufferContext,
+		typename TCommandBufferContext,
+		typename TCommandPoolContext,
+		typename TDescriptorContext,
+		typename TDescriptorPoolContext,
+		typename TDescriptorSetContext,
+		typename TDescriptorSetLayoutContext,
+		typename TDeviceContext,
+		typename TFenceContext,
+		typename TFramebufferContext,
+		typename TPipelineContext,
+		typename TQueueContext,
+		typename TRenderPassContext,
+		typename TSemaphoreContext,
+		typename TShaderModuleContext,
+		typename TSwapChainContext,
+		typename TTextureContext
+	>
 	struct TBackendTraits
 	{
 		static constexpr types::EGraphicsBackend BackendType = BackendType;
@@ -38,7 +53,7 @@ namespace orhi::api
 		using DeviceContext = TDeviceContext;
 		using FenceContext = TFenceContext;
 		using FramebufferContext = TFramebufferContext;
-		using GraphicsPipelineContext = TGraphicsPipelineContext;
+		using PipelineContext = TPipelineContext;
 		using QueueContext = TQueueContext;
 		using RenderPassContext = TRenderPassContext;
 		using SemaphoreContext = TSemaphoreContext;

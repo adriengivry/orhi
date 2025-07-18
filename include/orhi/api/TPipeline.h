@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <orhi/data/ComputePipelineDesc.h>
 #include <orhi/data/GraphicsPipelineDesc.h>
 #include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
@@ -15,16 +16,16 @@ namespace orhi::api
 	template<typename BackendTraits> class TDevice;
 
 	/**
-	* @brief A graphics pipeline defining the complete rendering state
+	* @brief A generic pipeline object for graphics and compute operations
 	* 
-	* TGraphicsPipeline encapsulates all fixed-function and programmable stages
-	* of the graphics pipeline, including shaders, vertex input, rasterization,
-	* and output blending state. Once created, pipelines are immutable.
+	* TPipeline encapsulates the functionality of both graphics and compute pipelines,
+	* allowing for the creation and management of pipelines in a backend-agnostic manner.
+	* It provides methods to create pipelines with specified configurations.
 	* 
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
 	template<typename BackendTraits>
-	class TGraphicsPipeline final : public impl::common::BackendObject
+	class TPipeline final : public impl::common::BackendObject
 	{
 	public:
 		/**
@@ -32,15 +33,25 @@ namespace orhi::api
 		* @param p_device Reference to the device that will own this graphics pipeline
 		* @param p_desc Graphics pipeline descriptor specifying shaders, state, and layout
 		*/
-		TGraphicsPipeline(
+		TPipeline(
 			TDevice<BackendTraits>& p_device,
 			const data::GraphicsPipelineDesc<BackendTraits>& p_desc
 		);
 
 		/**
-		* @brief Destroys the graphics pipeline and releases associated resources
+		* @brief Creates a compute pipeline with the specified configuration
+		* @param p_device Reference to the device that will own this compute pipeline
+		* @param p_desc Compute pipeline descriptor specifying shaders, state, and layout
 		*/
-		~TGraphicsPipeline();
+		TPipeline(
+			TDevice<BackendTraits>& p_device,
+			const data::ComputePipelineDesc<BackendTraits>& p_desc
+		);
+
+		/**
+		* @brief Destroys the pipeline and releases associated resources
+		*/
+		~TPipeline();
 
 		/**
 		* @brief Gets the native handle to the pipeline layout
@@ -49,6 +60,6 @@ namespace orhi::api
 		impl::common::NativeHandle GetLayoutHandle() const;
 
 	private:
-		BackendTraits::GraphicsPipelineContext m_context;
+		BackendTraits::PipelineContext m_context;
 	};
 }

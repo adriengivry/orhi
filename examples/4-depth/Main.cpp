@@ -15,7 +15,7 @@
 #include <orhi/except/OutOfDateSwapChain.h>
 #include <orhi/Fence.h>
 #include <orhi/Framebuffer.h>
-#include <orhi/GraphicsPipeline.h>
+#include <orhi/Pipeline.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
 #include <orhi/RenderPass.h>
@@ -309,9 +309,9 @@ int main()
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
 
-	orhi::GraphicsPipeline pipeline{
+	orhi::Pipeline pipeline{
 		device,
-		{
+		orhi::data::GraphicsPipelineDesc<orhi::BackendTraits>{
 			.stages = {
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
@@ -477,7 +477,7 @@ int main()
 	transferCommandBuffer.CopyBuffer(*hostVertexBuffer, *deviceVertexBuffer);
 	transferCommandBuffer.CopyBuffer(*hostIndexBuffer, *deviceIndexBuffer);
 	transferCommandBuffer.End();
-	device.GetGraphicsQueue().Submit({ transferCommandBuffer });
+	device.GetGraphicsAndComputeQueue().Submit({ transferCommandBuffer });
 	device.WaitIdle();
 
 	// At this point we don't need the client copy of these buffers anymore
@@ -607,7 +607,7 @@ int main()
 		commandBuffer.EndRenderPass();
 		commandBuffer.End();
 
-		device.GetGraphicsQueue().Submit(
+		device.GetGraphicsAndComputeQueue().Submit(
 			{ commandBuffer },
 			{ *frameResources.imageAvailableSemaphore },
 			{ *swapImageResources.renderFinishedSemaphore },

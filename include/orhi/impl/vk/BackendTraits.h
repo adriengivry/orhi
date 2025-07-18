@@ -21,7 +21,7 @@ namespace orhi::impl::vk
 	struct DeviceContext;
 	struct FenceContext;
 	struct FramebufferContext;
-	struct GraphicsPipelineContext;
+	struct PipelineContext;
 	struct QueueContext;
 	struct RenderPassContext;
 	struct SemaphoreContext;
@@ -42,7 +42,7 @@ namespace orhi::impl::vk
 		DeviceContext,
 		FenceContext,
 		FramebufferContext,
-		GraphicsPipelineContext,
+		PipelineContext,
 		QueueContext,
 		RenderPassContext,
 		SemaphoreContext,

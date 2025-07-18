@@ -7,6 +7,6 @@
 #pragma once
 
 #include <orhi/impl/BackendSelection.h>
-#include ORHI_SELECTED_API_HEADER_LOCATION(GraphicsPipeline)
+#include ORHI_SELECTED_API_HEADER_LOCATION(Pipeline)
 
-ORHI_EXPOSE_SELECTED_TYPE(GraphicsPipeline)
+ORHI_EXPOSE_SELECTED_TYPE(Pipeline)

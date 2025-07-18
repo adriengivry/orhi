@@ -6,7 +6,7 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#include <orhi/impl/vk/GraphicsPipeline.h>
+#include <orhi/impl/vk/Pipeline.h>
 
 #include <orhi/data/ColorBlendStateDesc.h>
 #include <orhi/data/DepthStencilStateDesc.h>
@@ -32,21 +32,26 @@ using namespace orhi::impl::vk;
 
 namespace
 {
+	auto FormatStage(orhi::types::EShaderStageFlags p_stageType, const ShaderModule& p_shaderModule)
+	{
+		return VkPipelineShaderStageCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+			.stage = static_cast<VkShaderStageFlagBits>(
+				orhi::utils::EnumToValue<VkShaderStageFlags>(p_stageType)
+			),
+			.module = p_shaderModule.GetNativeHandle().As<VkShaderModule>(),
+			.pName = "main"
+		};
+	}
+
 	auto FormatStages(const std::unordered_map<orhi::types::EShaderStageFlags, std::reference_wrapper<ShaderModule>>& p_stages)
 	{
 		std::vector<VkPipelineShaderStageCreateInfo> formattedStages;
 		formattedStages.reserve(p_stages.size());
 
-		for (auto& [stageType, stageInstance] : p_stages)
+		for (auto& [stageType, shaderModule] : p_stages)
 		{
-			formattedStages.push_back(VkPipelineShaderStageCreateInfo{
-				.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-				.stage = static_cast<VkShaderStageFlagBits>(
-					orhi::utils::EnumToValue<VkShaderStageFlags>(stageType)
-				),
-				.module = stageInstance.get().GetNativeHandle().As<VkShaderModule>(),
-				.pName = "main"
-			});
+			formattedStages.push_back(FormatStage(stageType, shaderModule.get()));
 		}
 
 		return formattedStages;
@@ -305,7 +310,7 @@ namespace
 namespace orhi
 {
 	template<>
-	GraphicsPipeline::TGraphicsPipeline(
+	Pipeline::TPipeline(
 		Device& p_device,
 		const data::GraphicsPipelineDesc<BackendTraits>& p_desc
 	) : m_context{
@@ -394,7 +399,55 @@ namespace orhi
 	}
 
 	template<>
-	GraphicsPipeline::~TGraphicsPipeline()
+	Pipeline::TPipeline(
+		Device& p_device,
+		const data::ComputePipelineDesc<BackendTraits>& p_desc
+	) : m_context{
+		.device = p_device,
+		.layout = VK_NULL_HANDLE
+	}
+	{
+		// Collect and format pipeline components
+		const auto descriptorSetLayouts = FormatDescriptorSetLayouts(p_desc.descriptorSetLayouts);
+
+		// Create pipeline layout
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+			.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size()),
+			.pSetLayouts = descriptorSetLayouts.data(),
+			.pushConstantRangeCount = 0,
+			.pPushConstantRanges = nullptr
+		};
+
+		VkResult pipelineLayoutCreationResult = vkCreatePipelineLayout(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			&pipelineLayoutInfo,
+			nullptr,
+			&m_context.layout
+		);
+
+		ORHI_ASSERT(pipelineLayoutCreationResult == VK_SUCCESS, "failed to create pipeline layout!");
+
+		VkComputePipelineCreateInfo createInfo{
+			.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
+			.stage = FormatStage(types::EShaderStageFlags::COMPUTE_BIT, p_desc.shader),
+			.layout = m_context.layout,
+		};
+
+		VkResult pipelineCreationResult = vkCreateComputePipelines(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			VK_NULL_HANDLE,
+			1,
+			&createInfo,
+			nullptr,
+			&m_handle.ReinterpretAs<VkPipeline&>()
+		);
+
+		ORHI_ASSERT(pipelineCreationResult == VK_SUCCESS, "failed to create compute pipeline!");
+	}
+
+	template<>
+	Pipeline::~TPipeline()
 	{
 		vkDestroyPipelineLayout(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
@@ -410,12 +463,12 @@ namespace orhi
 	}
 
 	template<>
-	impl::common::NativeHandle GraphicsPipeline::GetLayoutHandle() const
+	impl::common::NativeHandle Pipeline::GetLayoutHandle() const
 	{
 		return m_context.layout;
 	}
 }
 
-template class orhi::api::TGraphicsPipeline<orhi::impl::vk::BackendTraits>;
+template class orhi::api::TPipeline<orhi::impl::vk::BackendTraits>;
 
 #endif // #if defined(ORHI_COMPILE_VULKAN)

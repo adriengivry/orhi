@@ -38,7 +38,7 @@ namespace orhi::impl::vk
 	{
 		VkPhysicalDevice physicalDevice = nullptr;
 		data::DeviceInfo deviceInfo;
-		std::unique_ptr<Queue> graphicsQueue;
+		std::unique_ptr<Queue> graphicsAndComputeQueue;
 		std::unique_ptr<Queue> presentQueue;
 		std::unique_ptr<VkPhysicalDeviceProperties> properties;
 		std::unique_ptr<VkPhysicalDeviceFeatures> features;

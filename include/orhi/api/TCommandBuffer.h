@@ -27,7 +27,7 @@ namespace orhi::api
 	template<typename BackendTraits> class TBuffer;
 	template<typename BackendTraits> class TDescriptorSet;
 	template<typename BackendTraits> class TFramebuffer;
-	template<typename BackendTraits> class TGraphicsPipeline;
+	template<typename BackendTraits> class TPipeline;
 	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TTexture;
 
@@ -154,13 +154,13 @@ namespace orhi::api
 		);
 
 		/**
-		* @brief Binds a graphics pipeline for subsequent rendering operations
+		* @brief Binds a pipeline for subsequent operations
 		* @param p_bindPoint The pipeline bind point (graphics or compute)
-		* @param p_pipeline The graphics pipeline to bind
+		* @param p_pipeline The pipeline to bind
 		*/
 		void BindPipeline(
 			types::EPipelineBindPoint p_bindPoint,
-			TGraphicsPipeline<BackendTraits>& p_pipeline
+			TPipeline<BackendTraits>& p_pipeline
 		);
 
 		/**
@@ -220,6 +220,18 @@ namespace orhi::api
 		* @param p_instanceCount Number of instances to draw
 		*/
 		void DrawIndexed(uint32_t p_indexCount, uint32_t p_instanceCount = 1);
+
+		/**
+		* @brief Submits a compute dispatch command
+		* @param p_groupCountX Number of workgroups in the X dimension
+		* @param p_groupCountY Number of workgroups in the Y dimension (default is 1)
+		* @param p_groupCountZ Number of workgroups in the Z dimension (default is 1)
+		*/
+		void Dispatch(
+			uint32_t p_groupCountX,
+			uint32_t p_groupCountY = 1,
+			uint32_t p_groupCountZ = 1
+		);
 
 	private:
 		BackendTraits::CommandBufferContext m_context;

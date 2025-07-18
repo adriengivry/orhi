@@ -13,7 +13,7 @@
 #include <orhi/impl/vk/Buffer.h>
 #include <orhi/impl/vk/DescriptorSet.h>
 #include <orhi/impl/vk/Framebuffer.h>
-#include <orhi/impl/vk/GraphicsPipeline.h>
+#include <orhi/impl/vk/Pipeline.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Texture.h>
 #include <orhi/impl/vk/detail/MemoryUtils.h>
@@ -311,7 +311,7 @@ namespace orhi
 	template<>
 	void CommandBuffer::BindPipeline(
 		types::EPipelineBindPoint p_bindPoint,
-		GraphicsPipeline& p_pipeline
+		Pipeline& p_pipeline
 	)
 	{
 		vkCmdBindPipeline(
@@ -493,6 +493,21 @@ namespace orhi
 			p_indexCount,
 			p_instanceCount,
 			0, 0, 0
+		);
+	}
+
+	template<>
+	void CommandBuffer::Dispatch(
+		uint32_t p_groupCountX,
+		uint32_t p_groupCountY,
+		uint32_t p_groupCountZ
+	)
+	{
+		vkCmdDispatch(
+			m_handle.As<VkCommandBuffer>(),
+			p_groupCountX,
+			p_groupCountY,
+			p_groupCountZ
 		);
 	}
 }
