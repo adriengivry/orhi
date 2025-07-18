@@ -15,6 +15,7 @@
 namespace orhi::api
 {
 	template<typename BackendTraits> class TDescriptorSetLayout;
+	template<typename BackendTraits> class TPipelineLayout;
 	template<typename BackendTraits> class TShaderModule;
 }
 
@@ -32,6 +33,6 @@ namespace orhi::data
 	struct ComputePipelineDesc
 	{
 		api::TShaderModule<BackendTraits>& shader;
-		std::span<const std::reference_wrapper<api::TDescriptorSetLayout<BackendTraits>>> descriptorSetLayouts;
+		api::TPipelineLayout<BackendTraits>& pipelineLayout;
 	};
 }

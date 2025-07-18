@@ -16,6 +16,7 @@
 #include <orhi/Fence.h>
 #include <orhi/Framebuffer.h>
 #include <orhi/Pipeline.h>
+#include <orhi/PipelineLayout.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
 #include <orhi/RenderPass.h>
@@ -171,6 +172,8 @@ int main()
 	};
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
+
+	orhi::PipelineLayout graphicsPipelineLayout(device);
 	
 	orhi::Pipeline graphicsPipeline{
 		device,
@@ -180,6 +183,7 @@ int main()
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
 			.renderPass = renderPass,
+			.pipelineLayout = graphicsPipelineLayout,
 			.vertexInputState = {
 				.vertexBindings = VertexInputDescription<Particle>::GetBindingDescription(),
 				.vertexAttributes = VertexInputDescription<Particle>::GetAttributeDescriptions()
@@ -288,13 +292,21 @@ int main()
 		},
 	};
 
+	// Create pipeline layout for compute pipeline
+	orhi::PipelineLayout computePipelineLayout{
+		device,
+		orhi::data::PipelineLayoutDesc<orhi::BackendTraits>{
+			.descriptorSetLayouts = std::to_array({ std::ref(descriptorSetLayout) })
+		}
+	};
+
 	orhi::ShaderModule computeShader{ device, ReadShaderFile("assets/shaders/main.comp.spv") };
 
 	orhi::Pipeline computePipeline{
 		device,
 		orhi::data::ComputePipelineDesc<orhi::BackendTraits>{
 			.shader = computeShader,
-			.descriptorSetLayouts = std::to_array({ std::ref(descriptorSetLayout) })
+			.pipelineLayout = computePipelineLayout
 		}
 	};
 
@@ -456,7 +468,7 @@ int main()
 		computeCommandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::COMPUTE, computePipeline);
 		computeCommandBuffer.BindDescriptorSets(
 			std::to_array({ std::ref(frameResources.descriptorSet) }),
-			computePipeline.GetLayoutHandle(),
+			computePipelineLayout,
 			orhi::types::EPipelineBindPoint::COMPUTE
 		);
 		computeCommandBuffer.Dispatch(

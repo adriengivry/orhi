@@ -28,6 +28,7 @@ namespace orhi::api
 	template<typename BackendTraits> class TDescriptorSet;
 	template<typename BackendTraits> class TFramebuffer;
 	template<typename BackendTraits> class TPipeline;
+	template<typename BackendTraits> class TPipelineLayout;
 	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TTexture;
 
@@ -188,12 +189,12 @@ namespace orhi::api
 		/**
 		* @brief Binds descriptor sets containing shader resources
 		* @param p_descriptorSets Array of descriptor sets to bind
-		* @param p_pipelineLayout Native handle to the pipeline layout
+		* @param p_pipelineLayout Pipeline layout defining the resource interface
 		* @param p_bindPoint (optional) The pipeline bind point for which the descriptor sets are bound; defaults to GRAPHICS
 		*/
 		void BindDescriptorSets(
 			std::span<const std::reference_wrapper<TDescriptorSet<BackendTraits>>> p_descriptorSets,
-			impl::common::NativeHandle p_pipelineLayout,
+			TPipelineLayout<BackendTraits>& p_pipelineLayout,
 			types::EPipelineBindPoint p_bindPoint = types::EPipelineBindPoint::GRAPHICS
 		);
 

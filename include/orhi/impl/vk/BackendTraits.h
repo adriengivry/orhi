@@ -22,6 +22,7 @@ namespace orhi::impl::vk
 	struct FenceContext;
 	struct FramebufferContext;
 	struct PipelineContext;
+	struct PipelineLayoutContext;
 	struct QueueContext;
 	struct RenderPassContext;
 	struct SemaphoreContext;
@@ -43,6 +44,7 @@ namespace orhi::impl::vk
 		FenceContext,
 		FramebufferContext,
 		PipelineContext,
+		PipelineLayoutContext,
 		QueueContext,
 		RenderPassContext,
 		SemaphoreContext,

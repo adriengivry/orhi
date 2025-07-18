@@ -12,6 +12,7 @@
 #include <orhi/Fence.h>
 #include <orhi/Framebuffer.h>
 #include <orhi/Pipeline.h>
+#include <orhi/PipelineLayout.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
 #include <orhi/RenderPass.h>
@@ -118,6 +119,8 @@ int main()
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
 	
+	orhi::PipelineLayout pipelineLayout(device);
+	
 	orhi::Pipeline pipeline{
 		device,
 		orhi::data::GraphicsPipelineDesc<orhi::BackendTraits>{
@@ -126,6 +129,7 @@ int main()
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
 			.renderPass = renderPass,
+			.pipelineLayout = pipelineLayout,
 			.multisampleState = {
 				.rasterizationSamples = device.GetInfo().maxSampleCount,
 				.sampleShadingEnable = true,

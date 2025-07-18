@@ -14,6 +14,7 @@
 #include <orhi/impl/vk/DescriptorSet.h>
 #include <orhi/impl/vk/Framebuffer.h>
 #include <orhi/impl/vk/Pipeline.h>
+#include <orhi/impl/vk/PipelineLayout.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Texture.h>
 #include <orhi/impl/vk/detail/MemoryUtils.h>
@@ -416,7 +417,7 @@ namespace orhi
 	template<>
 	void CommandBuffer::BindDescriptorSets(
 		std::span<const std::reference_wrapper<DescriptorSet>> p_descriptorSets,
-		impl::common::NativeHandle p_pipelineLayout,
+		PipelineLayout& p_pipelineLayout,
 		types::EPipelineBindPoint p_bindPoint
 	)
 	{
@@ -425,7 +426,7 @@ namespace orhi
 		vkCmdBindDescriptorSets(
 			m_handle.As<VkCommandBuffer>(),
 			utils::EnumToValue<VkPipelineBindPoint>(p_bindPoint),
-			p_pipelineLayout.As<VkPipelineLayout>(),
+			p_pipelineLayout.GetNativeHandle().As<VkPipelineLayout>(),
 			0,
 			static_cast<uint32_t>(descriptorSets.size()),
 			descriptorSets.data(),

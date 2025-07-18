@@ -53,12 +53,6 @@ namespace orhi::api
 		*/
 		~TPipeline();
 
-		/**
-		* @brief Gets the native handle to the pipeline layout
-		* @return Native handle to the underlying pipeline layout object
-		*/
-		impl::common::NativeHandle GetLayoutHandle() const;
-
 	private:
 		BackendTraits::PipelineContext m_context;
 	};

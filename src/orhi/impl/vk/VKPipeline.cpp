@@ -20,6 +20,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/DescriptorSetLayout.h>
+#include <orhi/impl/vk/PipelineLayout.h>
 #include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/ShaderModule.h>
 #include <orhi/impl/vk/detail/Types.h>
@@ -90,24 +91,6 @@ namespace
 		}
 
 		return formattedBindings;
-	}
-
-	auto FormatDescriptorSetLayouts(std::span<const std::reference_wrapper<orhi::impl::vk::DescriptorSetLayout>> p_descriptorSetLayouts)
-	{
-		std::vector<VkDescriptorSetLayout> formattedDescriptorSetLayouts;
-		formattedDescriptorSetLayouts.reserve(p_descriptorSetLayouts.size());
-
-		for (auto& descriptorSetLayout : p_descriptorSetLayouts)
-		{
-			formattedDescriptorSetLayouts.push_back(
-				descriptorSetLayout
-					.get()
-					.GetNativeHandle()
-					.As<VkDescriptorSetLayout>()
-			);
-		}
-
-		return formattedDescriptorSetLayouts;
 	}
 
 	auto FormatInputAssemblyState(const orhi::data::InputAssemblyStateDesc& p_desc)
@@ -314,15 +297,13 @@ namespace orhi
 		Device& p_device,
 		const data::GraphicsPipelineDesc<BackendTraits>& p_desc
 	) : m_context{
-		.device = p_device,
-		.layout = VK_NULL_HANDLE
+		.device = p_device
 	}
 	{
 		// Collect and format pipeline components
 		const auto stages = FormatStages(p_desc.stages);
 		const auto vertexAttributes = FormatVertexAttributes(p_desc.vertexInputState.vertexAttributes);
 		const auto vertexBindings = FormatVertexBindings(p_desc.vertexInputState.vertexBindings);
-		const auto descriptorSetLayouts = FormatDescriptorSetLayouts(p_desc.descriptorSetLayouts);
 		
 		// Format pipeline states using descriptors
 		const auto vertexInputState = FormatVertexInputState(p_desc.vertexInputState, vertexBindings, vertexAttributes);
@@ -342,24 +323,6 @@ namespace orhi
 		
 		const auto dynamicStatesArray = FormatDynamicStates(p_desc.dynamicState.dynamicStates);
 		const auto dynamicState = FormatDynamicState(p_desc.dynamicState, dynamicStatesArray);
-
-		// Create pipeline layout
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-			.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size()),
-			.pSetLayouts = descriptorSetLayouts.data(),
-			.pushConstantRangeCount = 0,
-			.pPushConstantRanges = nullptr
-		};
-
-		VkResult pipelineLayoutCreationResult = vkCreatePipelineLayout(
-			m_context.device.GetNativeHandle().As<VkDevice>(),
-			&pipelineLayoutInfo,
-			nullptr,
-			&m_context.layout
-		);
-		
-		ORHI_ASSERT(pipelineLayoutCreationResult == VK_SUCCESS, "failed to create pipeline layout!");
 
 		const bool hasTessellationStages =
 			p_desc.stages.contains(orhi::types::EShaderStageFlags::TESSELLATION_CONTROL_BIT) || 
@@ -382,7 +345,7 @@ namespace orhi
 			.pDepthStencilState = hasDepthOrStencil ? &depthStencilState : nullptr,
 			.pColorBlendState = &colorBlendState,
 			.pDynamicState = dynamicStatesArray.empty() ? nullptr : &dynamicState,
-			.layout = m_context.layout,
+			.layout = p_desc.pipelineLayout.GetNativeHandle().As<VkPipelineLayout>(),
 			.renderPass = p_desc.renderPass.GetNativeHandle().As<VkRenderPass>(),
 		};
 
@@ -394,44 +357,20 @@ namespace orhi
 			nullptr,
 			&m_handle.ReinterpretAs<VkPipeline&>()
 		);
-		
-		ORHI_ASSERT(pipelineCreationResult == VK_SUCCESS, "failed to create graphics pipeline!");
-	}
 
-	template<>
+		ORHI_ASSERT(pipelineCreationResult == VK_SUCCESS, "failed to create graphics pipeline!");
+	}	template<>
 	Pipeline::TPipeline(
 		Device& p_device,
 		const data::ComputePipelineDesc<BackendTraits>& p_desc
 	) : m_context{
-		.device = p_device,
-		.layout = VK_NULL_HANDLE
+		.device = p_device
 	}
 	{
-		// Collect and format pipeline components
-		const auto descriptorSetLayouts = FormatDescriptorSetLayouts(p_desc.descriptorSetLayouts);
-
-		// Create pipeline layout
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo{
-			.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-			.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size()),
-			.pSetLayouts = descriptorSetLayouts.data(),
-			.pushConstantRangeCount = 0,
-			.pPushConstantRanges = nullptr
-		};
-
-		VkResult pipelineLayoutCreationResult = vkCreatePipelineLayout(
-			m_context.device.GetNativeHandle().As<VkDevice>(),
-			&pipelineLayoutInfo,
-			nullptr,
-			&m_context.layout
-		);
-
-		ORHI_ASSERT(pipelineLayoutCreationResult == VK_SUCCESS, "failed to create pipeline layout!");
-
 		VkComputePipelineCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
 			.stage = FormatStage(types::EShaderStageFlags::COMPUTE_BIT, p_desc.shader),
-			.layout = m_context.layout,
+			.layout = p_desc.pipelineLayout.GetNativeHandle().As<VkPipelineLayout>(),
 		};
 
 		VkResult pipelineCreationResult = vkCreateComputePipelines(
@@ -449,23 +388,11 @@ namespace orhi
 	template<>
 	Pipeline::~TPipeline()
 	{
-		vkDestroyPipelineLayout(
-			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.layout,
-			nullptr
-		);
-
 		vkDestroyPipeline(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			m_handle.As<VkPipeline>(),
 			nullptr
 		);
-	}
-
-	template<>
-	impl::common::NativeHandle Pipeline::GetLayoutHandle() const
-	{
-		return m_context.layout;
 	}
 }
 

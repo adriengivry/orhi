@@ -32,6 +32,7 @@ namespace orhi::api
 		typename TFenceContext,
 		typename TFramebufferContext,
 		typename TPipelineContext,
+		typename TPipelineLayoutContext,
 		typename TQueueContext,
 		typename TRenderPassContext,
 		typename TSemaphoreContext,
@@ -54,6 +55,7 @@ namespace orhi::api
 		using FenceContext = TFenceContext;
 		using FramebufferContext = TFramebufferContext;
 		using PipelineContext = TPipelineContext;
+		using PipelineLayoutContext = TPipelineLayoutContext;
 		using QueueContext = TQueueContext;
 		using RenderPassContext = TRenderPassContext;
 		using SemaphoreContext = TSemaphoreContext;

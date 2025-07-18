@@ -15,6 +15,7 @@
 #include <orhi/Fence.h>
 #include <orhi/Framebuffer.h>
 #include <orhi/Pipeline.h>
+#include <orhi/PipelineLayout.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
 #include <orhi/RenderPass.h>
@@ -269,6 +270,15 @@ int main()
 		}
 	);
 
+	// Create pipeline layout
+	orhi::PipelineLayout pipelineLayout{
+		device,
+		orhi::data::PipelineLayoutDesc<orhi::BackendTraits>{
+			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)}),
+			.pushConstantRanges = {}
+		}
+	};
+
 	// Create render pass and pipeline
 	orhi::RenderPass renderPass{
 		device,
@@ -291,7 +301,7 @@ int main()
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
 			.renderPass = renderPass,
-			.descriptorSetLayouts = std::to_array({std::ref(*descriptorSetLayout)}),
+			.pipelineLayout = pipelineLayout,
 			.vertexInputState{
 				.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
 				.vertexAttributes = VertexInputDescription<Vertex>::GetAttributeDescriptions()
@@ -500,7 +510,7 @@ int main()
 
 		commandBuffer.BindDescriptorSets(
 			std::to_array({ std::ref(frameResources.descriptorSet) }),
-			pipeline.GetLayoutHandle()
+			pipelineLayout
 		);
 
 		commandBuffer.DrawIndexed(static_cast<uint32_t>(k_indices.size()));
