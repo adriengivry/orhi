@@ -58,7 +58,7 @@ namespace orhi::api
 		void Submit(
 			std::initializer_list<std::reference_wrapper<TCommandBuffer<BackendTraits>>> p_commandBuffers,
 			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_waitSemaphores = {},
-			std::initializer_list<types::EPipelineStageFlags> p_waitStages = { types::EPipelineStageFlags::COLOR_ATTACHMENT_OUTPUT_BIT },
+			std::initializer_list<types::EPipelineStageFlags> p_waitStages = {},
 			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_signalSemaphores = {},
 			std::optional<std::reference_wrapper<TFence<BackendTraits>>> p_fence = std::nullopt
 		);

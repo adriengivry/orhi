@@ -511,6 +511,7 @@ int main()
 		device.GetGraphicsAndComputeQueue().Submit(
 			{ commandBuffer },
 			{ *frameResources.imageAvailableSemaphore },
+			{ orhi::types::EPipelineStageFlags::COLOR_ATTACHMENT_OUTPUT_BIT },
 			{ *swapImageResources.renderFinishedSemaphore },
 			*frameResources.inFlightFence
 		);
