@@ -189,10 +189,12 @@ namespace orhi::api
 		* @brief Binds descriptor sets containing shader resources
 		* @param p_descriptorSets Array of descriptor sets to bind
 		* @param p_pipelineLayout Native handle to the pipeline layout
+		* @param p_bindPoint (optional) The pipeline bind point for which the descriptor sets are bound; defaults to GRAPHICS
 		*/
 		void BindDescriptorSets(
 			std::span<const std::reference_wrapper<TDescriptorSet<BackendTraits>>> p_descriptorSets,
-			impl::common::NativeHandle p_pipelineLayout
+			impl::common::NativeHandle p_pipelineLayout,
+			types::EPipelineBindPoint p_bindPoint = types::EPipelineBindPoint::GRAPHICS
 		);
 
 		/**

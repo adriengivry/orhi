@@ -12,6 +12,7 @@
 #include <orhi/debug/Log.h>
 #include <orhi/except/OutOfDateSwapChain.h>
 #include <orhi/impl/vk/detail/MemoryUtils.h>
+#include <orhi/impl/vk/detail/Types.h>
 #include <orhi/impl/vk/CommandBuffer.h>
 #include <orhi/impl/vk/Device.h>
 #include <orhi/impl/vk/Fence.h>
@@ -39,11 +40,18 @@ namespace orhi
 	void Queue::Submit(
 		std::initializer_list<std::reference_wrapper<CommandBuffer>> p_commandBuffers,
 		std::initializer_list<std::reference_wrapper<Semaphore>> p_waitSemaphores,
+		std::initializer_list<types::EPipelineStageFlags> p_waitStages,
 		std::initializer_list<std::reference_wrapper<Semaphore>> p_signalSemaphores,
 		std::optional<std::reference_wrapper<Fence>> p_fence
 	)
 	{
-		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		std::vector<VkPipelineStageFlags> waitStages;
+		waitStages.reserve(p_waitStages.size());
+		for (const auto stage : p_waitStages)
+		{
+			waitStages.push_back(utils::EnumToValue<VkPipelineStageFlags>(stage));
+		}
+
 		const auto waitSemaphores = detail::MemoryUtils::PrepareArray<VkSemaphore>(p_waitSemaphores);
 		const auto signalSemaphores = detail::MemoryUtils::PrepareArray<VkSemaphore>(p_signalSemaphores);
 		const auto commandBuffers = detail::MemoryUtils::PrepareArray<VkCommandBuffer>(p_commandBuffers);
@@ -52,7 +60,7 @@ namespace orhi
 			.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 			.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()),
 			.pWaitSemaphores = waitSemaphores.data(),
-			.pWaitDstStageMask = waitStages,
+			.pWaitDstStageMask = waitStages.data(),
 			.commandBufferCount = static_cast<uint32_t>(commandBuffers.size()),
 			.pCommandBuffers = commandBuffers.data(),
 			.signalSemaphoreCount = static_cast<uint32_t>(signalSemaphores.size()),

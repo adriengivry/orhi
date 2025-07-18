@@ -75,11 +75,9 @@ namespace
 	{
 		orhi::CommandBuffer& graphicsCommandBuffer;
 		orhi::CommandBuffer& computeCommandBuffer;
-		orhi::DescriptorSet& parametersDescriptorSet;
-		orhi::DescriptorSet& particlesInDescriptorSet;
-		orhi::DescriptorSet& particlesOutDescriptorSet;
-		std::unique_ptr<orhi::Buffer> particleBufferIn;
-		std::unique_ptr<orhi::Buffer> particleBufferOut;
+		orhi::DescriptorSet& descriptorSet;
+		std::unique_ptr<orhi::Buffer> parametersBuffer;
+		std::unique_ptr<orhi::Buffer> particlesBuffer;
 		std::unique_ptr<orhi::Semaphore> imageAvailableSemaphore;
 		std::unique_ptr<orhi::Fence> inFlightFence;
 		std::unique_ptr<orhi::Semaphore> computeFinishedSemaphore;
@@ -97,6 +95,45 @@ namespace
 		glm::vec2 position;
 		glm::vec2 velocity;
 		glm::vec4 color;
+	};
+
+	template<class T>
+	struct VertexInputDescription
+	{
+		static auto GetBindingDescription();
+		static auto GetAttributeDescriptions();
+	};
+
+	template<>
+	struct VertexInputDescription<Particle>
+	{
+		static auto GetBindingDescription()
+		{
+			return std::to_array<orhi::data::VertexBindingDesc>({
+				{
+					.binding = 0,
+					.stride = sizeof(Particle),
+				}
+			});
+		}
+
+		static auto GetAttributeDescriptions()
+		{
+			return std::to_array<orhi::data::VertexAttributeDesc>({
+				{
+					.binding = 0,
+					.location = 0,
+					.offset = offsetof(Particle, position),
+					.format = orhi::types::EFormat::R32G32_SFLOAT
+				},
+				{
+					.binding = 0,
+					.location = 1,
+					.offset = offsetof(Particle, color),
+					.format = orhi::types::EFormat::R32G32B32_SFLOAT
+				}
+			});
+		}
 	};
 }
 
@@ -138,12 +175,19 @@ int main()
 	
 	orhi::Pipeline graphicsPipeline{
 		device,
-		orhi::data::GraphicsPipelineDesc{
+		orhi::data::GraphicsPipelineDesc<orhi::BackendTraits>{
 			.stages = {
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
 			.renderPass = renderPass,
+			.vertexInputState = {
+				.vertexBindings = VertexInputDescription<Particle>::GetBindingDescription(),
+				.vertexAttributes = VertexInputDescription<Particle>::GetAttributeDescriptions()
+			},
+			.rasterizationState = {
+				.polygonMode = orhi::types::EPolygonMode::POINT,
+			},
 			.colorBlendState = {
 				.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
 			},
@@ -215,52 +259,36 @@ int main()
 	auto computeCommandBuffers = commandPool.AllocateCommandBuffers(k_maxFramesInFlight);
 	auto& transferCommandBuffer = commandPool.AllocateCommandBuffers(1).front().get();
 
-	orhi::DescriptorSetLayout parametersDescriptorSetLayout{
+	orhi::DescriptorSetLayout descriptorSetLayout{
 		device,
 		{
 			orhi::data::DescriptorBinding{
 				.binding = 0,
 				.type = orhi::types::EDescriptorType::UNIFORM_BUFFER,
 				.stageFlags = orhi::types::EShaderStageFlags::COMPUTE_BIT
-			}
-		}
-	};
-
-	orhi::DescriptorSetLayout particleInDescriptorSetLayout{
-		device,
-		{
+			},
 			orhi::data::DescriptorBinding{
 				.binding = 1,
 				.type = orhi::types::EDescriptorType::STORAGE_BUFFER,
 				.stageFlags = orhi::types::EShaderStageFlags::COMPUTE_BIT
-			}
-		}
-	};
-
-	orhi::DescriptorSetLayout particleOutDescriptorSetLayout{
-		device,
-		{
+			},
 			orhi::data::DescriptorBinding{
 				.binding = 2,
 				.type = orhi::types::EDescriptorType::STORAGE_BUFFER,
 				.stageFlags = orhi::types::EShaderStageFlags::COMPUTE_BIT
 			}
-		}
+		},
 	};
 
 	orhi::Pipeline computePipeline{
 		device,
 		orhi::data::ComputePipelineDesc<orhi::BackendTraits>{
 			.shader = computeShader,
-			.descriptorSetLayouts = { std::to_array({
-				std::ref(parametersDescriptorSetLayout),
-				std::ref(particleInDescriptorSetLayout),
-				std::ref(particleOutDescriptorSetLayout)
-			}) },
+			.descriptorSetLayouts = std::to_array({ std::ref(descriptorSetLayout) })
 		}
 	};
 
-	constexpr uint32_t k_particleCount = 1024;
+	constexpr uint32_t k_particleCount = 8192;
 	constexpr float k_particleWidth = 1.0f;
 	constexpr float k_particleHeight = 1.0f;
 
@@ -289,7 +317,7 @@ int main()
 		float x = r * cos(theta) * k_particleHeight / k_particleWidth;
 		float y = r * sin(theta);
 		particle.position = glm::vec2(x, y);
-		particle.velocity = glm::normalize(glm::vec2(x, y)) * 0.00025f;
+		particle.velocity = glm::normalize(glm::vec2(x, y));
 		particle.color = glm::vec4(rndDist(rndEngine), rndDist(rndEngine), rndDist(rndEngine), 1.0f);
 	}
 
@@ -307,18 +335,8 @@ int main()
 		}
 	};
 
-	auto parametersDescriptorSets = descriptorPool.AllocateDescriptorSets(
-		parametersDescriptorSetLayout,
-		k_maxFramesInFlight
-	);
-
-	auto particleInDescriptorSets = descriptorPool.AllocateDescriptorSets(
-		particleInDescriptorSetLayout,
-		k_maxFramesInFlight
-	);
-
-	auto particleOutDescriptorSets = descriptorPool.AllocateDescriptorSets(
-		particleOutDescriptorSetLayout,
+	auto descriptorSets = descriptorPool.AllocateDescriptorSets(
+		descriptorSetLayout,
 		k_maxFramesInFlight
 	);
 
@@ -331,16 +349,13 @@ int main()
 		auto& frameResource = framesResources.emplace_back(
 			graphicsCommandBuffers[i],
 			computeCommandBuffers[i],
-			parametersDescriptorSets[i],
-			particleInDescriptorSets[i],
-			particleOutDescriptorSets[i],
+			descriptorSets[i],
 			std::make_unique<orhi::Buffer>(
 				device,
 				orhi::data::BufferDesc{
-					.size = k_particleCount * sizeof(Particle), // Example size for particle data
+					.size = sizeof(float),
 					.usage =
-						orhi::types::EBufferUsageFlags::STORAGE_BUFFER_BIT |
-						orhi::types::EBufferUsageFlags::VERTEX_BUFFER_BIT |
+						orhi::types::EBufferUsageFlags::UNIFORM_BUFFER_BIT |
 						orhi::types::EBufferUsageFlags::TRANSFER_DST_BIT
 				}
 			),
@@ -357,39 +372,48 @@ int main()
 			std::make_unique<orhi::Semaphore>(device),
 			std::make_unique<orhi::Fence>(device, true),
 			std::make_unique<orhi::Semaphore>(device),
-			std::make_unique<orhi::Fence>(device)
+			std::make_unique<orhi::Fence>(device, true)
 		);
 
-		frameResource.particleBufferIn->Allocate(
+		frameResource.parametersBuffer->Allocate(
+			orhi::types::EMemoryPropertyFlags::HOST_VISIBLE_BIT
+		);
+
+		frameResource.particlesBuffer->Allocate(
 			orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT
 		);
+	}
 
-		frameResource.particleBufferOut->Allocate(
-			orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT
-		);
+	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
+	{
+		auto& currentFrameResources = framesResources[i];
+		auto& previousFrameResources = framesResources[(i + k_maxFramesInFlight - 1) % k_maxFramesInFlight];
 
-		frameResource.particlesInDescriptorSet.Write({
+		currentFrameResources.descriptorSet.Write({
+			{
+				0,
+				orhi::data::BufferDescriptorWriteInfo{
+					.bufferDescriptor = *currentFrameResources.parametersBuffer,
+					.descriptorType = orhi::types::EDescriptorType::UNIFORM_BUFFER
+				}
+			},
 			{
 				1,
 				orhi::data::BufferDescriptorWriteInfo{
-					.bufferDescriptor = *frameResource.particleBufferIn,
+					.bufferDescriptor = *previousFrameResources.particlesBuffer,
 					.descriptorType = orhi::types::EDescriptorType::STORAGE_BUFFER
 				}
-			}
-		});
-
-		frameResource.particlesOutDescriptorSet.Write({
+			},
 			{
 				2,
 				orhi::data::BufferDescriptorWriteInfo{
-					.bufferDescriptor = *frameResource.particleBufferOut,
+					.bufferDescriptor = *currentFrameResources.particlesBuffer,
 					.descriptorType = orhi::types::EDescriptorType::STORAGE_BUFFER
 				}
 			}
 		});
 
-		transferCommandBuffer.CopyBuffer(hostParticleBuffer, *frameResource.particleBufferIn);
-		transferCommandBuffer.CopyBuffer(hostParticleBuffer, *frameResource.particleBufferOut);
+		transferCommandBuffer.CopyBuffer(hostParticleBuffer, *currentFrameResources.particlesBuffer);
 	}
 
 	transferCommandBuffer.End();
@@ -401,44 +425,47 @@ int main()
 	uint32_t imageIndex = 0;
 	uint8_t frameIndex = 0;
 
+	float previousTime = static_cast<float>(glfwGetTime());
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
 		auto& frameResources = framesResources[frameIndex];
 
-		frameResources.inFlightFence->Wait();
-		imageIndex = swapChain->AcquireNextImage(*frameResources.imageAvailableSemaphore);
-		frameResources.inFlightFence->Reset();
-
-		auto& swapImageResources = swapImagesResources[imageIndex];
-
+		frameResources.computeInFlightFence->Wait();
+		float currentTime = static_cast<float>(glfwGetTime());
+		float deltaTime = currentTime - previousTime;
+		frameResources.parametersBuffer->Upload(
+			&deltaTime
+		);
+		previousTime = currentTime;
 		frameResources.computeInFlightFence->Reset();
+
 		auto& computeCommandBuffer = frameResources.computeCommandBuffer;
 		computeCommandBuffer.Reset();
 		computeCommandBuffer.Begin();
 		computeCommandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::COMPUTE, computePipeline);
 		computeCommandBuffer.BindDescriptorSets(
-			std::to_array({
-				std::ref(frameResources.parametersDescriptorSet),
-				std::ref(frameResources.particlesInDescriptorSet),
-				std::ref(frameResources.particlesOutDescriptorSet)
-			}),
-			computePipeline.GetLayoutHandle()
+			std::to_array({ std::ref(frameResources.descriptorSet) }),
+			computePipeline.GetLayoutHandle(),
+			orhi::types::EPipelineBindPoint::COMPUTE
 		);
-		computeCommandBuffer.Dispatch(
-			(k_particleCount + 255) / 256, // Number of work groups in X
-			1, // Number of work groups in Y
-			1  // Number of work groups in Z
-		);
+		computeCommandBuffer.Dispatch(k_particleCount / 256, 1, 1);
 		computeCommandBuffer.End();
 		device.GetGraphicsAndComputeQueue().Submit(
 			{ computeCommandBuffer },
+			{ },
+			{ },
 			{ *frameResources.computeFinishedSemaphore },
-			{},
 			*frameResources.computeInFlightFence
 		);
-		frameResources.computeInFlightFence->Wait();
+
+		frameResources.inFlightFence->Wait();
+		imageIndex = swapChain->AcquireNextImage(*frameResources.imageAvailableSemaphore);
+		frameResources.inFlightFence->Reset();
+
+		auto& swapImageResources = swapImagesResources[imageIndex];
 
 		auto& graphicsCommandBuffer = frameResources.graphicsCommandBuffer;
 		graphicsCommandBuffer.Reset();
@@ -464,13 +491,25 @@ int main()
 			.extent = windowSize
 		});
 
-		graphicsCommandBuffer.Draw(3);
+		graphicsCommandBuffer.BindVertexBuffers(
+			std::to_array({ std::ref(*frameResources.particlesBuffer) }),
+			std::to_array<uint64_t>({ 0 })
+		);
+
+		graphicsCommandBuffer.Draw(k_particleCount);
 		graphicsCommandBuffer.EndRenderPass();
 		graphicsCommandBuffer.End();
 
 		device.GetGraphicsAndComputeQueue().Submit(
 			{ graphicsCommandBuffer },
-			{ *frameResources.imageAvailableSemaphore },
+			{	
+				*frameResources.computeFinishedSemaphore,
+				*frameResources.imageAvailableSemaphore
+			},
+			{
+				orhi::types::EPipelineStageFlags::VERTEX_INPUT_BIT,
+				orhi::types::EPipelineStageFlags::COLOR_ATTACHMENT_OUTPUT_BIT
+			},
 			{ *swapImageResources.renderFinishedSemaphore },
 			*frameResources.inFlightFence
 		);

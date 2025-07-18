@@ -416,14 +416,15 @@ namespace orhi
 	template<>
 	void CommandBuffer::BindDescriptorSets(
 		std::span<const std::reference_wrapper<DescriptorSet>> p_descriptorSets,
-		impl::common::NativeHandle p_pipelineLayout
+		impl::common::NativeHandle p_pipelineLayout,
+		types::EPipelineBindPoint p_bindPoint
 	)
 	{
 		std::vector<VkDescriptorSet> descriptorSets = detail::MemoryUtils::PrepareArray<VkDescriptorSet>(p_descriptorSets);
 
 		vkCmdBindDescriptorSets(
 			m_handle.As<VkCommandBuffer>(),
-			VK_PIPELINE_BIND_POINT_GRAPHICS,
+			utils::EnumToValue<VkPipelineBindPoint>(p_bindPoint),
 			p_pipelineLayout.As<VkPipelineLayout>(),
 			0,
 			static_cast<uint32_t>(descriptorSets.size()),

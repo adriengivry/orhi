@@ -8,6 +8,7 @@
 
 #include <orhi/impl/common/BackendObject.h>
 #include <orhi/types/EGraphicsBackend.h>
+#include <orhi/types/EPipelineStageFlags.h>
 
 #include <optional>
 
@@ -50,12 +51,14 @@ namespace orhi::api
 		* @brief Submits command buffers to the queue for execution
 		* @param p_commandBuffers List of command buffers to execute
 		* @param p_waitSemaphores List of semaphores to wait on before execution
+		* @param p_waitStages Pipeline stages to wait on for each semaphore
 		* @param p_signalSemaphores List of semaphores to signal after execution
 		* @param p_fence Optional fence to signal when execution completes
 		*/
 		void Submit(
 			std::initializer_list<std::reference_wrapper<TCommandBuffer<BackendTraits>>> p_commandBuffers,
 			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_waitSemaphores = {},
+			std::initializer_list<types::EPipelineStageFlags> p_waitStages = { types::EPipelineStageFlags::COLOR_ATTACHMENT_OUTPUT_BIT },
 			std::initializer_list<std::reference_wrapper<TSemaphore<BackendTraits>>> p_signalSemaphores = {},
 			std::optional<std::reference_wrapper<TFence<BackendTraits>>> p_fence = std::nullopt
 		);
