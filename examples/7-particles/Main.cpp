@@ -171,7 +171,6 @@ int main()
 	};
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
-	orhi::ShaderModule computeShader{ device, ReadShaderFile("assets/shaders/main.comp.spv") };
 	
 	orhi::Pipeline graphicsPipeline{
 		device,
@@ -185,11 +184,20 @@ int main()
 				.vertexBindings = VertexInputDescription<Particle>::GetBindingDescription(),
 				.vertexAttributes = VertexInputDescription<Particle>::GetAttributeDescriptions()
 			},
+			.inputAssemblyState = {
+				.topology = orhi::types::EPrimitiveTopology::POINT_LIST,
+				.primitiveRestartEnable = false
+			},
 			.rasterizationState = {
-				.polygonMode = orhi::types::EPolygonMode::POINT,
+				.polygonMode = orhi::types::EPolygonMode::FILL,
+				.cullMode = orhi::types::ECullModeFlags::BACK_BIT,
 			},
 			.colorBlendState = {
-				.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
+				.attachments = std::to_array({
+					orhi::data::ColorBlendAttachmentStateDesc{
+						.blendEnable = true
+					}
+				}),
 			},
 			.dynamicState = {
 				.dynamicStates = std::to_array<orhi::types::EDynamicState>({
@@ -280,6 +288,8 @@ int main()
 		},
 	};
 
+	orhi::ShaderModule computeShader{ device, ReadShaderFile("assets/shaders/main.comp.spv") };
+
 	orhi::Pipeline computePipeline{
 		device,
 		orhi::data::ComputePipelineDesc<orhi::BackendTraits>{
@@ -288,9 +298,7 @@ int main()
 		}
 	};
 
-	constexpr uint32_t k_particleCount = 8192;
-	constexpr float k_particleWidth = 1.0f;
-	constexpr float k_particleHeight = 1.0f;
+	constexpr uint32_t k_particleCount = 1024;
 
 	orhi::Buffer hostParticleBuffer(
 		device,
@@ -314,7 +322,7 @@ int main()
 	{
 		float r = 0.25f * sqrt(rndDist(rndEngine));
 		float theta = rndDist(rndEngine) * 2.0f * 3.14159265358979323846f;
-		float x = r * cos(theta) * k_particleHeight / k_particleWidth;
+		float x = r * cos(theta);
 		float y = r * sin(theta);
 		particle.position = glm::vec2(x, y);
 		particle.velocity = glm::normalize(glm::vec2(x, y));
@@ -339,8 +347,6 @@ int main()
 		descriptorSetLayout,
 		k_maxFramesInFlight
 	);
-
-	transferCommandBuffer.Begin(orhi::types::ECommandBufferUsageFlags::ONE_TIME_SUBMIT_BIT);
 
 	std::vector<FrameResources> framesResources;
 	framesResources.reserve(k_maxFramesInFlight);
@@ -383,6 +389,8 @@ int main()
 			orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT
 		);
 	}
+
+	transferCommandBuffer.Begin(orhi::types::ECommandBufferUsageFlags::ONE_TIME_SUBMIT_BIT);
 
 	for (uint8_t i = 0; i < k_maxFramesInFlight; ++i)
 	{
@@ -451,7 +459,11 @@ int main()
 			computePipeline.GetLayoutHandle(),
 			orhi::types::EPipelineBindPoint::COMPUTE
 		);
-		computeCommandBuffer.Dispatch(k_particleCount / 256, 1, 1);
+		computeCommandBuffer.Dispatch(
+			(k_particleCount + 255) / 256,
+			1,
+			1
+		);
 		computeCommandBuffer.End();
 		device.GetGraphicsAndComputeQueue().Submit(
 			{ computeCommandBuffer },

@@ -26,10 +26,10 @@ namespace orhi::data
 	struct ColorBlendAttachmentStateDesc
 	{
 		bool blendEnable = false;
-		types::EBlendFactor srcColorBlendFactor = types::EBlendFactor::ONE;
-		types::EBlendFactor dstColorBlendFactor = types::EBlendFactor::ZERO;
+		types::EBlendFactor srcColorBlendFactor = types::EBlendFactor::SRC_ALPHA;
+		types::EBlendFactor dstColorBlendFactor = types::EBlendFactor::ONE_MINUS_SRC_ALPHA;
 		types::EBlendOp colorBlendOp = types::EBlendOp::ADD;
-		types::EBlendFactor srcAlphaBlendFactor = types::EBlendFactor::ONE;
+		types::EBlendFactor srcAlphaBlendFactor = types::EBlendFactor::ONE_MINUS_SRC_ALPHA;
 		types::EBlendFactor dstAlphaBlendFactor = types::EBlendFactor::ZERO;
 		types::EBlendOp alphaBlendOp = types::EBlendOp::ADD;
 		types::EColorComponentFlags colorWriteMask = types::EColorComponentFlags::ALL;
