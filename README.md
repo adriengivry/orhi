@@ -26,7 +26,7 @@ Write hardware-agnostic graphics code once, then deploy it seamlessly across mul
 | Vulkan | 🪟🐧 | 🌓 Partial |
 | DirectX 12 | 🪟 | 📅 Planned |
 | Mock (Headless) | 🪟🐧🍎 | 📅 Planned |
-| Metal | 🍎 | 📅 Planned  |
+| Metal | 🍎 | ❓ TBD — Should we use [MoltenVK](https://github.com/KhronosGroup/MoltenVK) instead? |
 | OpenGL | 🪟🐧 | ☠️ Deprecated — Moved to [BareGL](https://github.com/adriengivry/baregl) |
 
 > [!WARNING]
@@ -75,6 +75,29 @@ orhi::impl::mock::Buffer mockBuffer{};
 
 ## Examples
 **OpenRHI** comes with a set of [examples](examples/) for you to try.
+
+## API Equivalence
+| OpenRHI | Vulkan | DirectX 12 |
+| - | - | - |
+| `Instance` | `VkInstance` | - |
+| `Device` | `VkDevice` | - |
+| `SwapChain` | `VkSwapChain` | - |
+| `Framebuffer` | `VkFramebuffer` | - |
+| `Buffer` | `VkBuffer` | - |
+| `Texture` | `VkImage` | - |
+| `DescriptorPool` | `VkDescriptorPool` | - |
+| `DescriptorSetLayout` | `VkDescriptorSetLayout` | - |
+| `DescriptorSet` | `VkDescriptorSet` | - |
+| `Descriptor` | `VkImageView`, `VkSampler` | - |
+| `RenderPass` | `VkRenderPass` | - |
+| `ShaderModule` | `VkShaderModule` | - |
+| `PipelineLayout` | `VkPipelineLayout` | - |
+| `Pipeline` | `VkPipeline` | - |
+| `CommandPool` | `VkCommandPool` | - |
+| `CommandBuffer` | `VkCommandBuffer` | - |
+| `Queue` | `VkQueue` | - |
+| `Fence` | `VkFence` | - |
+| `Semaphore`| `VkSemaphore` | - |
 
 ## Contributing
 All contributions to **OpenRHI** are welcome — from bug reports and feature suggestions to code improvements and documentation enhancements.
