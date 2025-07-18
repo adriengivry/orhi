@@ -9,6 +9,7 @@
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
 #include <orhi/data/ClearValue.h>
+#include <orhi/data/MemoryRange.h>
 #include <orhi/data/TextureRegion.h>
 #include <orhi/data/ViewportDesc.h>
 #include <orhi/impl/common/BackendObject.h>
@@ -17,6 +18,7 @@
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EIndexType.h>
 #include <orhi/types/EPipelineBindPoint.h>
+#include <orhi/types/EShaderStageFlags.h>
 #include <orhi/types/ETextureLayout.h>
 
 #include <initializer_list>
@@ -196,6 +198,20 @@ namespace orhi::api
 			std::span<const std::reference_wrapper<TDescriptorSet<BackendTraits>>> p_descriptorSets,
 			TPipelineLayout<BackendTraits>& p_pipelineLayout,
 			types::EPipelineBindPoint p_bindPoint = types::EPipelineBindPoint::GRAPHICS
+		);
+
+		/**
+		* @brief Pushes constants to the pipeline for shader stages
+		* @param p_pipelineLayout Pipeline layout defining the push constant ranges
+		* @param p_stageFlags Shader stages to which the constants apply
+		* @param p_range Memory range specifying the size and offset of the constants
+		* @param p_data Pointer to the data to push
+		*/
+		void PushConstants(
+			TPipelineLayout<BackendTraits>& p_pipelineLayout,
+			types::EShaderStageFlags p_stageFlags,
+			const data::MemoryRange& p_range,
+			const void* p_data
 		);
 
 		/**

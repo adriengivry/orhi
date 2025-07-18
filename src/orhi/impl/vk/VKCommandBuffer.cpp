@@ -436,6 +436,28 @@ namespace orhi
 	}
 
 	template<>
+	void CommandBuffer::PushConstants(
+		PipelineLayout& p_pipelineLayout,
+		types::EShaderStageFlags p_stageFlags,
+		const data::MemoryRange& p_range,
+		const void* p_data
+	)
+	{
+		ORHI_ASSERT(p_data != nullptr, "PushConstants data pointer cannot be null");
+		ORHI_ASSERT(p_range.size > 0ULL, "PushConstants range size must be greater than zero");
+		ORHI_ASSERT(p_stageFlags != types::EShaderStageFlags::NONE, "PushConstants stage flags cannot be NONE");
+
+		vkCmdPushConstants(
+			m_handle.As<VkCommandBuffer>(),
+			p_pipelineLayout.GetNativeHandle().As<VkPipelineLayout>(),
+			utils::EnumToValue<VkShaderStageFlags>(p_stageFlags),
+			static_cast<uint32_t>(p_range.offset),
+			static_cast<uint32_t>(p_range.size),
+			p_data
+		);
+	}
+
+	template<>
 	void CommandBuffer::SetViewport(
 		const data::ViewportDesc& p_viewport
 	)

@@ -67,6 +67,7 @@ group "examples"
 	include "5-mipmaps"
 	include "6-msaa"
 	include "7-particles"
+	include "8-push-constants"
 group ""
 
 group "examples/deps"
