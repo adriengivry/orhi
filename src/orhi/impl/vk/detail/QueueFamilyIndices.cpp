@@ -34,9 +34,11 @@ namespace orhi::impl::vk::detail
 				break;
 			}
 
-			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			// Vulkan requires implementations that support graphics operations to have at least
+			// one queue family that supports both graphics and compute operations.
+			if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) && (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT))
 			{
-				indices.graphicsFamily = i;
+				indices.graphicsAndComputeFamily = i;
 			}
 
 			VkBool32 presentSupport = false;
@@ -54,7 +56,7 @@ namespace orhi::impl::vk::detail
 
 	bool QueueFamilyIndices::IsComplete() const
 	{
-		return graphicsFamily && presentFamily;
+		return graphicsAndComputeFamily && presentFamily;
 	}
 
 	std::vector<uint32_t> QueueFamilyIndices::GetUniqueQueueIndices() const
@@ -62,7 +64,7 @@ namespace orhi::impl::vk::detail
 		ORHI_ASSERT(IsComplete(), "Incomplete queue family indices");
 
 		std::set<uint32_t> uniqueIndices{
-			graphicsFamily.value(),
+			graphicsAndComputeFamily.value(),
 			presentFamily.value()
 		};
 

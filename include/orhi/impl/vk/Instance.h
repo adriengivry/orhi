@@ -29,7 +29,7 @@ namespace orhi::impl::vk
 	{
 		VkDevice device;
 		VkSurfaceKHR surface;
-		VkQueue graphicsQueue;
+		VkQueue graphicsAndComputeQueue;
 		VkQueue presentQueue;
 	};
 

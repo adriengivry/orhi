@@ -17,7 +17,7 @@ namespace orhi::impl::vk::detail
 {
 	struct QueueFamilyIndices
 	{
-		std::optional<uint32_t> graphicsFamily;
+		std::optional<uint32_t> graphicsAndComputeFamily;
 		std::optional<uint32_t> presentFamily;
 		
 		static detail::QueueFamilyIndices Create(VkPhysicalDevice device, VkSurfaceKHR p_surface);

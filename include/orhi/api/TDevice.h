@@ -50,7 +50,7 @@ namespace orhi::api
 		* @brief Gets the graphics queue for rendering operations
 		* @return Graphics queue object for submitting rendering commands
 		*/
-		TQueue<BackendTraits>& GetGraphicsQueue() const;
+		TQueue<BackendTraits>& GetGraphicsAndComputeQueue() const;
 
 		/**
 		* @brief Gets the present queue for displaying rendered images

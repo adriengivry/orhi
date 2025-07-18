@@ -66,6 +66,7 @@ group "examples"
 	include "4-depth"
 	include "5-mipmaps"
 	include "6-msaa"
+	include "7-particles"
 group ""
 
 group "examples/deps"

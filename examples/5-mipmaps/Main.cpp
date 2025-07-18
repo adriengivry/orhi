@@ -16,7 +16,7 @@
 #include <orhi/except/OutOfDateSwapChain.h>
 #include <orhi/Fence.h>
 #include <orhi/Framebuffer.h>
-#include <orhi/GraphicsPipeline.h>
+#include <orhi/Pipeline.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
 #include <orhi/RenderPass.h>
@@ -269,9 +269,9 @@ int main()
 		}
 	);
 
-	orhi::GraphicsPipeline pipeline{
+	orhi::Pipeline pipeline{
 		device,
-		{
+		orhi::data::GraphicsPipelineDesc<orhi::BackendTraits>{
 			.stages = {
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
@@ -420,7 +420,7 @@ int main()
 	);
 	
 	transferBuffer.End();
-	device.GetGraphicsQueue().Submit({ transferBuffer });
+	device.GetGraphicsAndComputeQueue().Submit({ transferBuffer });
 	device.WaitIdle();
 
 	auto textureDescriptor = std::make_unique<orhi::Descriptor>(
@@ -545,9 +545,10 @@ int main()
 		commandBuffer.EndRenderPass();
 		commandBuffer.End();
 
-		device.GetGraphicsQueue().Submit(
+		device.GetGraphicsAndComputeQueue().Submit(
 			{ commandBuffer },
 			{ *frameResources.imageAvailableSemaphore },
+			{ orhi::types::EPipelineStageFlags::COLOR_ATTACHMENT_OUTPUT_BIT },
 			{ *swapImageResources.renderFinishedSemaphore },
 			*frameResources.inFlightFence
 		);
