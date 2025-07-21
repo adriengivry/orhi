@@ -13,9 +13,6 @@
 
 #include <deque>
 
-struct VkCommandPool_T;
-typedef VkCommandPool_T* VkCommandPool;
-
 namespace orhi::impl::vk
 {
 	struct CommandPoolContext

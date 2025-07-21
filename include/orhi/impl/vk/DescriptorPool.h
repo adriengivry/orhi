@@ -13,9 +13,6 @@
 
 #include <deque>
 
-struct VkDescriptorPool_T;
-typedef VkDescriptorPool_T* VkDescriptorPool;
-
 namespace orhi::impl::vk
 {
 	struct DescriptorPoolContext

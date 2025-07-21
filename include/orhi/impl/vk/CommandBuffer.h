@@ -9,9 +9,6 @@
 #include <orhi/api/TCommandBuffer.h>
 #include <orhi/impl/vk/BackendTraits.h>
 
-struct VkCommandBuffer_T;
-typedef VkCommandBuffer_T* VkCommandBuffer;
-
 namespace orhi::impl::vk
 {
 	struct CommandBufferContext {};

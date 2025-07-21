@@ -12,9 +12,6 @@
 struct VkDevice_T;
 typedef VkDevice_T* VkDevice;
 
-struct VkQueue_T;
-typedef VkQueue_T* VkQueue;
-
 namespace orhi::impl::vk
 {
 	struct QueueContext

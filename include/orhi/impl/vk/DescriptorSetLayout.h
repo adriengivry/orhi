@@ -10,9 +10,6 @@
 #include <orhi/impl/vk/BackendTraits.h>
 #include <orhi/impl/vk/Device.h>
 
-struct VkDescriptorSetLayout_T;
-typedef VkDescriptorSetLayout_T* VkDescriptorSetLayout;
-
 namespace orhi::impl::vk
 {
 	struct DescriptorSetLayoutContext

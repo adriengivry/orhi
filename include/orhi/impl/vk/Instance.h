@@ -11,9 +11,6 @@
 
 #include <memory>
 
-struct VkInstance_T;
-typedef VkInstance_T* VkInstance;
-
 struct VkDevice_T;
 typedef VkDevice_T* VkDevice;
 

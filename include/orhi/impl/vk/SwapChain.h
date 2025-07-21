@@ -15,14 +15,8 @@
 
 #include <deque>
 
-struct VkSwapchainKHR_T;
-typedef VkSwapchainKHR_T* VkSwapchainKHR;
-
 struct VkImage_T;
 typedef VkImage_T* VkImage;
-
-struct VkImageView_T;
-typedef VkImageView_T* VkImageView;
 
 namespace orhi::impl::vk
 {

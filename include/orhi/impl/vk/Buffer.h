@@ -10,9 +10,6 @@
 #include <orhi/impl/vk/BackendTraits.h>
 #include <orhi/impl/vk/Device.h>
 
-struct VkBuffer_T;
-typedef VkBuffer_T* VkBuffer;
-
 struct VkDeviceMemory_T;
 typedef VkDeviceMemory_T* VkDeviceMemory;
 

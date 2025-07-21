@@ -12,9 +12,6 @@
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
 
-struct VkImage_T;
-typedef VkImage_T* VkImage;
-
 struct VkDeviceMemory_T;
 typedef VkDeviceMemory_T* VkDeviceMemory;
 

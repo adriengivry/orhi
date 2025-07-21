@@ -10,9 +10,6 @@
 #include <orhi/impl/vk/BackendTraits.h>
 #include <orhi/impl/vk/Device.h>
 
-struct VkPipelineLayout_T;
-typedef VkPipelineLayout_T* VkPipelineLayout;
-
 namespace orhi::impl::vk
 {
 	struct PipelineLayoutContext 

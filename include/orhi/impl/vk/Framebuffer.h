@@ -10,9 +10,6 @@
 #include <orhi/impl/vk/BackendTraits.h>
 #include <orhi/impl/vk/Device.h>
 
-struct VkFramebuffer_T;
-typedef VkFramebuffer_T* VkFramebuffer;
-
 namespace orhi::impl::vk
 {
 	struct FramebufferContext

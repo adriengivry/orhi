@@ -10,9 +10,6 @@
 #include <orhi/impl/vk/BackendTraits.h>
 #include <orhi/impl/vk/Device.h>
 
-struct VkFence_T;
-typedef VkFence_T* VkFence;
-
 namespace orhi::impl::vk
 {
 	struct FenceContext
