@@ -1,8 +1,10 @@
+<img alt="OpenRHI Logo" src="assets/logo.png" width="512px">
+
 # OpenRHI
 
-**OpenRHI** — *orhi* — is a simple, permissive (MIT licensed), cross-platform **Render Hardware Interface** built with modern C++20.
+**OpenRHI** — *orhi* — is a lightweight, permissive, cross-platform **Render Hardware Interface** for modern graphics APIs, built with C++20.
 
-Write hardware-agnostic graphics code once, then deploy it seamlessly across multiple platforms and graphics APIs.
+Write hardware-agnostic graphics code once, and run it seamlessly across multiple platforms and graphics APIs.
 
 **OpenRHI** is...
 - 🧩 **Simple:** Easy to understand and extend
@@ -10,8 +12,21 @@ Write hardware-agnostic graphics code once, then deploy it seamlessly across mul
 - ⛓️‍💥 **Standalone:** Zero external dependencies
 - 📃 **Documented:** Comprehensive source code documentation
 - 🌈 **Cross-platform:** Native support for Windows, macOS, and Linux
-- 🚀 **Modern:** Harnesses the full power of C++20
 - ⚙️ **Build-ready:** Quick setup with [Premake5](https://premake.github.io/) or [CMake](https://cmake.org/)
+
+**Goals:**
+- Provide a thin, explicit abstraction over modern graphics APIs
+- Offer low-level access to each backend through a unified interface
+- Maintain explicitness: no hidden logic or implicit behavior
+- Ensure minimal runtime overhead with zero-cost abstractions
+- Remain cross-platform and hardware-agnostic
+- Maintain minimal external dependencies
+
+**Non-Goals:**
+- Hiding platform or API-specific implementation details
+- Acting as a high-level rendering engine or framework
+- Abstracting away or simplifying modern graphics concepts
+- Automatically managing resources, pipelines, or synchronization
 
 ## Supported Graphics APIs
 
@@ -20,13 +35,12 @@ Write hardware-agnostic graphics code once, then deploy it seamlessly across mul
 **Target platforms:** Windows (🪟), Linux (🐧), and macOS (🍎)
 
 ### Implementation Status
-
 | Graphics API | Platforms | Status |
 |-|-|-|
 | Vulkan | 🪟🐧 | 🌓 Partial |
-| DirectX 12 | 🪟 | 📅 Planned |
+| DirectX 12 | 🪟 | ⌛ In Progress |
+| Metal | 🍎 | ❓ TBD — Should we rely on [MoltenVK](https://github.com/KhronosGroup/MoltenVK) instead? |
 | Mock (Headless) | 🪟🐧🍎 | 📅 Planned |
-| Metal | 🍎 | ❓ TBD — Should we use [MoltenVK](https://github.com/KhronosGroup/MoltenVK) instead? |
 | OpenGL | 🪟🐧 | ☠️ Deprecated — Moved to [BareGL](https://github.com/adriengivry/baregl) |
 
 > [!WARNING]
