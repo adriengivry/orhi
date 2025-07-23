@@ -29,15 +29,20 @@ workspace "orhi-examples"
 	filter { "options:gfxapi=mock" }
 		defines { "ORHI_SELECT_MOCK" }
 
+	filter { "options:compile-vulkan" }
+		libdirs {
+			"%{os.getenv('VULKAN_SDK')}/lib"
+		}
+
+	filter { "options:compile-vulkan", "system:windows" }
+		links {
+			"vulkan-1"
+		}
+
 	filter { "options:compile-vulkan", "system:linux" }
 		links {
 			"vulkan",
-			"X11",
-			"X11-xcb",
-			"xcb"
-		}
-		libdirs {
-			"%{os.getenv('VULKAN_SDK')}/lib"
+			"X11-xcb"
 		}
 
 outputdir = "%{wks.location}/../bin/"
