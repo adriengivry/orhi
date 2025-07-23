@@ -153,10 +153,4 @@ namespace orhi::utils
 			return orhi::utils::FromValueImpl<EnumType, ValueType>(value);
 		}
 	}
-
-	// Default implementation for MappingFor
-	template <typename EnumType, typename ValueType>
-	struct MappingFor {
-		using type = std::tuple<>; // Provide a default empty tuple to resolve the missing type issue.
-	};
 }
