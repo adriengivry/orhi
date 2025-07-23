@@ -46,6 +46,20 @@
 
 namespace
 {
+	orhi::data::Window GetWindowDesc(GLFWwindow* window)
+	{
+#if defined(_WIN32) || defined(_WIN64)
+		return orhi::data::WindowsWindow{
+			.hwnd = glfwGetWin32Window(window)
+		};
+#elif defined(__linux__)
+		return orhi::data::X11Window{
+			.dpy = glfwGetX11Display(),
+			.window = glfwGetX11Window(window)
+		};
+#endif
+	}
+
 	orhi::math::Extent2D GetWindowSize(GLFWwindow* window)
 	{
 		int width, height;
@@ -202,13 +216,7 @@ int main()
 	orhi::Instance instance(orhi::data::InstanceDesc{
 		.debug = true,
 		.extensions = GetGlfwRequiredExtensions(),
-#if defined(_WIN32) || defined(_WIN64)
-		.win32_windowHandle = glfwGetWin32Window(window),
-		.win32_instanceHandle = GetModuleHandle(nullptr)
-#elif defined(__linux__)
-		.xlib_display = glfwGetX11Display(),
-		.xlib_window = glfwGetX11Window(window)
-#endif
+		.window = GetWindowDesc(window)
 	});
 
 	const auto& devices = instance.GetSuitableDevices();

@@ -15,7 +15,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xlib-xcb.h>
 #elif defined(__APPLE__)
-#define VK_USE_PLATFORM_MACOS_MVK
+#define VK_USE_PLATFORM_METAL_EXT
 #else
 #error Unsupported platform for Vulkan
 #endif
@@ -230,13 +230,14 @@ namespace orhi
 			g_debugMessenger = std::make_unique<detail::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
 		}
 
-#if defined(_WIN32) || defined(_WIN64)
-		ORHI_ASSERT(p_desc.win32_windowHandle && p_desc.win32_instanceHandle, "incomplete Win32 surface desc");
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+		ORHI_ASSERT(std::get_if<data::WindowsWindow>(&p_desc.window), "incomplete Win32 window desc");
+
+		data::WindowsWindow window = std::get<data::WindowsWindow>(p_desc.window);
 
 		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-			.hinstance = static_cast<HINSTANCE>(p_desc.win32_instanceHandle),
-			.hwnd = static_cast<HWND>(p_desc.win32_windowHandle)
+			.hwnd = static_cast<HWND>(window.hwnd)
 		};
 
 		result = vkCreateWin32SurfaceKHR(
@@ -246,21 +247,16 @@ namespace orhi
 			&m_context.surface
 		);
 
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create window surface!");
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Win32 surface");
 #elif defined(VK_USE_PLATFORM_XLIB_KHR)
-		std::optional<Window> xlibWindow = std::nullopt;
+		ORHI_ASSERT(std::get_if<data::X11Window>(&p_desc.window), "incomplete X11 window desc");
 
-		if(const Window* v = std::any_cast<Window>(&p_desc.xlib_window))
-		{
-			xlibWindow = *v;
-		}
-
-		ORHI_ASSERT(p_desc.xlib_display && xlibWindow, "incomplete X11 surface desc");
+		data::X11Window window = std::get<data::X11Window>(p_desc.window);
 
 		VkXlibSurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-			.dpy = static_cast<Display*>(p_desc.xlib_display),
-			.window = xlibWindow.value()
+			.dpy = static_cast<::Display*>(window.dpy),
+			.window = static_cast<::Window>(window.window)
 		};
 
 		result = vkCreateXlibSurfaceKHR(
@@ -270,24 +266,19 @@ namespace orhi
 			&m_context.surface
 		);
 
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Xlib window surface!");
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create X11 surface");
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
-		std::optional<Window> xlibWindow = std::nullopt;
+		ORHI_ASSERT(std::get_if<data::X11Window>(&p_desc.window), "incomplete X11 window desc");
 
-		if(const Window* v = std::any_cast<Window>(&p_desc.xlib_window))
-		{
-			xlibWindow = *v;
-		}
+		data::X11Window window = std::get<data::X11Window>(p_desc.window);
 
-		ORHI_ASSERT(p_desc.xlib_display && xlibWindow, "incomplete XCB surface desc");
-
-		auto xcbConnection = XGetXCBConnection(static_cast<Display*>(p_desc.xlib_display));
-		ORHI_ASSERT(xcbConnection, "Failed to get XCB connection from Xlib display");
+		const auto xcbConnection = XGetXCBConnection(static_cast<::Display*>(window.dpy));
+		ORHI_ASSERT(xcbConnection, "Failed to get XCB connection from X11 display");
 
 		VkXcbSurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
 			.connection = xcbConnection,
-			.window = static_cast<xcb_window_t>(xlibWindow.value())
+			.window = static_cast<xcb_window_t>(window.window)
 		};
 
 		result = vkCreateXcbSurfaceKHR(
@@ -297,9 +288,47 @@ namespace orhi
 			&m_context.surface
 		);
 
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create XCB window surface!");
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create XCB surface");
+#elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
+		ORHI_ASSERT(std::get_if<data::WaylandWindow>(&p_desc.window), "incomplete Wayland window desc");
+
+		data::WaylandWindow window = std::get<data::WaylandWindow>(p_desc.window);
+
+		VkWaylandSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
+			.display = static_cast<wl_display*>(window.display),
+			.surface = static_cast<wl_surface*>(window.surface)
+		};
+
+		result = vkCreateWaylandSurfaceKHR(
+			m_handle.As<VkInstance>(),
+			&surfaceCreateInfo,
+			nullptr,
+			&m_context.surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Wayland surface");
+#elif defined(VK_USE_PLATFORM_METAL_EXT)
+		ORHI_ASSERT(std::get_if<data::MetalWindow>(&p_desc.window), "incomplete Metal window desc");
+
+		data::MetalWindow window = std::get<data::MetalWindow>(p_desc.window);
+
+		VkMetalSurfaceCreateInfoEXT surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
+			.pNext = nullptr,
+			.pLayer = static_cast<CAMetalLayer*>(window.caMetalLayer)
+		};
+
+		result = vkCreateMetalSurfaceEXT(
+			m_handle.As<VkInstance>(),
+			&surfaceCreateInfo,
+			nullptr,
+			&m_context.surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Metal surface");
 #else
-#error Other platforms than Windows and Linux are not supported yet
+#error Other platforms than Win32, X11, XCB, Wayland, and Metal are not supported yet
 #endif
 
 		uint32_t deviceCount = 0;
