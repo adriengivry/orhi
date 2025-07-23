@@ -58,13 +58,6 @@ namespace
 		return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 	}
 
-	std::vector<std::string> GetGlfwRequiredExtensions()
-	{
-		uint32_t count = 0;
-		const char** extensions = glfwGetRequiredInstanceExtensions(&count);
-		return { extensions, extensions + count };
-	}
-
 	std::vector<std::byte> ReadShaderFile(const std::filesystem::path& p_fileName)
 	{
 		std::ifstream file(p_fileName, std::ios::ate | std::ios::binary);
@@ -104,7 +97,6 @@ int main()
 	// Create instance and device
 	orhi::Instance instance(orhi::data::InstanceDesc{
 		.debug = true,
-		.extensions = GetGlfwRequiredExtensions(),
 		.window = GetWindowDesc(window)
 	});
 
