@@ -100,7 +100,7 @@ namespace
 #elif defined(VK_USE_PLATFORM_XLIB_KHR)
 		ORHI_ASSERT(std::get_if<orhi::data::X11WindowDesc>(&p_windowDesc), "window desc is not a X11WindowDesc");
 
-		const auto& desc = std::get<data::X11WindowDesc>(p_windowDesc);
+		const auto& desc = std::get<orhi::data::X11WindowDesc>(p_windowDesc);
 
 		VkXlibSurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
@@ -108,19 +108,18 @@ namespace
 			.window = static_cast<::Window>(desc.window)
 		};
 
-		result = vkCreateXlibSurfaceKHR(
+		VkResult result = vkCreateXlibSurfaceKHR(
 			p_instance,
 			&surfaceCreateInfo,
 			nullptr,
 			&surface
 		);
 
-
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create X11 surface");
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
 		ORHI_ASSERT(std::get_if<orhi::data::X11WindowDesc>(&p_windowDesc), "window desc is not a X11WindowDesc");
 
-		const auto& desc = std::get<data::X11WindowDesc>(p_windowDesc);
+		const auto& desc = std::get<orhi::data::X11WindowDesc>(p_windowDesc);
 
 		const auto xcbConnection = XGetXCBConnection(static_cast<::Display*>(desc.dpy));
 		ORHI_ASSERT(xcbConnection, "Failed to get XCB connection from X11 display");
@@ -131,7 +130,7 @@ namespace
 			.window = static_cast<xcb_window_t>(desc.window)
 		};
 
-		result = vkCreateXcbSurfaceKHR(
+		VkResult result = vkCreateXcbSurfaceKHR(
 			p_instance,
 			&surfaceCreateInfo,
 			nullptr,
@@ -142,7 +141,7 @@ namespace
 #elif defined(VK_USE_PLATFORM_WAYLAND)
 		ORHI_ASSERT(std::get_if<orhi::data::WaylandWindowDesc>(&p_windowDesc), "window desc is not a WaylandWindowDesc");
 
-		const auto& desc = std::get<data::WaylandWindowDesc>(p_windowDesc);
+		const auto& desc = std::get<orhi::data::WaylandWindowDesc>(p_windowDesc);
 
 		VkWaylandSurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
@@ -150,7 +149,7 @@ namespace
 			.surface = static_cast<wl_surface*>(desc.surface)
 		};
 
-		result = vkCreateWaylandSurfaceKHR(
+		VkResult result = vkCreateWaylandSurfaceKHR(
 			p_instance,
 			&surfaceCreateInfo,
 			nullptr,
@@ -161,7 +160,7 @@ namespace
 #elif defined(VK_USE_PLATFORM_METAL_EXT)
 		ORHI_ASSERT(std::get_if<orhi::data::WaylandWindowDesc>(&p_windowDesc), "window desc is not a MetalWindowDesc");
 
-		const auto& desc = std::get<data::WaylandWindowDesc>(p_windowDesc);
+		const auto& desc = std::get<orhi::data::WaylandWindowDesc>(p_windowDesc);
 
 		VkMetalSurfaceCreateInfoEXT surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
@@ -169,7 +168,7 @@ namespace
 			.pLayer = static_cast<CAMetalLayer*>(desc.caMetalLayer)
 		};
 
-		result = vkCreateMetalSurfaceEXT(
+		VkResult result = vkCreateMetalSurfaceEXT(
 			p_instance,
 			&surfaceCreateInfo,
 			nullptr,
@@ -296,7 +295,7 @@ namespace orhi
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
 		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
 		requestedExtensions.emplace_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME, true);
-#elif defined(VK_USE_PLATFORM_WAYLAND)
+#elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
 		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
 		requestedExtensions.emplace_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME, true);
 #elif defined(VK_USE_PLATFORM_METAL_EXT)
