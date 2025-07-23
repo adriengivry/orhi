@@ -390,6 +390,7 @@ namespace orhi
 	{
 		g_debugMessenger.reset();
 		g_createdDevices.clear();
+		vkDestroySurfaceKHR(m_handle.As<VkInstance>(), m_context.surface, nullptr);
 		vkDestroyInstance(m_handle.As<VkInstance>(), nullptr);
 	}
 
