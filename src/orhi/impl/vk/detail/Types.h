@@ -877,7 +877,7 @@ struct orhi::utils::MappingFor<orhi::types::ESamplerMipmapMode, VkSamplerMipmapM
 	using EnumType = orhi::types::ESamplerMipmapMode;
 	using type = std::tuple<
 		EnumValuePair<EnumType::NEAREST, VK_SAMPLER_MIPMAP_MODE_NEAREST>,
-			EnumValuePair<EnumType::LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR>
+		EnumValuePair<EnumType::LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR>
 	>;
 };
 
