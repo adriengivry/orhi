@@ -14,6 +14,11 @@ project "orhi"
 	}
 
 	newoption {
+		trigger = "compile-dx12",
+		description = "Compile DirectX 12 backend",
+	}
+
+	newoption {
 		trigger = "compile-mock",
 		description = "Compile Mock backend",
 	}
@@ -29,6 +34,11 @@ project "orhi"
 		else
 			error("VULKAN_SDK environment variable not set. Please install Vulkan SDK and set VULKAN_SDK environment variable.")
 		end
+	end
+
+	if _OPTIONS["compile-dx12"] then
+		print("+ DirectX 12 backend selected for compilation")
+		defines { "ORHI_COMPILE_DX12" }
 	end
 
 	if _OPTIONS["compile-mock"] then

@@ -6,8 +6,9 @@ workspace "orhi-examples"
 	newoption {
 		trigger = "gfxapi",
 		value = "API",
-		description = "Define the graphics API to use (e.g., Vulkan, Mock)",
+		description = "Define the graphics API to use (e.g., DX12, Vulkan, Mock)",
 		allowed = {
+			{ "dx12", "Use DirectX12 as the graphics API" },
 			{ "vulkan", "Use Vulkan as the graphics API" },
 			{ "mock", "Use Mock as the graphics API" }
 		},
@@ -25,6 +26,9 @@ workspace "orhi-examples"
 
 	filter { "options:gfxapi=vulkan" }
 		defines { "ORHI_SELECT_VULKAN" }
+
+	filter { "options:gfxapi=dx12" }
+		defines { "ORHI_SELECT_DX12" }
 
 	filter { "options:gfxapi=mock" }
 		defines { "ORHI_SELECT_MOCK" }
