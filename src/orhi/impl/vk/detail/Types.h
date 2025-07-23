@@ -46,6 +46,8 @@
 
 #include <vulkan/vulkan.h>
 
+#define VK_BUFFER_USAGE_TILE_MEMORY_QCOM VK_BUFFER_USAGE_TILE_MEMORY_BIT_QCOM
+
 template <>
 struct orhi::utils::MappingFor<orhi::types::EBufferUsageFlags, VkBufferUsageFlags>
 {
@@ -877,7 +879,7 @@ struct orhi::utils::MappingFor<orhi::types::ESamplerMipmapMode, VkSamplerMipmapM
 	using EnumType = orhi::types::ESamplerMipmapMode;
 	using type = std::tuple<
 		EnumValuePair<EnumType::NEAREST, VK_SAMPLER_MIPMAP_MODE_NEAREST>,
-		EnumValuePair<EnumType::LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR>
+			EnumValuePair<EnumType::LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR>
 	>;
 };
 

@@ -29,7 +29,7 @@ namespace orhi::impl::vk::detail
 			output.reserve(p_elements.size());
 			for (const auto& element : p_elements)
 			{
-				output.push_back(element.get().GetNativeHandle().As<Output>());
+				output.push_back(static_cast<Output>(element.get().GetNativeHandle()));
 			}
 			return output;
 		}
@@ -42,7 +42,7 @@ namespace orhi::impl::vk::detail
 			output.reserve(p_elements.size());
 			for (const auto& element : p_elements)
 			{
-				output.push_back(element.get().GetNativeHandle().As<Output>());
+				output.push_back(static_cast<Output>(element.get().GetNativeHandle()));
 			}
 			return output;
 		}

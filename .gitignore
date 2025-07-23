@@ -10,3 +10,4 @@ imgui.ini
 *.vcxitems*
 /Releases/
 *.spv
+Makefile

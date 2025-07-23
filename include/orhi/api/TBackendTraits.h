@@ -42,7 +42,7 @@ namespace orhi::api
 	>
 	struct TBackendTraits
 	{
-		static constexpr types::EGraphicsBackend BackendType = BackendType;
+		static constexpr types::EGraphicsBackend BackendTypeValue = BackendType;
 		using InstanceContext = TBackendContext;
 		using BufferContext = TBufferContext;
 		using CommandBufferContext = TCommandBufferContext;
