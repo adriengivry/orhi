@@ -31,7 +31,10 @@ workspace "orhi-examples"
 
 	filter { "options:compile-vulkan", "system:linux" }
 		links {
-			"vulkan"
+			"vulkan",
+			"X11",
+			"X11-xcb",
+			"xcb"
 		}
 		libdirs {
 			"%{os.getenv('VULKAN_SDK')}/lib"

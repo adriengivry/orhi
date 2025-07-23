@@ -9,7 +9,11 @@
 #if defined(_WIN32) || defined(_WIN64)
 #define VK_USE_PLATFORM_WIN32_KHR
 #elif defined(__linux__)
-#define VK_USE_PLATFORM_XLIB_KHR
+// #define VK_USE_PLATFORM_XLIB_KHR
+#define VK_USE_PLATFORM_XCB_KHR
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xlib-xcb.h>
 #elif defined(__APPLE__)
 #define VK_USE_PLATFORM_MACOS_MVK
 #else
@@ -224,9 +228,9 @@ namespace orhi
 			g_debugMessenger = std::make_unique<detail::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
 		}
 
-		ORHI_ASSERT(p_desc.win32_windowHandle && p_desc.win32_instanceHandle, "incomplete surface desc");
-
 #if defined(_WIN32) || defined(_WIN64)
+		ORHI_ASSERT(p_desc.win32_windowHandle && p_desc.win32_instanceHandle, "incomplete Win32 surface desc");
+
 		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
 			.hinstance = static_cast<HINSTANCE>(p_desc.win32_instanceHandle),
@@ -241,11 +245,20 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create window surface!");
-#elif defined(__linux__)
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+		std::optional<Window> xlibWindow = std::nullopt;
+
+		if(const Window* v = std::any_cast<Window>(&p_desc.xlib_window))
+		{
+			xlibWindow = *v;
+		}
+
+		ORHI_ASSERT(p_desc.xlib_display && xlibWindow, "incomplete X11 surface desc");
+
 		VkXlibSurfaceCreateInfoKHR surfaceCreateInfo{
 			.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
 			.dpy = static_cast<Display*>(p_desc.xlib_display),
-			.window = std::any_cast<Window>(p_desc.xlib_window)
+			.window = xlibWindow.value()
 		};
 
 		result = vkCreateXlibSurfaceKHR(
@@ -256,6 +269,33 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Xlib window surface!");
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+		std::optional<Window> xlibWindow = std::nullopt;
+
+		if(const Window* v = std::any_cast<Window>(&p_desc.xlib_window))
+		{
+			xlibWindow = *v;
+		}
+
+		ORHI_ASSERT(p_desc.xlib_display && xlibWindow, "incomplete XCB surface desc");
+
+		auto xcbConnection = XGetXCBConnection(static_cast<Display*>(p_desc.xlib_display));
+		ORHI_ASSERT(xcbConnection, "Failed to get XCB connection from Xlib display");
+
+		VkXcbSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
+			.connection = xcbConnection,
+			.window = static_cast<xcb_window_t>(xlibWindow.value())
+		};
+
+		result = vkCreateXcbSurfaceKHR(
+			m_handle.As<VkInstance>(),
+			&surfaceCreateInfo,
+			nullptr,
+			&m_context.surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create XCB window surface!");
 #else
 #error Other platforms than Windows and Linux are not supported yet
 #endif
