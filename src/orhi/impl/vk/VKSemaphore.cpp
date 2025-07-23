@@ -17,6 +17,7 @@ using namespace orhi::impl::vk;
 
 namespace orhi
 {
+	template<>
 	Semaphore::TSemaphore(Device& p_device) :
 		m_context{
 			.device = p_device
@@ -36,6 +37,7 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create semaphore");
 	}
 
+	template<>
 	Semaphore::~TSemaphore()
 	{
 		vkDestroySemaphore(

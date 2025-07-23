@@ -37,6 +37,7 @@ namespace orhi
 
 	}
 
+	template<>
 	void Queue::Submit(
 		std::initializer_list<std::reference_wrapper<CommandBuffer>> p_commandBuffers,
 		std::initializer_list<std::reference_wrapper<Semaphore>> p_waitSemaphores,
@@ -77,6 +78,7 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to submit queue!");
 	}
 
+	template<>
 	void Queue::Present(
 		std::initializer_list<std::reference_wrapper<Semaphore>> p_waitSemaphores,
 		SwapChain& p_swapChain,
