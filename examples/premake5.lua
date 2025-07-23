@@ -29,6 +29,14 @@ workspace "orhi-examples"
 	filter { "options:gfxapi=mock" }
 		defines { "ORHI_SELECT_MOCK" }
 
+	filter { "options:compile-vulkan", "system:linux" }
+		links {
+			"vulkan"
+		}
+		libdirs {
+			"%{os.getenv('VULKAN_SDK')}/lib"
+		}
+
 outputdir = "%{wks.location}/../bin/"
 objoutdir = "%{wks.location}/../obj/"
 depsdir = "%{wks.location}/deps/"

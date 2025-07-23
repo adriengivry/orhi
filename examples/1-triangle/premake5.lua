@@ -35,7 +35,7 @@ project "1-triangle"
 
 	-- Copy assets folder to output directory
 	postbuildcommands {
-		"{COPYDIR} %{prj.location}assets %{cfg.targetdir}/assets"
+		"{COPYDIR} %{prj.location}/assets %{cfg.targetdir}/assets"
 	}
 
 	-- Add shader compilation rules

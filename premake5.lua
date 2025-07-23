@@ -55,9 +55,17 @@ project "orhi"
 		}
 
 	-- Add Vulkan library if enabled
-	filter { "options:compile-vulkan" }
+	filter { "options:compile-vulkan", "system:windows" }
 		links {
 			"vulkan-1"
+		}
+		libdirs {
+			"%{os.getenv('VULKAN_SDK')}/lib"
+		}
+
+	filter { "options:compile-vulkan", "system:linux" }
+		links {
+			"vulkan"
 		}
 		libdirs {
 			"%{os.getenv('VULKAN_SDK')}/lib"
