@@ -11,8 +11,6 @@
 #elif defined(__linux__)
 // #define VK_USE_PLATFORM_XLIB_KHR
 #define VK_USE_PLATFORM_XCB_KHR
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <X11/Xlib-xcb.h>
 #elif defined(__APPLE__)
 #define VK_USE_PLATFORM_METAL_EXT
