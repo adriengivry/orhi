@@ -102,7 +102,9 @@ namespace
 		}
 
 		// For example, we can require a physical device to be a discrete GPU 
-		return p_device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+		// return p_device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+
+		return true;
 	}
 
 	VkSampleCountFlags GetMaxSampleCount(VkPhysicalDeviceProperties p_deviceProperties)
@@ -346,6 +348,10 @@ namespace orhi
 			{
 				ORHI_LOG_INFO("Suitable device found: " + std::string(device.properties.deviceName));
 				g_suitableDeviceInfos.emplace_back(device.info);
+			}
+			else
+			{
+				ORHI_LOG_INFO("Device not suitable: " + std::string(device.properties.deviceName));
 			}
 		}
 	}
