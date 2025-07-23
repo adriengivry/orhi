@@ -64,7 +64,7 @@ namespace orhi
 				{
 					// Handle buffer descriptor
 					VkDescriptorBufferInfo bufferInfo{
-						.buffer = desc.bufferDescriptor.GetNativeHandle().As<VkBuffer>(),
+						.buffer = desc.bufferDescriptor.GetNativeHandle().template As<VkBuffer>(),
 						.offset = 0,
 						.range = VK_WHOLE_SIZE
 					};
@@ -87,8 +87,8 @@ namespace orhi
 				{
 					// Handle texture/sampler descriptor
 					VkDescriptorImageInfo imageInfo{
-						.sampler = desc.samplerDescriptor.GetNativeHandle().As<VkSampler>(),
-						.imageView = desc.textureDescriptor.GetNativeHandle().As<VkImageView>(),
+						.sampler = desc.samplerDescriptor.GetNativeHandle().template As<VkSampler>(),
+						.imageView = desc.textureDescriptor.GetNativeHandle().template As<VkImageView>(),
 						.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL // Default layout, could be made configurable
 					};
 					imageInfos.push_back(imageInfo);
