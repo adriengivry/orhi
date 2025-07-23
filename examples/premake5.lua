@@ -41,9 +41,19 @@ function addShaderCompilation()
 	local function addShaderRule(extension, shaderType)
 		filter("files:**." .. extension)
 			buildmessage("Compiling " .. shaderType .. " shader %{file.name}")
+			
+		-- Platform-specific commands
+		filter { "files:**." .. extension, "system:windows" }
 			buildcommands {
 				"if not exist \"" .. shadersOutputDir .. "\" mkdir \"" .. shadersOutputDir .. "\"",
 				"\"" .. vulkanSDK .. "\\bin\\glslangValidator.exe\" -V \"%{file.relpath}\" -o \"" .. shadersOutputDir .. "%{file.basename}." .. extension .. ".spv\""
+			}
+			buildoutputs { shadersOutputDir .. "%{file.basename}." .. extension .. ".spv" }
+			
+		filter { "files:**." .. extension, "system:linux" }
+			buildcommands {
+				"mkdir -p \"" .. shadersOutputDir .. "\"",
+				"\"" .. vulkanSDK .. "/bin/glslangValidator\" -V \"%{file.relpath}\" -o \"" .. shadersOutputDir .. "%{file.basename}." .. extension .. ".spv\""
 			}
 			buildoutputs { shadersOutputDir .. "%{file.basename}." .. extension .. ".spv" }
 	end
