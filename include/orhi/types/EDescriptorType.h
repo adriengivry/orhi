@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <orhi/utils/BitmaskOperators.h>
+#include <cstdint>
 
 namespace orhi::types
 {
@@ -17,7 +17,7 @@ namespace orhi::types
 	* including textures, samplers, buffers, and specialized descriptors.
 	* Each type determines how the resource is accessed by shaders.
 	*/
-	enum class EDescriptorType
+	enum class EDescriptorType : uint32_t
 	{
 		SAMPLER = 0,
 		COMBINED_IMAGE_SAMPLER = 1,

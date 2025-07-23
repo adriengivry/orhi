@@ -17,7 +17,7 @@ namespace orhi::types
 	* performing indexed draw operations. Different types provide
 	* different ranges and memory usage characteristics.
 	*/
-	enum class EIndexType
+	enum class EIndexType : uint32_t
 	{
 		UINT16 = 0,
 		UINT32 = 1,

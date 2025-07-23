@@ -17,7 +17,7 @@ namespace orhi::types
 	* including standard RGB, wide gamut, and HDR color spaces.
 	* Affects how colors are interpreted and displayed on the output device.
 	*/
-	enum class EColorSpace
+	enum class EColorSpace : uint32_t
 	{
 		SRGB_NONLINEAR_KHR = 0,
 		DISPLAY_P3_NONLINEAR_EXT = 1000104001,
