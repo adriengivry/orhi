@@ -29,7 +29,6 @@ project "8-push-constants"
 
 	links {
 		"glfw",
-		"glm",
 		"orhi"
 	}
 

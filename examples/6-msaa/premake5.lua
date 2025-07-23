@@ -29,7 +29,6 @@ project "6-msaa"
 
 	links {
 		"glfw",
-		"glm",
 		"orhi"
 	}
 

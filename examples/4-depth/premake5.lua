@@ -29,7 +29,6 @@ project "4-depth"
 
 	links {
 		"glfw",
-		"glm",
 		"orhi"
 	}
 

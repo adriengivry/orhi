@@ -29,7 +29,6 @@ project "7-particles"
 
 	links {
 		"glfw",
-		"glm",
 		"orhi"
 	}
 

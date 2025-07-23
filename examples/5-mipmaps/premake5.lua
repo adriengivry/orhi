@@ -30,8 +30,6 @@ project "5-mipmaps"
 
 	links {
 		"glfw",
-		"glm",
-		"stb",
 		"orhi"
 	}
 

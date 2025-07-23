@@ -29,7 +29,6 @@ project "2-cube"
 
 	links {
 		"glfw",
-		"glm",
 		"orhi"
 	}
 

@@ -30,8 +30,6 @@ project "3-texture"
 
 	links {
 		"glfw",
-		"glm",
-		"stb",
 		"orhi"
 	}
 

@@ -29,7 +29,6 @@ project "1-triangle"
 
 	links {
 		"glfw",
-		"glm",
 		"orhi"
 	}
 
