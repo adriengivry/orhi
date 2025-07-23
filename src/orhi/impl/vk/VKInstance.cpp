@@ -25,7 +25,6 @@
 
 #include <vulkan/vulkan.h>
 
-#include <format>
 #include <list>
 #include <optional>
 #include <set>
@@ -237,7 +236,7 @@ namespace orhi
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create window surface!");
 #else
-#error Other platforms than Windows aren't supported yet
+#error Other platforms than Windows are not supported yet
 #endif
 
 		uint32_t deviceCount = 0;
@@ -284,7 +283,7 @@ namespace orhi
 		{
 			if (IsDeviceSuitable(device, m_context.surface))
 			{
-				ORHI_LOG_INFO(std::format("Suitable device found: {}", device.properties.deviceName));
+				ORHI_LOG_INFO("Suitable device found: " + std::string(device.properties.deviceName));
 				g_suitableDeviceInfos.emplace_back(device.info);
 			}
 		}

@@ -56,7 +56,7 @@ namespace orhi
 			1UL,
 			&m_handle.ReinterpretAs<VkFence&>(),
 			VK_TRUE,
-			p_timeout.value_or(std::numeric_limits<decltype(p_timeout)::value_type>::max())
+			p_timeout.value_or(UINT64_MAX)
 		);
 	}
 
