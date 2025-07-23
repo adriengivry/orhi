@@ -8,6 +8,12 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 #define VK_USE_PLATFORM_WIN32_KHR
+#elif defined(__linux__)
+#define VK_USE_PLATFORM_XLIB_KHR
+#elif defined(__APPLE__)
+#define VK_USE_PLATFORM_MACOS_MVK
+#else
+#error Unsupported platform for Vulkan
 #endif
 
 #include <orhi/impl/vk/Instance.h>
@@ -235,8 +241,23 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create window surface!");
+#elif defined(__linux__)
+		VkXlibSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+			.dpy = static_cast<Display*>(p_desc.xlib_display),
+			.window = std::any_cast<Window>(p_desc.xlib_window)
+		};
+
+		result = vkCreateXlibSurfaceKHR(
+			m_handle.As<VkInstance>(),
+			&surfaceCreateInfo,
+			nullptr,
+			&m_context.surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Xlib window surface!");
 #else
-#error Other platforms than Windows are not supported yet
+#error Other platforms than Windows and Linux are not supported yet
 #endif
 
 		uint32_t deviceCount = 0;
