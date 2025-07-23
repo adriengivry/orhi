@@ -29,8 +29,10 @@
 #include <GLFW/glfw3.h>
 #if defined(_WIN32) || defined(_WIN64)
 #define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
+#elif defined(__linux__)
+#define GLFW_EXPOSE_NATIVE_X11
 #endif
+#include <GLFW/glfw3native.h>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -162,8 +164,13 @@ int main()
 	orhi::Instance instance(orhi::data::InstanceDesc{
 		.debug = true,
 		.extensions = GetGlfwRequiredExtensions(),
+#if defined(_WIN32) || defined(_WIN64)
 		.win32_windowHandle = glfwGetWin32Window(window),
 		.win32_instanceHandle = GetModuleHandle(nullptr)
+#elif defined(__linux__)
+		.xlib_display = glfwGetX11Display(),
+		.xlib_window = glfwGetX11Window(window)
+#endif
 	});
 
 	const auto& devices = instance.GetSuitableDevices();
