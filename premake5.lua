@@ -19,37 +19,35 @@ project "orhi"
 	}
 
 	newoption {
-		trigger = "xlib",
-		description = "Use Xlib for window management (Linux only)",
+		trigger = "window-system",
+		value = "xlib|xcb|wayland|none",
+		default = "xlib",
+		description = "Select window management system",
+		allowed = {
+			{ "xlib", "X11 Xlib Client" },
+			{ "xcb", "X11 XCB Client" },
+			{ "wayland", "Wayland Client" },
+			{ "none", "Headless Mode" }
+		}
 	}
 
-	newoption {
-		trigger = "xcb",
-		description = "Use XCB for window management (Linux only)",
-	}
-
-	newoption {
-		trigger = "wayland",
-		description = "Use Wayland for window management (Linux only)",
-	}
+	if _OPTIONS["window-system"] == "none" then
+		print("+ Headless mode selected")
+		defines { "ORHI_HEADLESS" }
+	end
 
 	filter { "system:linux" }
-		if _OPTIONS["xlib"] then
-			print("+ Xlib window management selected")
-			defines { "ORHI_USE_WINDOW_SYSTEM_XLIB" }
-		elseif _OPTIONS["xcb"] then
-			print("+ XCB window management selected")
-			defines { "ORHI_USE_WINDOW_SYSTEM_XCB" }
-		elseif _OPTIONS["wayland"] then
-			print("+ Wayland window management selected")
-			defines { "ORHI_USE_WINDOW_SYSTEM_WAYLAND" }
+		if _OPTIONS["window-system"] == "xlib" then
+			print("+ Xlib window system selected")
+			defines { "ORHI_USE_XLIB" }
+		elseif _OPTIONS["window-system"] == "xcb" then
+			print("+ XCB window system selected")
+			defines { "ORHI_USE_XCB" }
+		elseif _OPTIONS["window-system"] == "wayland" then
+			print("+ Wayland window system selected")
+			defines { "ORHI_USE_WAYLAND" }
 		end
 
-	filter { "system:windows" }
-		defines { "ORHI_USE_WINDOW_SYSTEM_WIN32" }
-
-	filter { "system:macosx" }
-		defines { "ORHI_USE_WINDOW_SYSTEM_COCOA" }
 	filter {}
 
 	if _OPTIONS["compile-vulkan"] then
@@ -95,6 +93,8 @@ project "orhi"
 	filter { "configurations:Release" }
 		defines { "NDEBUG" }
 		optimize "On"
+
+	filter{}
 	
 	print("OpenRHI project generation complete.")
 	print("-------------------------------------------")

@@ -6,18 +6,28 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#if defined(ORHI_USE_WINDOW_SYSTEM_WIN32)
-#define VK_USE_PLATFORM_WIN32_KHR
-#elif defined(ORHI_USE_WINDOW_SYSTEM_XLIB)
-#include <X11/Xlib.h>
-#elif defined(ORHI_USE_WINDOW_SYSTEM_XCB)
-#include <X11/Xlib-xcb.h>
-#elif defined(ORHI_USE_WINDOW_SYSTEM_WAYLAND)
-#include <wayland-client.h>
-#elif defined(ORHI_USE_WINDOW_SYSTEM_COCOA)
-#include <Cocoa/Cocoa.h>
+#if !defined(ORHI_HEADLESS)
+	#if defined(_WIN32) || defined(_WIN64)
+		#define VK_USE_PLATFORM_WIN32_KHR
+	#elif defined(__linux__)
+		#if defined(ORHI_USE_XLIB)
+			#define VK_USE_PLATFORM_XLIB_KHR
+			#include <X11/Xlib.h>
+		#elif defined(ORHI_USE_XCB)
+			#define VK_USE_PLATFORM_XCB_KHR
+			#include <X11/Xlib-xcb.h>
+		#elif defined(ORHI_USE_WAYLAND)
+			#define VK_USE_PLATFORM_WAYLAND_KHR
+			#include <wayland-client.h>
+		#else
+			#error "No window system defined for Linux platform. Please define ORHI_USE_X11, ORHI_USE_XCB, or ORHI_USE_WAYLAND."
+		#endif
+	#elif defined(__APPLE__)
+		#define VK_USE_PLATFORM_METAL_EXT
+		#include <Cocoa/Cocoa.h>
+	#endif
 #else
-#error No supported window system selected
+	#error "Headless mode not supported for Vulkan backend (yet)"
 #endif
 
 #include <orhi/impl/vk/Instance.h>
@@ -170,16 +180,24 @@ namespace orhi
 			requestedExtensions.emplace_back(extension, true); // "true" to make it required
 		}
 
-#if defined(ORHI_USE_WINDOW_SYSTEM_WIN32)
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
 		requestedExtensions.emplace_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME, true);
-#elif defined(ORHI_USE_WINDOW_SYSTEM_XLIB)
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
 		requestedExtensions.emplace_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME, true);
-#elif defined(ORHI_USE_WINDOW_SYSTEM_XCB)
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
 		requestedExtensions.emplace_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME, true);
-#elif defined(ORHI_USE_WINDOW_SYSTEM_WAYLAND)
+#elif defined(VK_USE_PLATFORM_WAYLAND)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
 		requestedExtensions.emplace_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME, true);
-#elif defined(ORHI_USE_WINDOW_SYSTEM_COCOA)
+#elif defined(VK_USE_PLATFORM_METAL_EXT)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
 		requestedExtensions.emplace_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME, true);
+#else
+		// No selected window system, so no surface/swap chain support.
+		// This is useful for headless rendering or compute-only applications.
 #endif
 
 		std::vector<detail::RequestedValidationLayer> requestedValidationLayers;
@@ -242,7 +260,7 @@ namespace orhi
 			g_debugMessenger = std::make_unique<detail::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
 		}
 
-#if defined(ORHI_USE_WINDOW_SYSTEM_WIN32)
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
 		ORHI_ASSERT(std::get_if<data::WindowsWindow>(&p_desc.window), "incomplete Win32 window desc");
 
 		data::WindowsWindow window = std::get<data::WindowsWindow>(p_desc.window);
@@ -260,7 +278,7 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Win32 surface");
-#elif defined(ORHI_USE_WINDOW_SYSTEM_XLIB)
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
 		ORHI_ASSERT(std::get_if<data::X11Window>(&p_desc.window), "incomplete X11 window desc");
 
 		data::X11Window window = std::get<data::X11Window>(p_desc.window);
@@ -279,7 +297,7 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create X11 surface");
-#elif defined(ORHI_USE_WINDOW_SYSTEM_XCB)
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
 		ORHI_ASSERT(std::get_if<data::X11Window>(&p_desc.window), "incomplete X11 window desc");
 
 		data::X11Window window = std::get<data::X11Window>(p_desc.window);
@@ -301,7 +319,7 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create XCB surface");
-#elif defined(ORHI_USE_WINDOW_SYSTEM_WAYLAND)
+#elif defined(VK_USE_PLATFORM_WAYLAND)
 		ORHI_ASSERT(std::get_if<data::WaylandWindow>(&p_desc.window), "incomplete Wayland window desc");
 
 		data::WaylandWindow window = std::get<data::WaylandWindow>(p_desc.window);
@@ -320,7 +338,7 @@ namespace orhi
 		);
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Wayland surface");
-#elif defined(ORHI_USE_WINDOW_SYSTEM_COCOA)
+#elif defined(VK_USE_PLATFORM_METAL_EXT)
 		ORHI_ASSERT(std::get_if<data::MetalWindow>(&p_desc.window), "incomplete Metal window desc");
 
 		data::MetalWindow window = std::get<data::MetalWindow>(p_desc.window);
@@ -340,7 +358,8 @@ namespace orhi
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Metal surface");
 #else
-#error Other platforms than Win32, X11, XCB, Wayland, and Metal are not supported yet
+		// No surface creation, this is useful for headless rendering or compute-only applications.
+		m_context.surface = VK_NULL_HANDLE;
 #endif
 
 		uint32_t deviceCount = 0;
