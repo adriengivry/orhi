@@ -15,6 +15,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include <cstring>
+
 using namespace orhi::impl::vk;
 
 namespace orhi

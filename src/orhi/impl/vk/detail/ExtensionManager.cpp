@@ -8,6 +8,7 @@
 
 #include <orhi/impl/vk/detail/ExtensionManager.h>
 
+#include <cstring>
 #include <iostream>
 
 namespace orhi::impl::vk::detail

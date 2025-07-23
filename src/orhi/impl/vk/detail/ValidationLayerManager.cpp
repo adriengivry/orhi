@@ -8,6 +8,7 @@
 
 #include <orhi/impl/vk/detail/ValidationLayerManager.h>
 
+#include <cstring>
 #include <iostream>
 
 namespace orhi::impl::vk::detail
