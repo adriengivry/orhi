@@ -17,6 +17,7 @@ using namespace orhi::impl::vk;
 
 namespace orhi
 {
+	template<>
 	Fence::TFence(Device& p_device, bool p_createSignaled) :
 		m_context{
 			.device = p_device
@@ -37,6 +38,7 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create fence");
 	}
 
+	template<>
 	Fence::~TFence()
 	{
 		vkDestroyFence(

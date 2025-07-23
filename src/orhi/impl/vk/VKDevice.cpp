@@ -107,11 +107,13 @@ namespace orhi
 		);
 	}
 
+	template<>
 	Queue& Device::GetGraphicsAndComputeQueue() const
 	{
 		return *m_context.graphicsAndComputeQueue;
 	}
 
+	template<>
 	Queue& Device::GetPresentQueue() const
 	{
 		return *m_context.presentQueue;
