@@ -58,6 +58,28 @@ namespace orhi
 	}
 
 	template<>
+	bool Texture::IsAllocated() const
+	{
+		return
+			m_context.memory != VK_NULL_HANDLE &&
+			m_context.allocatedBytes > 0;
+	}
+
+	template<>
+	void Texture::Deallocate()
+	{
+		ORHI_ASSERT(IsAllocated(), "Cannot deallocate a texture that isn't allocated");
+
+		vkFreeMemory(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			m_context.memory,
+			nullptr
+		);
+
+		m_context.memory = VK_NULL_HANDLE;
+	}
+
+	template<>
 	Texture::~TTexture()
 	{
 		if (IsAllocated())
@@ -70,14 +92,6 @@ namespace orhi
 			m_handle.As<VkImage>(),
 			nullptr
 		);
-	}
-
-	template<>
-	bool Texture::IsAllocated() const
-	{
-		return
-			m_context.memory != VK_NULL_HANDLE &&
-			m_context.allocatedBytes > 0;
 	}
 
 	template<>
@@ -121,20 +135,6 @@ namespace orhi
 		);
 
 		m_context.allocatedBytes = memRequirements.size;
-	}
-
-	template<>
-	void Texture::Deallocate()
-	{
-		ORHI_ASSERT(IsAllocated(), "Cannot deallocate a texture that isn't allocated");
-
-		vkFreeMemory(
-			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.memory,
-			nullptr
-		);
-
-		m_context.memory = VK_NULL_HANDLE;
 	}
 
 	template<>

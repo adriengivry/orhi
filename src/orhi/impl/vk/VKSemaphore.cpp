@@ -59,7 +59,7 @@ namespace orhi
 		vkWaitSemaphores(
 			m_context.device.GetNativeHandle().As<VkDevice>(),
 			&waitInfo,
-			p_timeout.value_or(std::numeric_limits<decltype(p_timeout)::value_type>::max())
+			p_timeout.value_or(UINT64_MAX)
 		);
 	}
 }
