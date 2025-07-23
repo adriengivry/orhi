@@ -75,6 +75,113 @@ namespace
 	// Actual logical devices
 	std::list<Device> g_createdDevices;
 
+	VkSurfaceKHR CreateSurface(VkInstance p_instance, const orhi::data::WindowDesc& p_windowDesc)
+	{
+		VkSurfaceKHR surface = VK_NULL_HANDLE;
+
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+		ORHI_ASSERT(std::get_if<orhi::data::Win32WindowDesc>(&p_windowDesc), "window desc is not a Win32WindowDesc");
+
+		const auto& desc = std::get<orhi::data::Win32WindowDesc>(p_windowDesc);
+
+		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+			.hwnd = static_cast<HWND>(desc.hwnd)
+		};
+
+		VkResult result = vkCreateWin32SurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Win32 surface");
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+		ORHI_ASSERT(std::get_if<orhi::data::X11WindowDesc>(&p_windowDesc), "window desc is not a X11WindowDesc");
+
+		const auto& desc = std::get<data::X11WindowDesc>(p_windowDesc);
+
+		VkXlibSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+			.dpy = static_cast<::Display*>(desc.dpy),
+			.window = static_cast<::Window>(desc.window)
+		};
+
+		result = vkCreateXlibSurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create X11 surface");
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+		ORHI_ASSERT(std::get_if<orhi::data::X11WindowDesc>(&p_windowDesc), "window desc is not a X11WindowDesc");
+
+		const auto& desc = std::get<data::X11WindowDesc>(p_windowDesc);
+
+		const auto xcbConnection = XGetXCBConnection(static_cast<::Display*>(desc.dpy));
+		ORHI_ASSERT(xcbConnection, "Failed to get XCB connection from X11 display");
+
+		VkXcbSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
+			.connection = xcbConnection,
+			.window = static_cast<xcb_window_t>(desc.window)
+		};
+
+		result = vkCreateXcbSurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create XCB surface");
+#elif defined(VK_USE_PLATFORM_WAYLAND)
+		ORHI_ASSERT(std::get_if<orhi::data::WaylandWindowDesc>(&p_windowDesc), "window desc is not a WaylandWindowDesc");
+
+		const auto& desc = std::get<data::WaylandWindowDesc>(p_windowDesc);
+
+		VkWaylandSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
+			.display = static_cast<wl_display*>(desc.display),
+			.surface = static_cast<wl_surface*>(desc.surface)
+		};
+
+		result = vkCreateWaylandSurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Wayland surface");
+#elif defined(VK_USE_PLATFORM_METAL_EXT)
+		ORHI_ASSERT(std::get_if<orhi::data::WaylandWindowDesc>(&p_windowDesc), "window desc is not a MetalWindowDesc");
+
+		const auto& desc = std::get<data::WaylandWindowDesc>(p_windowDesc);
+
+		VkMetalSurfaceCreateInfoEXT surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
+			.pNext = nullptr,
+			.pLayer = static_cast<CAMetalLayer*>(desc.caMetalLayer)
+		};
+
+		result = vkCreateMetalSurfaceEXT(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Metal surface");
+#endif
+
+		return surface;
+	}
+
 	bool IsSwapChainAdequate(const detail::SwapChainSupportDetails& p_swapChainSupportDetails)
 	{
 		return
@@ -260,107 +367,18 @@ namespace orhi
 			g_debugMessenger = std::make_unique<detail::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
 		}
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-		ORHI_ASSERT(std::get_if<data::WindowsWindow>(&p_desc.window), "incomplete Win32 window desc");
-
-		data::WindowsWindow window = std::get<data::WindowsWindow>(p_desc.window);
-
-		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{
-			.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-			.hwnd = static_cast<HWND>(window.hwnd)
-		};
-
-		result = vkCreateWin32SurfaceKHR(
-			m_handle.As<VkInstance>(),
-			&surfaceCreateInfo,
-			nullptr,
-			&m_context.surface
-		);
-
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Win32 surface");
-#elif defined(VK_USE_PLATFORM_XLIB_KHR)
-		ORHI_ASSERT(std::get_if<data::X11Window>(&p_desc.window), "incomplete X11 window desc");
-
-		data::X11Window window = std::get<data::X11Window>(p_desc.window);
-
-		VkXlibSurfaceCreateInfoKHR surfaceCreateInfo{
-			.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
-			.dpy = static_cast<::Display*>(window.dpy),
-			.window = static_cast<::Window>(window.window)
-		};
-
-		result = vkCreateXlibSurfaceKHR(
-			m_handle.As<VkInstance>(),
-			&surfaceCreateInfo,
-			nullptr,
-			&m_context.surface
-		);
-
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create X11 surface");
-#elif defined(VK_USE_PLATFORM_XCB_KHR)
-		ORHI_ASSERT(std::get_if<data::X11Window>(&p_desc.window), "incomplete X11 window desc");
-
-		data::X11Window window = std::get<data::X11Window>(p_desc.window);
-
-		const auto xcbConnection = XGetXCBConnection(static_cast<::Display*>(window.dpy));
-		ORHI_ASSERT(xcbConnection, "Failed to get XCB connection from X11 display");
-
-		VkXcbSurfaceCreateInfoKHR surfaceCreateInfo{
-			.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
-			.connection = xcbConnection,
-			.window = static_cast<xcb_window_t>(window.window)
-		};
-
-		result = vkCreateXcbSurfaceKHR(
-			m_handle.As<VkInstance>(),
-			&surfaceCreateInfo,
-			nullptr,
-			&m_context.surface
-		);
-
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create XCB surface");
-#elif defined(VK_USE_PLATFORM_WAYLAND)
-		ORHI_ASSERT(std::get_if<data::WaylandWindow>(&p_desc.window), "incomplete Wayland window desc");
-
-		data::WaylandWindow window = std::get<data::WaylandWindow>(p_desc.window);
-
-		VkWaylandSurfaceCreateInfoKHR surfaceCreateInfo{
-			.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
-			.display = static_cast<wl_display*>(window.display),
-			.surface = static_cast<wl_surface*>(window.surface)
-		};
-
-		result = vkCreateWaylandSurfaceKHR(
-			m_handle.As<VkInstance>(),
-			&surfaceCreateInfo,
-			nullptr,
-			&m_context.surface
-		);
-
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Wayland surface");
-#elif defined(VK_USE_PLATFORM_METAL_EXT)
-		ORHI_ASSERT(std::get_if<data::MetalWindow>(&p_desc.window), "incomplete Metal window desc");
-
-		data::MetalWindow window = std::get<data::MetalWindow>(p_desc.window);
-
-		VkMetalSurfaceCreateInfoEXT surfaceCreateInfo{
-			.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
-			.pNext = nullptr,
-			.pLayer = static_cast<CAMetalLayer*>(window.caMetalLayer)
-		};
-
-		result = vkCreateMetalSurfaceEXT(
-			m_handle.As<VkInstance>(),
-			&surfaceCreateInfo,
-			nullptr,
-			&m_context.surface
-		);
-
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Metal surface");
-#else
-		// No surface creation, this is useful for headless rendering or compute-only applications.
-		m_context.surface = VK_NULL_HANDLE;
-#endif
+		if (p_desc.window.has_value())
+		{
+			m_context.surface = CreateSurface(
+				m_handle.As<VkInstance>(),
+				p_desc.window.value()
+			);
+		}
+		else
+		{
+			ORHI_LOG_INFO("No window description provided, no surface will be created.");
+			m_context.surface = VK_NULL_HANDLE;
+		}
 
 		uint32_t deviceCount = 0;
 		vkEnumeratePhysicalDevices(m_handle.As<VkInstance>(), &deviceCount, nullptr);

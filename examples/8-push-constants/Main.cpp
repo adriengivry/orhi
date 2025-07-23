@@ -35,14 +35,14 @@
 
 namespace
 {
-	orhi::data::Window GetWindowDesc(GLFWwindow* window)
+	orhi::data::WindowDesc GetWindowDesc(GLFWwindow* window)
 	{
 #if defined(_WIN32) || defined(_WIN64)
-		return orhi::data::WindowsWindow{
+		return orhi::data::Win32WindowDesc{
 			.hwnd = glfwGetWin32Window(window)
 		};
 #elif defined(__linux__)
-		return orhi::data::X11Window{
+		return orhi::data::X11WindowDesc{
 			.dpy = glfwGetX11Display(),
 			.window = glfwGetX11Window(window)
 		};

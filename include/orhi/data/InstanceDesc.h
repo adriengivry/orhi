@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include <orhi/data/Window.h>
+#include <orhi/data/WindowDesc.h>
 
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -24,6 +25,6 @@ namespace orhi::data
 	{
 		bool debug;
 		std::vector<std::string> extensions;
-		Window window;
+		std::optional<WindowDesc> window;
 	};
 }
