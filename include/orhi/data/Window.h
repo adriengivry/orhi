@@ -10,30 +10,30 @@
 
 namespace orhi::data
 {
-	// Expects "WIN32" platform macro
+	// Expects "ORHI_USE_WINDOW_SYSTEM_WIN32" platform macro
 	struct WindowsWindow 
 	{ 
-		void* hwnd;             //    HWND
+		void* hwnd;
 	};
 
-	// Expects "ORHI_ENABLE_XLIB_SUPPORT" or "ORHI_ENABLE_XCB_SUPPORT"
+	// Expects "ORHI_USE_WINDOW_SYSTEM_XLIB" or "ORHI_USE_WINDOW_SYSTEM_XCB"
 	struct X11Window
-	{      
-		void* dpy;              //    Display
-		uint64_t window;        //    Window
+	{
+		void* dpy;
+		uint64_t window;
 	};
 
-	// Expects "ORHI_ENABLE_WAYLAND_SUPPORT"
+	// Expects "ORHI_USE_WINDOW_SYSTEM_WAYLAND"
 	struct WaylandWindow
 	{
-		void* display;          //    wl_display
-		void* surface;          //    wl_surface
+		void* display;
+		void* surface;
 	};
 
-	// Expects "APPLE" platform macro
+	// Expects "ORHI_USE_WINDOW_SYSTEM_COCOA"
 	struct MetalWindow
 	{
-		void* caMetalLayer;     //    CAMetalLayer
+		void* caMetalLayer;
 	};
 
 	/**

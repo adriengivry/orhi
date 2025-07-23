@@ -18,6 +18,40 @@ project "orhi"
 		description = "Compile Mock backend",
 	}
 
+	newoption {
+		trigger = "xlib",
+		description = "Use Xlib for window management (Linux only)",
+	}
+
+	newoption {
+		trigger = "xcb",
+		description = "Use XCB for window management (Linux only)",
+	}
+
+	newoption {
+		trigger = "wayland",
+		description = "Use Wayland for window management (Linux only)",
+	}
+
+	filter { "system:linux" }
+		if _OPTIONS["xlib"] then
+			print("+ Xlib window management selected")
+			defines { "ORHI_USE_WINDOW_SYSTEM_XLIB" }
+		elseif _OPTIONS["xcb"] then
+			print("+ XCB window management selected")
+			defines { "ORHI_USE_WINDOW_SYSTEM_XCB" }
+		elseif _OPTIONS["wayland"] then
+			print("+ Wayland window management selected")
+			defines { "ORHI_USE_WINDOW_SYSTEM_WAYLAND" }
+		end
+
+	filter { "system:windows" }
+		defines { "ORHI_USE_WINDOW_SYSTEM_WIN32" }
+
+	filter { "system:macosx" }
+		defines { "ORHI_USE_WINDOW_SYSTEM_COCOA" }
+	filter {}
+
 	if _OPTIONS["compile-vulkan"] then
 		print("+ Vulkan backend selected for compilation")
 		defines { "ORHI_COMPILE_VULKAN" }
