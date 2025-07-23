@@ -20,7 +20,6 @@
 
 #include <vulkan/vulkan.h>
 
-#include <format>
 #include <optional>
 #include <set>
 
