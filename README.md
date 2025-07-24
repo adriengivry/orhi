@@ -46,16 +46,22 @@ Write hardware-agnostic graphics code once, and run it seamlessly across multipl
 > [!WARNING]
 > **OpenRHI** is actively evolving as support for additional graphics backends is added. The [API](include/orhi/api/) may change to accommodate the unique requirements and design philosophies of each backend. Implementation details are also subject to refinement as the project works toward production-quality standards.
 
-## Build Configuration
-| Option | C++ Define | CMake Option | Premake5 Option |
+## Configuration
+### Build Options
+| Option | CMake Option | Premake5 Option | Allowed Values |
 | - | - | - | - |
-| Compile Vulkan backend | `ORHI_COMPILE_VULKAN` | `DORHI_COMPILE_VULKAN` |  `--compile-vulkan` |
-| Compile Mock backend | `ORHI_COMPILE_MOCK` | `DORHI_COMPILE_MOCK` | `--compile-mock` |
-| Set Vulkan as the default backend | `ORHI_SELECT_VULKAN` | - | - |
-| Set Mock as the default backend | `ORHI_SELECT_MOCK` | - | - |
+| Compile Vulkan backend | `DORHI_COMPILE_VULKAN` |  `--compile-vulkan` | - |
+| Compile Mock backend | `DORHI_COMPILE_MOCK` | `--compile-mock` | - |
+| Select the window system to use when compiling for linux or to use the headless mode | `ORHI_WINDOW_SYSTEM=STRING` | `--window-system=STRING` | `xlib`&nbsp;(linux)<br>`xcb`&nbsp;(linux)<br>`wayland`&nbsp;(linux)<br>`none`&nbsp;(headless) |
 
 > [!NOTE]
 > **OpenRHI** currently builds only as a static library.
+
+### Defines
+| Option | C++ Define | Notes |
+| - | - | - |
+| Set Vulkan as the default backend | `ORHI_SELECT_VULKAN` | Must be defined before including any backend-agnostic header, e.g. `<orhi/device.h>` |
+| Set Mock as the default backend | `ORHI_SELECT_MOCK` | Must be defined before including any backend-agnostic header, e.g. `<orhi/device.h>` |
 
 ## Multi-Backend Architecture
 **OpenRHI** supports compiling with multiple graphics APIs simultaneously.
