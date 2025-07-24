@@ -1,33 +1,35 @@
 /**
 * @project: orhi (OpenRHI)
-* @author: Adrien Givry
+* @author: Adrien Givry, Jian Bang Xu
 * @licence: MIT
 */
 
-#if defined(ORHI_COMPILE_VULKAN)
+#if defined(ORHI_COMPILE_DX12)
 
-#include <orhi/impl/vk/detail/MemoryUtils.h>
+#include <orhi/impl/dx12/detail/MemoryUtils.h>
 
 #include <orhi/debug/Assert.h>
 
-namespace orhi::impl::vk::detail
+namespace orhi::impl::dx12::detail
 {
-	uint32_t MemoryUtils::FindMemoryType(VkPhysicalDevice p_physicalDevice, uint32_t p_typeFilter, VkMemoryPropertyFlags p_properties)
+	D3D12_HEAP_TYPE MemoryUtils::GetBestHeapType(D3D12_RESOURCE_STATES p_initialState)
 	{
-		VkPhysicalDeviceMemoryProperties memProperties;
-		vkGetPhysicalDeviceMemoryProperties(p_physicalDevice, &memProperties);
-
-		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+		// For DX12, heap type selection is more straightforward
+		// Most resources can use DEFAULT heap for GPU-only access
+		// Use UPLOAD heap for CPU-to-GPU transfers
+		// Use READBACK heap for GPU-to-CPU transfers
+		
+		if (p_initialState == D3D12_RESOURCE_STATE_GENERIC_READ)
 		{
-			if ((p_typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & p_properties) == p_properties)
-			{
-				return i;
-			}
+			return D3D12_HEAP_TYPE_UPLOAD;
+		}
+		else if (p_initialState == D3D12_RESOURCE_STATE_COPY_DEST)
+		{
+			return D3D12_HEAP_TYPE_READBACK;
 		}
 
-		ORHI_ASSERT(false, "failed to find suitable memory type!");
-		return {};
+		return D3D12_HEAP_TYPE_DEFAULT;
 	}
 }
 
-#endif // #if defined(ORHI_COMPILE_VULKAN)
+#endif // #if defined(ORHI_COMPILE_DX12)

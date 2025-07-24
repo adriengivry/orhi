@@ -1,33 +1,29 @@
 /**
 * @project: orhi (OpenRHI)
-* @author: Adrien Givry
+* @author: Adrien Givry, Jian Bang Xu
 * @licence: MIT
 */
 
 #pragma once
 
-#if defined(ORHI_COMPILE_VULKAN)
+#if defined(ORHI_COMPILE_DX12)
 
-#include <orhi/impl/vk/detail/QueueFamilyIndices.h>
-#include <orhi/impl/vk/detail/SwapChainUtils.h>
-
-#include <vulkan/vulkan.h>
+#include <d3d12.h>
+#include <dxgi1_4.h>
 
 #include <span>
 #include <string>
 #include <vector>
 
-namespace orhi::impl::vk::detail
+namespace orhi::impl::dx12::detail
 {
 	struct DeviceCreationInfo
 	{
-		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-		VkPhysicalDeviceProperties properties;
-		VkPhysicalDeviceFeatures features;
-		QueueFamilyIndices queueFamilyIndices;
-		SwapChainSupportDetails swapChainSupportDetails;
-		std::vector<const char*> extensions;
+		IDXGIAdapter1* adapter = nullptr;
+		DXGI_ADAPTER_DESC1 adapterDesc{};
+		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0;
+		UINT nodeIndex = 0;
 	};
 }
 
-#endif // #if defined(ORHI_COMPILE_VULKAN)
+#endif // #if defined(ORHI_COMPILE_DX12)

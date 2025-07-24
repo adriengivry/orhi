@@ -1,27 +1,28 @@
 /**
 * @project: orhi (OpenRHI)
-* @author: Adrien Givry
+* @author: Adrien Givry, Jian Bang Xu
 * @licence: MIT
 */
 
 #pragma once
 
-#if defined(ORHI_COMPILE_VULKAN)
+#if defined(ORHI_COMPILE_DX12)
 
 #include <orhi/impl/common/NativeHandle.h>
 
-#include <vulkan/vulkan.h>
+#include <d3d12.h>
+#include <dxgi1_4.h>
 
 #include <filesystem>
 #include <span>
 #include <vector>
 
-namespace orhi::impl::vk::detail
+namespace orhi::impl::dx12::detail
 {
 	class MemoryUtils
 	{
 	public:
-		// Input need to be a class with GetHandle() (VkObject)
+		// Input need to be a class with GetHandle() (D3D12Object)
 		template<class Output, class Input>
 		static std::vector<Output> PrepareArray(std::initializer_list<std::reference_wrapper<Input>> p_elements)
 		{
@@ -34,7 +35,7 @@ namespace orhi::impl::vk::detail
 			return output;
 		}
 
-		// Input need to be a class with GetHandle() (VkObject)
+		// Input need to be a class with GetHandle() (D3D12Object)
 		template<class Output, class Input>
 		static std::vector<Output> PrepareArray(std::span<const std::reference_wrapper<Input>> p_elements)
 		{
@@ -47,12 +48,8 @@ namespace orhi::impl::vk::detail
 			return output;
 		}
 
-		static uint32_t FindMemoryType(
-			VkPhysicalDevice p_physicalDevice,
-			uint32_t p_typeFilter,
-			VkMemoryPropertyFlags p_properties
-		);
+		static D3D12_HEAP_TYPE GetBestHeapType(D3D12_RESOURCE_STATES p_initialState);
 	};
 }
 
-#endif // #if defined(ORHI_COMPILE_VULKAN)
+#endif // #if defined(ORHI_COMPILE_DX12)
