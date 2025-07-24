@@ -10,6 +10,7 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
+#include <orhi/impl/dx12/DescriptorSetLayout.h>
 #include <orhi/impl/dx12/detail/Types.h>
 
 #include <d3d12.h>
@@ -23,7 +24,9 @@ namespace orhi
 	DescriptorPool::TDescriptorPool(
 		Device& p_device,
 		const data::DescriptorPoolDesc& p_desc
-	)
+	) : m_context{
+		.device = p_device,
+	}
 	{
 		
 	}
@@ -35,24 +38,13 @@ namespace orhi
 	}
 
 	template<>
-	DescriptorSet& DescriptorPool::AllocateDescriptorSet(
-		const data::DescriptorSetDesc& p_desc
+	std::vector<std::reference_wrapper<DescriptorSet>> DescriptorPool::AllocateDescriptorSets(
+		const DescriptorSetLayout& p_layout,
+		uint32_t p_count
 	)
 	{
-		static DescriptorSet* descriptorSet = nullptr;
-		return *descriptorSet;
-	}
-
-	template<>
-	void DescriptorPool::DeallocateDescriptorSet(DescriptorSet& p_descriptorSet)
-	{
-		
-	}
-
-	template<>
-	void DescriptorPool::Reset()
-	{
-		
+		std::vector<std::reference_wrapper<DescriptorSet>> output;
+		return output;
 	}
 }
 

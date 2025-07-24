@@ -23,7 +23,9 @@ namespace orhi
 	Texture::TTexture(
 		Device& p_device,
 		const data::TextureDesc& p_desc
-	)
+	) : m_context {
+			.device = p_device
+		}
 	{
 		
 	}

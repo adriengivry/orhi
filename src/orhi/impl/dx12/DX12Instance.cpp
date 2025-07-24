@@ -10,6 +10,7 @@
 
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
+#include <orhi/impl/dx12/Device.h>
 #include <orhi/impl/dx12/detail/Types.h>
 
 #include <d3d12.h>
@@ -34,17 +35,25 @@ namespace orhi
 	}
 
 	template<>
-	std::vector<data::DeviceInfo> Instance::EnumerateDevices() const
+	const std::vector<data::DeviceInfo>& Instance::GetSuitableDevices() const
 	{
-		return {};
+		static std::vector<data::DeviceInfo> s_suitableDeviceInfos;
+		return s_suitableDeviceInfos;
 	}
 
 	template<>
-	std::unique_ptr<Device> Instance::CreateDevice(
-		const data::DeviceDesc& p_desc
+	Device& Instance::CreateDevice(
+		uint32_t p_deviceId
 	)
 	{
-		return nullptr;
+		static Device* device = nullptr;
+		return *device;
+	}
+
+	template<>
+	impl::common::NativeHandle Instance::GetSurfaceHandle() const
+	{
+		return m_context.surface;
 	}
 }
 

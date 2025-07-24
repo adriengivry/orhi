@@ -23,7 +23,6 @@ namespace orhi::impl::dx12
 
 		BUFFER_VIEW = CBV_SRV_UAV,
 		IMAGE_VIEW = CBV_SRV_UAV,
-		SAMPLER = CBV_SRV_UAV,
 	};
 
 	struct DescriptorContext

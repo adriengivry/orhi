@@ -8,11 +8,8 @@
 
 #include <orhi/api/TPipeline.h>
 #include <orhi/impl/dx12/BackendTraits.h>
+#include <orhi/impl/dx12/ComPtr.h>
 #include <orhi/impl/dx12/Device.h>
-
-#if defined(_WIN32)
-#include <wrl.h>
-#endif
 
 struct ID3D12PipelineState;
 

@@ -19,10 +19,13 @@ using namespace orhi::impl::dx12;
 
 namespace orhi
 {
-	template<TPipeline>(
+	template<>
+	Pipeline::TPipeline(
 		Device& p_device,
-		const data(GraphicsPipelineDesc& p_desc
-	)
+		const data::GraphicsPipelineDesc<BackendTraits>& p_desc
+	) : m_context{
+		.device = p_device
+	}
 	{
 		
 	}
@@ -30,8 +33,10 @@ namespace orhi
 	template<>
 	Pipeline::TPipeline(
 		Device& p_device,
-		const data::ComputePipelineDesc& p_desc
-	)
+		const data::ComputePipelineDesc<BackendTraits>& p_desc
+	) : m_context{
+		.device = p_device
+	}
 	{
 		
 	}

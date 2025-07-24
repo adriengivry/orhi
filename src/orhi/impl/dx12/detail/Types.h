@@ -62,7 +62,7 @@ struct orhi::utils::MappingFor<orhi::types::EBufferUsageFlags, D3D12_RESOURCE_FL
 		EnumValuePair<EnumType::INDEX_BUFFER_BIT, D3D12_RESOURCE_FLAG_NONE>,
 		EnumValuePair<EnumType::VERTEX_BUFFER_BIT, D3D12_RESOURCE_FLAG_NONE>,
 		EnumValuePair<EnumType::INDIRECT_BUFFER_BIT, D3D12_RESOURCE_FLAG_NONE>,
-		EnumValuePair<EnumType::SHADER_DEVICE_ADDRESS_BIT, D3D12_RESOURCE_FLAG_NONE>,
+		// EnumValuePair<EnumType::SHADER_DEVICE_ADDRESS_BIT, D3D12_RESOURCE_FLAG_NONE>, // No direct equivalent in DX12
 		EnumValuePair<EnumType::VIDEO_DECODE_SRC_BIT_KHR, D3D12_RESOURCE_FLAG_VIDEO_DECODE_REFERENCE_ONLY>,
 		EnumValuePair<EnumType::VIDEO_DECODE_DST_BIT_KHR, D3D12_RESOURCE_FLAG_NONE>,
 		EnumValuePair<EnumType::ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR, D3D12_RESOURCE_FLAG_RAYTRACING_ACCELERATION_STRUCTURE>,
@@ -83,8 +83,8 @@ struct orhi::utils::MappingFor<orhi::types::ETextureUsageFlags, D3D12_RESOURCE_F
 		EnumValuePair<EnumType::STORAGE_BIT, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS>,
 		EnumValuePair<EnumType::COLOR_ATTACHMENT_BIT, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET>,
 		EnumValuePair<EnumType::DEPTH_STENCIL_ATTACHMENT_BIT, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL>,
-		EnumValuePair<EnumType::TRANSIENT_ATTACHMENT_BIT, D3D12_RESOURCE_FLAG_NONE>,
-		EnumValuePair<EnumType::INPUT_ATTACHMENT_BIT, D3D12_RESOURCE_FLAG_NONE>,
+		// EnumValuePair<EnumType::TRANSIENT_ATTACHMENT_BIT, D3D12_RESOURCE_FLAG_NONE>, // No direct equivalent in DX12
+		// EnumValuePair<EnumType::INPUT_ATTACHMENT_BIT, D3D12_RESOURCE_FLAG_NONE>, // No direct equivalent in DX12
 		EnumValuePair<EnumType::ALL, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS>
 	>;
 };
@@ -101,7 +101,7 @@ struct orhi::utils::MappingFor<orhi::types::EColorSpace, DXGI_COLOR_SPACE_TYPE>
 		EnumValuePair<EnumType::DCI_P3_NONLINEAR_EXT, DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020>,
 		EnumValuePair<EnumType::BT709_LINEAR_EXT, DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709>,
 		EnumValuePair<EnumType::BT709_NONLINEAR_EXT, DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709>,
-		EnumValuePair<EnumType::BT2020_LINEAR_EXT, DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P2020>,
+		// EnumValuePair<EnumType::BT2020_LINEAR_EXT, ???>, // No direct linear BT2020 equivalent in DXGI
 		EnumValuePair<EnumType::HDR10_ST2084_EXT, DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020>,
 		EnumValuePair<EnumType::HDR10_HLG_EXT, DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020>,
 		EnumValuePair<EnumType::ADOBERGB_LINEAR_EXT, DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709>,
@@ -110,28 +110,19 @@ struct orhi::utils::MappingFor<orhi::types::EColorSpace, DXGI_COLOR_SPACE_TYPE>
 	>;
 };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::ECommandBufferLevel, VkCommandBufferLevel>
-{
-	using EnumType = orhi::types::ECommandBufferLevel;
-	using type = std::tuple<
-		EnumValuePair<EnumType::PRIMARY, VK_COMMAND_BUFFER_LEVEL_PRIMARY>,
-		EnumValuePair<EnumType::SECONDARY, VK_COMMAND_BUFFER_LEVEL_SECONDARY>
-	>;
-};
+// DX12 doesn't have command buffer levels like Vulkan - all command lists are primary
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::ECommandBufferLevel, ???>
+// {
+//     // No DirectX 12 equivalent - DX12 only has command lists (similar to primary command buffers)
+// };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::ECommandBufferUsageFlags, VkCommandBufferUsageFlags>
-{
-	using EnumType = orhi::types::ECommandBufferUsageFlags;
-	using type = std::tuple<
-		EnumValuePair<EnumType::NONE, 0>,
-		EnumValuePair<EnumType::ONE_TIME_SUBMIT_BIT, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT>,
-		EnumValuePair<EnumType::RENDER_PASS_CONTINUE_BIT, VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT>,
-		EnumValuePair<EnumType::SIMULTANEOUS_USE_BIT, VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT>,
-		EnumValuePair<EnumType::ALL, VK_COMMAND_BUFFER_USAGE_FLAG_BITS_MAX_ENUM>
-	>;
-};
+// DX12 doesn't have command buffer usage flags like Vulkan
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::ECommandBufferUsageFlags, ???>
+// {
+//     // No DirectX 12 equivalent - command lists don't have usage flags
+// };
 
 template <>
 struct orhi::utils::MappingFor<orhi::types::EDescriptorType, D3D12_DESCRIPTOR_HEAP_TYPE>
@@ -159,7 +150,7 @@ struct orhi::utils::MappingFor<orhi::types::EFormat, DXGI_FORMAT>
 	using EnumType = orhi::types::EFormat;
 	using type = std::tuple<
 		EnumValuePair<EnumType::UNDEFINED, DXGI_FORMAT_UNKNOWN>,
-		EnumValuePair<EnumType::R4G4_UNORM_PACK8, DXGI_FORMAT_UNKNOWN>, // No direct equivalent
+		// EnumValuePair<EnumType::R4G4_UNORM_PACK8, DXGI_FORMAT_UNKNOWN>, // No direct equivalent
 		EnumValuePair<EnumType::R4G4B4A4_UNORM_PACK16, DXGI_FORMAT_B4G4R4A4_UNORM>,
 		EnumValuePair<EnumType::B4G4R4A4_UNORM_PACK16, DXGI_FORMAT_B4G4R4A4_UNORM>,
 		EnumValuePair<EnumType::R5G6B5_UNORM_PACK16, DXGI_FORMAT_B5G6R5_UNORM>,
@@ -253,132 +244,47 @@ struct orhi::utils::MappingFor<orhi::types::EMemoryPropertyFlags, D3D12_HEAP_TYP
 		EnumValuePair<EnumType::HOST_VISIBLE_BIT, D3D12_HEAP_TYPE_UPLOAD>,
 		EnumValuePair<EnumType::HOST_COHERENT_BIT, D3D12_HEAP_TYPE_UPLOAD>,
 		EnumValuePair<EnumType::HOST_CACHED_BIT, D3D12_HEAP_TYPE_READBACK>,
+		// EnumValuePair<EnumType::LAZILY_ALLOCATED_BIT, ???>, // No direct equivalent in DX12
+		// EnumValuePair<EnumType::PROTECTED_BIT, ???>, // No direct equivalent in DX12
 		EnumValuePair<EnumType::ALL, D3D12_HEAP_TYPE_DEFAULT>
 	>;
 };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::EPipelineBindPoint, VkPipelineBindPoint>
-{
-	using EnumType = orhi::types::EPipelineBindPoint;
-	using type = std::tuple<
-		EnumValuePair<EnumType::GRAPHICS, VK_PIPELINE_BIND_POINT_GRAPHICS>,
-		EnumValuePair<EnumType::COMPUTE, VK_PIPELINE_BIND_POINT_COMPUTE>,
-		EnumValuePair<EnumType::RAY_TRACING_KHR, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR>,
-		EnumValuePair<EnumType::SUBPASS_SHADING_HUAWEI, VK_PIPELINE_BIND_POINT_SUBPASS_SHADING_HUAWEI>,
-		EnumValuePair<EnumType::RAY_TRACING_NV, VK_PIPELINE_BIND_POINT_RAY_TRACING_NV>
-	>;
-};
+// DX12 doesn't have explicit pipeline bind points like Vulkan
+// All pipelines are set on command lists directly
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::EPipelineBindPoint, ???>
+// {
+//     // No DirectX 12 equivalent - pipelines are set directly on command lists
+// };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::EPresentMode, VkPresentModeKHR>
-{
-	using EnumType = orhi::types::EPresentMode;
-	using type = std::tuple<
-		EnumValuePair<EnumType::IMMEDIATE_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR>,
-		EnumValuePair<EnumType::MAILBOX_KHR, VK_PRESENT_MODE_MAILBOX_KHR>,
-		EnumValuePair<EnumType::FIFO_KHR, VK_PRESENT_MODE_FIFO_KHR>,
-		EnumValuePair<EnumType::FIFO_RELAXED_KHR, VK_PRESENT_MODE_FIFO_RELAXED_KHR>,
-		EnumValuePair<EnumType::SHARED_DEMAND_REFRESH_KHR, VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR>,
-		EnumValuePair<EnumType::SHARED_CONTINUOUS_REFRESH_KHR, VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR>,
-		EnumValuePair<EnumType::FIFO_LATEST_READY_EXT, VK_PRESENT_MODE_FIFO_LATEST_READY_EXT>
-	>;
-};
+// DX12 doesn't have present modes like Vulkan - handled by DXGI swap chain
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::EPresentMode, ???>
+// {
+//     // No DirectX 12 equivalent - present mode is handled by DXGI swap chain creation
+// };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::EShaderStageFlags, VkShaderStageFlags>
-{
-	using EnumType = orhi::types::EShaderStageFlags;
-	using type = std::tuple<
-		EnumValuePair<EnumType::NONE, 0>,
-		EnumValuePair<EnumType::VERTEX_BIT, VK_SHADER_STAGE_VERTEX_BIT>,
-		EnumValuePair<EnumType::TESSELLATION_CONTROL_BIT, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT>,
-		EnumValuePair<EnumType::TESSELLATION_EVALUATION_BIT, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT>,
-		EnumValuePair<EnumType::GEOMETRY_BIT, VK_SHADER_STAGE_GEOMETRY_BIT>,
-		EnumValuePair<EnumType::FRAGMENT_BIT, VK_SHADER_STAGE_FRAGMENT_BIT>,
-		EnumValuePair<EnumType::COMPUTE_BIT, VK_SHADER_STAGE_COMPUTE_BIT>,
-		EnumValuePair<EnumType::ALL_GRAPHICS, VK_SHADER_STAGE_ALL_GRAPHICS>,
-		EnumValuePair<EnumType::RAYGEN_BIT_KHR, VK_SHADER_STAGE_RAYGEN_BIT_KHR>,
-		EnumValuePair<EnumType::ANY_HIT_BIT_KHR, VK_SHADER_STAGE_ANY_HIT_BIT_KHR>,
-		EnumValuePair<EnumType::CLOSEST_HIT_BIT_KHR, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR>,
-		EnumValuePair<EnumType::MISS_BIT_KHR, VK_SHADER_STAGE_MISS_BIT_KHR>,
-		EnumValuePair<EnumType::INTERSECTION_BIT_KHR, VK_SHADER_STAGE_INTERSECTION_BIT_KHR>,
-		EnumValuePair<EnumType::CALLABLE_BIT_KHR, VK_SHADER_STAGE_CALLABLE_BIT_KHR>,
-		EnumValuePair<EnumType::TASK_BIT_EXT, VK_SHADER_STAGE_TASK_BIT_EXT>,
-		EnumValuePair<EnumType::MESH_BIT_EXT, VK_SHADER_STAGE_MESH_BIT_EXT>,
-		EnumValuePair<EnumType::SUBPASS_SHADING_BIT_HUAWEI, VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI>,
-		EnumValuePair<EnumType::CLUSTER_CULLING_BIT_HUAWEI, VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI>,
-		EnumValuePair<EnumType::RAYGEN_BIT_NV, VK_SHADER_STAGE_RAYGEN_BIT_NV>,
-		EnumValuePair<EnumType::ANY_HIT_BIT_NV, VK_SHADER_STAGE_ANY_HIT_BIT_NV>,
-		EnumValuePair<EnumType::CLOSEST_HIT_BIT_NV, VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV>,
-		EnumValuePair<EnumType::MISS_BIT_NV, VK_SHADER_STAGE_MISS_BIT_NV>,
-		EnumValuePair<EnumType::INTERSECTION_BIT_NV, VK_SHADER_STAGE_INTERSECTION_BIT_NV>,
-		EnumValuePair<EnumType::CALLABLE_BIT_NV, VK_SHADER_STAGE_CALLABLE_BIT_NV>,
-		EnumValuePair<EnumType::TASK_BIT_NV, VK_SHADER_STAGE_TASK_BIT_NV>,
-		EnumValuePair<EnumType::MESH_BIT_NV, VK_SHADER_STAGE_MESH_BIT_NV>,
-		EnumValuePair<EnumType::ALL, VK_SHADER_STAGE_ALL>
-	>;
-};
+// DX12 doesn't have explicit shader stage flags - stages are implicit in pipeline creation
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::EShaderStageFlags, ???>
+// {
+//     // No DirectX 12 equivalent - shader stages are implicit in PSO creation
+// };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::EPipelineStageFlags, VkPipelineStageFlags>
-{
-	using EnumType = orhi::types::EPipelineStageFlags;
-	using type = std::tuple<
-		EnumValuePair<EnumType::NONE, 0>,
-		EnumValuePair<EnumType::TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT>,
-		EnumValuePair<EnumType::DRAW_INDIRECT_BIT, VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT>,
-		EnumValuePair<EnumType::VERTEX_INPUT_BIT, VK_PIPELINE_STAGE_VERTEX_INPUT_BIT>,
-		EnumValuePair<EnumType::VERTEX_SHADER_BIT, VK_PIPELINE_STAGE_VERTEX_SHADER_BIT>,
-		EnumValuePair<EnumType::TESSELLATION_CONTROL_SHADER_BIT, VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT>,
-		EnumValuePair<EnumType::TESSELLATION_EVALUATION_SHADER_BIT, VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT>,
-		EnumValuePair<EnumType::GEOMETRY_SHADER_BIT, VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT>,
-		EnumValuePair<EnumType::FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT>,
-		EnumValuePair<EnumType::EARLY_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT>,
-		EnumValuePair<EnumType::LATE_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT>,
-		EnumValuePair<EnumType::COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT>,
-		EnumValuePair<EnumType::COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT>,
-		EnumValuePair<EnumType::TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT>,
-		EnumValuePair<EnumType::BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT>,
-		EnumValuePair<EnumType::HOST_BIT, VK_PIPELINE_STAGE_HOST_BIT>,
-		EnumValuePair<EnumType::ALL_GRAPHICS_BIT, VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT>,
-		EnumValuePair<EnumType::ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT>,
-		EnumValuePair<EnumType::TRANSFORM_FEEDBACK_BIT_EXT, VK_PIPELINE_STAGE_TRANSFORM_FEEDBACK_BIT_EXT>,
-		EnumValuePair<EnumType::CONDITIONAL_RENDERING_BIT_EXT, VK_PIPELINE_STAGE_CONDITIONAL_RENDERING_BIT_EXT>,
-		EnumValuePair<EnumType::ACCELERATION_STRUCTURE_BUILD_BIT_KHR, VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR>,
-		EnumValuePair<EnumType::RAY_TRACING_SHADER_BIT_KHR, VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR>,
-		EnumValuePair<EnumType::TASK_SHADER_BIT_EXT, VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT>,
-		EnumValuePair<EnumType::MESH_SHADER_BIT_EXT, VK_PIPELINE_STAGE_MESH_SHADER_BIT_EXT>,
-		EnumValuePair<EnumType::FRAGMENT_DENSITY_PROCESS_BIT_EXT, VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT>,
-		EnumValuePair<EnumType::FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR, VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR>,
-		EnumValuePair<EnumType::COMMAND_PREPROCESS_BIT_EXT, VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT>,
-		EnumValuePair<EnumType::SHADING_RATE_IMAGE_BIT_NV, VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV>,
-		EnumValuePair<EnumType::RAY_TRACING_SHADER_BIT_NV, VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_NV>,
-		EnumValuePair<EnumType::ACCELERATION_STRUCTURE_BUILD_BIT_NV, VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_NV>,
-		EnumValuePair<EnumType::TASK_SHADER_BIT_NV, VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV>,
-		EnumValuePair<EnumType::MESH_SHADER_BIT_NV, VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV>,
-		EnumValuePair<EnumType::ALL, VK_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM>
-	>;
-};
+// DX12 doesn't have explicit pipeline stage flags like Vulkan
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::EPipelineStageFlags, ???>
+// {
+//     // No DirectX 12 equivalent - pipeline stages are handled automatically
+// };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::ESurfaceTransformFlags, VkSurfaceTransformFlagsKHR>
-{
-	using EnumType = orhi::types::ESurfaceTransformFlags;
-	using type = std::tuple<
-		EnumValuePair<EnumType::NONE, 0>,
-		EnumValuePair<EnumType::IDENTITY_BIT_KHR, VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR>,
-		EnumValuePair<EnumType::ROTATE_90_BIT_KHR, VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR>,
-		EnumValuePair<EnumType::ROTATE_180_BIT_KHR, VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR>,
-		EnumValuePair<EnumType::ROTATE_270_BIT_KHR, VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR>,
-		EnumValuePair<EnumType::HORIZONTAL_MIRROR_BIT_KHR, VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_BIT_KHR>,
-		EnumValuePair<EnumType::HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR, VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_90_BIT_KHR>,
-		EnumValuePair<EnumType::HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR, VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_180_BIT_KHR>,
-		EnumValuePair<EnumType::HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR, VK_SURFACE_TRANSFORM_HORIZONTAL_MIRROR_ROTATE_270_BIT_KHR>,
-		EnumValuePair<EnumType::INHERIT_BIT_KHR, VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR>,
-		EnumValuePair<EnumType::ALL, VK_SURFACE_TRANSFORM_FLAG_BITS_MAX_ENUM_KHR>
-	>;
-};
+// DX12 doesn't have surface transform flags - handled by DXGI
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::ESurfaceTransformFlags, ???>
+// {
+//     // No DirectX 12 equivalent - surface transforms handled by DXGI
+// };
 
 template <>
 struct orhi::utils::MappingFor<orhi::types::EPrimitiveTopology, D3D_PRIMITIVE_TOPOLOGY>
@@ -395,7 +301,7 @@ struct orhi::utils::MappingFor<orhi::types::EPrimitiveTopology, D3D_PRIMITIVE_TO
 		EnumValuePair<EnumType::LINE_STRIP_WITH_ADJACENCY, D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ>,
 		EnumValuePair<EnumType::TRIANGLE_LIST_WITH_ADJACENCY, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ>,
 		EnumValuePair<EnumType::TRIANGLE_STRIP_WITH_ADJACENCY, D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ>,
-		EnumValuePair<EnumType::PATCH_LIST, D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST> // We have many patch lists in the enum?
+		EnumValuePair<EnumType::PATCH_LIST, D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST> // Note: DX12 has multiple patch list types
 	>;
 };
 
@@ -405,8 +311,8 @@ struct orhi::utils::MappingFor<orhi::types::EPolygonMode, D3D12_FILL_MODE>
 	using EnumType = orhi::types::EPolygonMode;
 	using type = std::tuple<
 		EnumValuePair<EnumType::FILL, D3D12_FILL_MODE_SOLID>,
-		EnumValuePair<EnumType::LINE, D3D12_FILL_MODE_WIREFRAME>,
-		EnumValuePair<EnumType::POINT, D3D12_FILL_MODE_SOLID> // DX12 doesn't have point fill mode
+		EnumValuePair<EnumType::LINE, D3D12_FILL_MODE_WIREFRAME>
+		// EnumValuePair<EnumType::POINT, ???> // DX12 doesn't have point fill mode
 	>;
 };
 
@@ -417,8 +323,8 @@ struct orhi::utils::MappingFor<orhi::types::ECullModeFlags, D3D12_CULL_MODE>
 	using type = std::tuple<
 		EnumValuePair<EnumType::NONE, D3D12_CULL_MODE_NONE>,
 		EnumValuePair<EnumType::FRONT_BIT, D3D12_CULL_MODE_FRONT>,
-		EnumValuePair<EnumType::BACK_BIT, D3D12_CULL_MODE_BACK>,
-		EnumValuePair<EnumType::FRONT_AND_BACK, D3D12_CULL_MODE_NONE> // DX12 does not allow culling both front and back
+		EnumValuePair<EnumType::BACK_BIT, D3D12_CULL_MODE_BACK>
+		// EnumValuePair<EnumType::FRONT_AND_BACK, ???> // DX12 doesn't allow culling both front and back
 	>;
 };
 
@@ -479,57 +385,16 @@ struct orhi::utils::MappingFor<orhi::types::EBlendOp, D3D12_BLEND_OP>
 {
 	using EnumType = orhi::types::EBlendOp;
 	using type = std::tuple<
-		EnumValuePair<EnumType::ADD, VK_BLEND_OP_ADD>,
-		EnumValuePair<EnumType::SUBTRACT, VK_BLEND_OP_SUBTRACT>,
-		EnumValuePair<EnumType::REVERSE_SUBTRACT, VK_BLEND_OP_REVERSE_SUBTRACT>,
-		EnumValuePair<EnumType::MIN, VK_BLEND_OP_MIN>,
-		EnumValuePair<EnumType::MAX, VK_BLEND_OP_MAX>,
-		EnumValuePair<EnumType::ZERO_EXT, VK_BLEND_OP_ZERO_EXT>,
-		EnumValuePair<EnumType::SRC_EXT, VK_BLEND_OP_SRC_EXT>,
-		EnumValuePair<EnumType::DST_EXT, VK_BLEND_OP_DST_EXT>,
-		EnumValuePair<EnumType::SRC_OVER_EXT, VK_BLEND_OP_SRC_OVER_EXT>,
-		EnumValuePair<EnumType::DST_OVER_EXT, VK_BLEND_OP_DST_OVER_EXT>,
-		EnumValuePair<EnumType::SRC_IN_EXT, VK_BLEND_OP_SRC_IN_EXT>,
-		EnumValuePair<EnumType::DST_IN_EXT, VK_BLEND_OP_DST_IN_EXT>,
-		EnumValuePair<EnumType::SRC_OUT_EXT, VK_BLEND_OP_SRC_OUT_EXT>,
-		EnumValuePair<EnumType::DST_OUT_EXT, VK_BLEND_OP_DST_OUT_EXT>,
-		EnumValuePair<EnumType::SRC_ATOP_EXT, VK_BLEND_OP_SRC_ATOP_EXT>,
-		EnumValuePair<EnumType::DST_ATOP_EXT, VK_BLEND_OP_DST_ATOP_EXT>,
-		EnumValuePair<EnumType::XOR_EXT, VK_BLEND_OP_XOR_EXT>,
-		EnumValuePair<EnumType::MULTIPLY_EXT, VK_BLEND_OP_MULTIPLY_EXT>,
-		EnumValuePair<EnumType::SCREEN_EXT, VK_BLEND_OP_SCREEN_EXT>,
-		EnumValuePair<EnumType::OVERLAY_EXT, VK_BLEND_OP_OVERLAY_EXT>,
-		EnumValuePair<EnumType::DARKEN_EXT, VK_BLEND_OP_DARKEN_EXT>,
-		EnumValuePair<EnumType::LIGHTEN_EXT, VK_BLEND_OP_LIGHTEN_EXT>,
-		EnumValuePair<EnumType::COLORDODGE_EXT, VK_BLEND_OP_COLORDODGE_EXT>,
-		EnumValuePair<EnumType::COLORBURN_EXT, VK_BLEND_OP_COLORBURN_EXT>,
-		EnumValuePair<EnumType::HARDLIGHT_EXT, VK_BLEND_OP_HARDLIGHT_EXT>,
-		EnumValuePair<EnumType::SOFTLIGHT_EXT, VK_BLEND_OP_SOFTLIGHT_EXT>,
-		EnumValuePair<EnumType::DIFFERENCE_EXT, VK_BLEND_OP_DIFFERENCE_EXT>,
-		EnumValuePair<EnumType::EXCLUSION_EXT, VK_BLEND_OP_EXCLUSION_EXT>,
-		EnumValuePair<EnumType::INVERT_EXT, VK_BLEND_OP_INVERT_EXT>,
-		EnumValuePair<EnumType::INVERT_RGB_EXT, VK_BLEND_OP_INVERT_RGB_EXT>,
-		EnumValuePair<EnumType::LINEARDODGE_EXT, VK_BLEND_OP_LINEARDODGE_EXT>,
-		EnumValuePair<EnumType::LINEARBURN_EXT, VK_BLEND_OP_LINEARBURN_EXT>,
-		EnumValuePair<EnumType::VIVIDLIGHT_EXT, VK_BLEND_OP_VIVIDLIGHT_EXT>,
-		EnumValuePair<EnumType::LINEARLIGHT_EXT, VK_BLEND_OP_LINEARLIGHT_EXT>,
-		EnumValuePair<EnumType::PINLIGHT_EXT, VK_BLEND_OP_PINLIGHT_EXT>,
-		EnumValuePair<EnumType::HARDMIX_EXT, VK_BLEND_OP_HARDMIX_EXT>,
-		EnumValuePair<EnumType::HSL_HUE_EXT, VK_BLEND_OP_HSL_HUE_EXT>,
-		EnumValuePair<EnumType::HSL_SATURATION_EXT, VK_BLEND_OP_HSL_SATURATION_EXT>,
-		EnumValuePair<EnumType::HSL_COLOR_EXT, VK_BLEND_OP_HSL_COLOR_EXT>,
-		EnumValuePair<EnumType::HSL_LUMINOSITY_EXT, VK_BLEND_OP_HSL_LUMINOSITY_EXT>,
-		EnumValuePair<EnumType::PLUS_EXT, VK_BLEND_OP_PLUS_EXT>,
-		EnumValuePair<EnumType::PLUS_CLAMPED_EXT, VK_BLEND_OP_PLUS_CLAMPED_EXT>,
-		EnumValuePair<EnumType::PLUS_CLAMPED_ALPHA_EXT, VK_BLEND_OP_PLUS_CLAMPED_ALPHA_EXT>,
-		EnumValuePair<EnumType::PLUS_DARKER_EXT, VK_BLEND_OP_PLUS_DARKER_EXT>,
-		EnumValuePair<EnumType::MINUS_EXT, VK_BLEND_OP_MINUS_EXT>,
-		EnumValuePair<EnumType::MINUS_CLAMPED_EXT, VK_BLEND_OP_MINUS_CLAMPED_EXT>,
-		EnumValuePair<EnumType::CONTRAST_EXT, VK_BLEND_OP_CONTRAST_EXT>,
-		EnumValuePair<EnumType::INVERT_OVG_EXT, VK_BLEND_OP_INVERT_OVG_EXT>,
-		EnumValuePair<EnumType::RED_EXT, VK_BLEND_OP_RED_EXT>,
-		EnumValuePair<EnumType::GREEN_EXT, VK_BLEND_OP_GREEN_EXT>,
-		EnumValuePair<EnumType::BLUE_EXT, VK_BLEND_OP_BLUE_EXT>
+		EnumValuePair<EnumType::ADD, D3D12_BLEND_OP_ADD>,
+		EnumValuePair<EnumType::SUBTRACT, D3D12_BLEND_OP_SUBTRACT>,
+		EnumValuePair<EnumType::REVERSE_SUBTRACT, D3D12_BLEND_OP_REV_SUBTRACT>,
+		EnumValuePair<EnumType::MIN, D3D12_BLEND_OP_MIN>,
+		EnumValuePair<EnumType::MAX, D3D12_BLEND_OP_MAX>
+		// The following extended blend operations are not supported in DX12:
+		// EnumValuePair<EnumType::ZERO_EXT, ???>,
+		// EnumValuePair<EnumType::SRC_EXT, ???>,
+		// EnumValuePair<EnumType::DST_EXT, ???>,
+		// ... (many more EXT blend operations not supported)
 	>;
 };
 
@@ -603,8 +468,7 @@ struct orhi::utils::MappingFor<orhi::types::EStencilOp, D3D12_STENCIL_OP>
 	>;
 };
 
-// Note: DirectX 12 doesn't have dynamic state like Vulkan
-// Most state is set during PSO creation
+// DirectX 12 doesn't have dynamic state like Vulkan - most state is set during PSO creation
 template <>
 struct orhi::utils::MappingFor<orhi::types::EDynamicState, UINT>
 {
@@ -614,24 +478,16 @@ struct orhi::utils::MappingFor<orhi::types::EDynamicState, UINT>
 		EnumValuePair<EnumType::SCISSOR, 1>, // Always dynamic in DX12
 		EnumValuePair<EnumType::BLEND_CONSTANTS, 2>, // Can be set per command list
 		EnumValuePair<EnumType::STENCIL_REFERENCE, 3> // Can be set per command list
+		// Many other dynamic states from Vulkan don't exist in DX12
 	>;
 };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::EDescriptorPoolCreateFlags, VkDescriptorPoolCreateFlags>
-{
-	using EnumType = orhi::types::EDescriptorPoolCreateFlags;
-	using type = std::tuple<
-		EnumValuePair<EnumType::NONE, 0>,
-		EnumValuePair<EnumType::FREE_DESCRIPTOR_SET_BIT, VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT>,
-		EnumValuePair<EnumType::UPDATE_AFTER_BIND_BIT, VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT>,
-		EnumValuePair<EnumType::HOST_ONLY_BIT_EXT, VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT>,
-		EnumValuePair<EnumType::ALLOW_OVERALLOCATION_SETS_BIT_NV, VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_SETS_BIT_NV>,
-		EnumValuePair<EnumType::ALLOW_OVERALLOCATION_POOLS_BIT_NV, VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV>,
-		EnumValuePair<EnumType::UPDATE_AFTER_BIND_BIT_EXT, VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT>,
-		EnumValuePair<EnumType::HOST_ONLY_BIT_VALVE, VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_VALVE>
-	>;
-};
+// DX12 doesn't have descriptor pool create flags like Vulkan
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::EDescriptorPoolCreateFlags, ???>
+// {
+//     // No DirectX 12 equivalent - descriptor heaps are simpler
+// };
 
 template <>
 struct orhi::utils::MappingFor<orhi::types::ETextureType, D3D12_RESOURCE_DIMENSION>
@@ -644,53 +500,19 @@ struct orhi::utils::MappingFor<orhi::types::ETextureType, D3D12_RESOURCE_DIMENSI
 	>;
 };
 
-// DX12 don't have this?
-template <>
-struct orhi::utils::MappingFor<orhi::types::ETextureTiling, VkImageTiling>
-{
-	using EnumType = orhi::types::ETextureTiling;
-	using type = std::tuple<
-		EnumValuePair<EnumType::OPTIMAL, VK_IMAGE_TILING_OPTIMAL>,
-		EnumValuePair<EnumType::LINEAR, VK_IMAGE_TILING_LINEAR>
-	>;
-};
+// DX12 doesn't have texture tiling like Vulkan - all textures are optimally tiled by default
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::ETextureTiling, ???>
+// {
+//     // No DirectX 12 equivalent - all textures are optimally tiled
+// };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::ETextureLayout, VkImageLayout>
-{
-	using EnumType = orhi::types::ETextureLayout;
-	using type = std::tuple<
-		EnumValuePair<EnumType::UNDEFINED, VK_IMAGE_LAYOUT_UNDEFINED>,
-		EnumValuePair<EnumType::GENERAL, VK_IMAGE_LAYOUT_GENERAL>,
-		EnumValuePair<EnumType::COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL>,
-		EnumValuePair<EnumType::DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL>,
-		EnumValuePair<EnumType::DEPTH_STENCIL_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL>,
-		EnumValuePair<EnumType::SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL>,
-		EnumValuePair<EnumType::TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL>,
-		EnumValuePair<EnumType::TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL>,
-		EnumValuePair<EnumType::PREINITIALIZED, VK_IMAGE_LAYOUT_PREINITIALIZED>,
-		EnumValuePair<EnumType::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL>,
-		EnumValuePair<EnumType::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL>,
-		EnumValuePair<EnumType::DEPTH_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL>,
-		EnumValuePair<EnumType::DEPTH_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL>,
-		EnumValuePair<EnumType::STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL>,
-		EnumValuePair<EnumType::STENCIL_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL>,
-		EnumValuePair<EnumType::READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL>,
-		EnumValuePair<EnumType::ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL>,
-		EnumValuePair<EnumType::PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR>
-	>;
-};
-
-// DX12 has enums 
-template <>
-struct orhi::utils::MappingFor<orhi::types::EFilter, D3D12_FILTER_TYPE>
-{
-	using EnumType = orhi::types::EFilter;
-	using type = std::tuple<
-		EnumValuePair<EnumType::NEAREST, D3D12_FILTER_TYPE_POINT>,
-		EnumValuePair<EnumType::LINEAR, D3D12_FILTER_TYPE_LINEAR>
-	>;
-};
+// DX12 doesn't have explicit texture layouts like Vulkan - handled by resource states
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::ETextureLayout, ???>
+// {
+//     // No DirectX 12 equivalent - uses resource states instead
+// };
 
 template <>
 struct orhi::utils::MappingFor<orhi::types::ESamplerAddressMode, D3D12_TEXTURE_ADDRESS_MODE>
@@ -705,25 +527,99 @@ struct orhi::utils::MappingFor<orhi::types::ESamplerAddressMode, D3D12_TEXTURE_A
 	>;
 };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::ESamplerMipmapMode, VkSamplerMipmapMode>
-{
-	using EnumType = orhi::types::ESamplerMipmapMode;
-	using type = std::tuple<
-		EnumValuePair<EnumType::NEAREST, VK_SAMPLER_MIPMAP_MODE_NEAREST>,
-		EnumValuePair<EnumType::LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR>
-	>;
-};
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::EFilter, D3D12_FILTER_TYPE>
+// {
+// 	using EnumType = orhi::types::EFilter;
+// 	using type = std::tuple<
+// 		EnumValuePair<EnumType::NEAREST, D3D12_FILTER_TYPE_POINT>,
+// 		EnumValuePair<EnumType::LINEAR, D3D12_FILTER_TYPE_LINEAR>
+// 	>;
+// };
+// template <> 
+// struct orhi::utils::MappingFor<orhi::types::ESamplerMipmapMode, D3D12_FILTER>
+// {
+//     // No DirectX 12 equivalent - mipmap filtering is part of D3D12_FILTER
+// };
 
-template <>
-struct orhi::utils::MappingFor<orhi::types::ETextureAspectFlags, VkImageAspectFlags>
+/*
+	DX12 doesn't have separate mipmap modes - it's part of the filter
+	Instead we use GetDX12Filter function to get the appropriate filter based on min/mag/mipmap modes
+	All possible return values from GetDX12Filter:
+	
+	Standard Filtering (anisotropic=false, compareEnabled=false):
+	- NEAREST, NEAREST, NEAREST  -> D3D12_FILTER_MIN_MAG_MIP_POINT (0x0)
+	- LINEAR,  NEAREST, NEAREST  -> D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT (0x10)
+	- NEAREST, LINEAR,  NEAREST  -> D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT (0x4)
+	- LINEAR,  LINEAR,  NEAREST  -> D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT (0x14)
+	- NEAREST, NEAREST, LINEAR   -> D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR (0x1)
+	- LINEAR,  NEAREST, LINEAR   -> D3D12_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR (0x11)
+	- NEAREST, LINEAR,  LINEAR   -> D3D12_FILTER_MIN_POINT_MAG_MIP_LINEAR (0x5)
+	- LINEAR,  LINEAR,  LINEAR   -> D3D12_FILTER_MIN_MAG_MIP_LINEAR (0x15)
+	
+	Comparison Filtering (anisotropic=false, compareEnabled=true):
+	- NEAREST, NEAREST, NEAREST  -> D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT (0x80)
+	- LINEAR,  NEAREST, NEAREST  -> D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT (0x90)
+	- NEAREST, LINEAR,  NEAREST  -> D3D12_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT (0x84)
+	- LINEAR,  LINEAR,  NEAREST  -> D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT (0x94)
+	- NEAREST, NEAREST, LINEAR   -> D3D12_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR (0x81)
+	- LINEAR,  NEAREST, LINEAR   -> D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR (0x91)
+	- NEAREST, LINEAR,  LINEAR   -> D3D12_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR (0x85)
+	- LINEAR,  LINEAR,  LINEAR   -> D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR (0x95)
+	
+	Anisotropic Filtering (anisotropic=true, compareEnabled=false):
+	- (any), (any), NEAREST      -> D3D12_FILTER_MIN_MAG_ANISOTROPIC_MIP_POINT (0x54)
+	- (any), (any), LINEAR       -> D3D12_FILTER_ANISOTROPIC (0x55)
+	
+	Comparison Anisotropic Filtering (anisotropic=true, compareEnabled=true):
+	- (any), (any), NEAREST      -> D3D12_FILTER_COMPARISON_MIN_MAG_ANISOTROPIC_MIP_POINT (0xd4)
+	- (any), (any), LINEAR       -> D3D12_FILTER_COMPARISON_ANISOTROPIC (0xd5)
+
+	TODO:
+	* Add unit tests for GetDX12Filter to ensure all combinations return expected values
+	* Right now VkSamplerReductionMode is not supported, so we don't handle it here, but we can add it later if needed.
+*/
+constexpr D3D12_FILTER GetDX12Filter(
+	orhi::types::EFilter minFilter,
+	orhi::types::EFilter magFilter,
+	orhi::types::EFilter mipmapMode,
+	bool anisotropic,
+	bool compareEnabled
+)
 {
-	using EnumType = orhi::types::ETextureAspectFlags;
-	using type = std::tuple<
-		EnumValuePair<EnumType::COLOR, VK_IMAGE_ASPECT_COLOR_BIT>,
-		EnumValuePair<EnumType::DEPTH, VK_IMAGE_ASPECT_DEPTH_BIT>,
-		EnumValuePair<EnumType::STENCIL, VK_IMAGE_ASPECT_STENCIL_BIT>
-	>;
-};
+	// Handle anisotropic filtering first
+	if (anisotropic)
+	{
+		if (compareEnabled)
+		{
+			// Comparison anisotropic filtering
+			return mipmapMode == orhi::types::EFilter::NEAREST ? 
+				D3D12_FILTER_COMPARISON_MIN_MAG_ANISOTROPIC_MIP_POINT : 
+				D3D12_FILTER_COMPARISON_ANISOTROPIC;
+		}
+		else
+		{
+			// Standard anisotropic filtering
+			return mipmapMode == orhi::types::EFilter::NEAREST ? 
+				D3D12_FILTER_MIN_MAG_ANISOTROPIC_MIP_POINT : 
+				D3D12_FILTER_ANISOTROPIC;
+		}
+	}
+
+	uint32_t filterValue = 
+		static_cast<uint32_t>(mipmapMode) |			// Mip filter: bits 0-1
+		(static_cast<uint32_t>(magFilter) << 2) |	// Mag filter: bits 2-3
+		(static_cast<uint32_t>(minFilter) << 4) |	// Min filter: bits 4-5
+		(compareEnabled ? 0x80 : 0);				// Comparison bit: bit 7 (if enabled)
+
+	return static_cast<D3D12_FILTER>(filterValue);
+}
+
+// DX12 doesn't have texture aspect flags like Vulkan
+// template <>
+// struct orhi::utils::MappingFor<orhi::types::ETextureAspectFlags, ???>
+// {
+//     // No DirectX 12 equivalent - aspects are handled implicitly
+// };
 
 #endif // #if defined(ORHI_COMPILE_DX12)

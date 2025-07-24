@@ -22,8 +22,10 @@ namespace orhi
 	template<>
 	PipelineLayout::TPipelineLayout(
 		Device& p_device,
-		const data::PipelineLayoutDesc& p_desc
-	)
+		const data::PipelineLayoutDesc<BackendTraits>& p_desc
+	) : m_context{
+		.device = p_device
+	}
 	{
 		
 	}

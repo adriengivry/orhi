@@ -11,6 +11,7 @@
 #include <orhi/debug/Assert.h>
 #include <orhi/debug/Log.h>
 #include <orhi/impl/dx12/detail/Types.h>
+#include <orhi/impl/dx12/CommandBuffer.h>
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -21,11 +22,12 @@ namespace orhi
 {
 	template<>
 	CommandPool::TCommandPool(
-		Device& p_device,
-		const data::CommandPoolDesc& p_desc
-	)
+		Device& p_device
+	) : m_context{
+		.device = p_device
+	}
 	{
-		
+
 	}
 
 	template<>
@@ -35,24 +37,13 @@ namespace orhi
 	}
 
 	template<>
-	CommandBuffer& CommandPool::AllocateCommandBuffer(
+	std::vector<std::reference_wrapper<CommandBuffer>> CommandPool::AllocateCommandBuffers(
+		uint32_t p_count,
 		types::ECommandBufferLevel p_level
 	)
 	{
-		static CommandBuffer* commandBuffer = nullptr;
-		return *commandBuffer;
-	}
-
-	template<>
-	void CommandPool::DeallocateCommandBuffer(CommandBuffer& p_commandBuffer)
-	{
-		
-	}
-
-	template<>
-	void CommandPool::Reset()
-	{
-		
+		std::vector<std::reference_wrapper<CommandBuffer>> output;
+		return output;
 	}
 }
 

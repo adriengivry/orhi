@@ -8,12 +8,9 @@
 
 #include <orhi/api/TInstance.h>
 #include <orhi/impl/dx12/BackendTraits.h>
+#include <orhi/impl/dx12/ComPtr.h>
 
 #include <memory>
-
-#if defined(_WIN32)
-#include <wrl.h>
-#endif
 
 struct IDXGIFactory5;
 struct IDXGIAdapter1;

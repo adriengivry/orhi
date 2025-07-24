@@ -14,9 +14,7 @@
 #include <memory>
 #include <vector>
 
-#if defined(_WIN32)
-#include <wrl.h>
-#endif
+#include <orhi/impl/dx12/ComPtr.h>
 
 struct ID3D12Device;
 

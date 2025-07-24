@@ -21,6 +21,9 @@ namespace orhi
 {
 	template<>
 	Semaphore::TSemaphore(Device& p_device)
+		: m_context {
+			.device = p_device
+		}
 	{
 		
 	}

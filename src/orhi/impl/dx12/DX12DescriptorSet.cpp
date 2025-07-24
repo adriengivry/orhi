@@ -22,8 +22,12 @@ namespace orhi
 	template<>
 	DescriptorSet::TDescriptorSet(
 		Device& p_device,
-		const data::DescriptorSetDesc& p_desc
-	)
+		impl::common::NativeHandle p_handle
+	) :
+		BackendObject(p_handle),
+		m_context {
+			.device = p_device
+		}
 	{
 		
 	}
@@ -35,8 +39,8 @@ namespace orhi
 	}
 
 	template<>
-	void DescriptorSet::UpdateDescriptorSets(
-		std::span<const data::WriteDescriptorSet> p_writes
+	void DescriptorSet::Write(
+		const std::unordered_map<uint32_t, data::DescriptorWriteDesc<BackendTraits>>& p_writeDescs
 	)
 	{
 		

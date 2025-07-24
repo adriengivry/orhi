@@ -9,15 +9,13 @@
 #include <orhi/api/TSwapChain.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/impl/dx12/BackendTraits.h>
+#include <orhi/impl/dx12/ComPtr.h>
 #include <orhi/impl/dx12/Descriptor.h>
 #include <orhi/impl/dx12/Device.h>
 #include <orhi/impl/dx12/Framebuffer.h>
 
 #include <deque>
 
-#if defined(_WIN32)
-#include <wrl.h>
-#endif
 
 struct IDXGISwapChain;
 struct ID3D12Resource;
