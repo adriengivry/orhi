@@ -36,6 +36,7 @@ premake5 [action] [options...]
 - `--compile-mock` — Enable Mock (headless) backend compilation  
 - `--gfxapi=vulkan` — Set Vulkan as the default graphics API
 - `--gfxapi=mock` — Set Mock as the default graphics API
+- `--window-system=xlib|xcb|wayland|none` — Select the window system (linux only) or use headless mode
 
 **Example:**
 ```bash
