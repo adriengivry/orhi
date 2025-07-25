@@ -29,8 +29,9 @@ set_target_properties(6-msaa PROPERTIES
 # Add include directories
 target_include_directories(6-msaa
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/deps/_glm/glm
+        ${CMAKE_SOURCE_DIR}/deps/_glm
         ${CMAKE_SOURCE_DIR}/deps/_glfw/glfw/include
+        ${CMAKE_SOURCE_DIR}/deps/_stb
         ${CMAKE_SOURCE_DIR}/../../include
 )
 
@@ -38,8 +39,27 @@ target_include_directories(6-msaa
 target_link_libraries(6-msaa
     PRIVATE
         glfw
+        stb
+        glm
         orhi
 )
+
+# Add Vulkan libraries if using Vulkan API
+if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
+    target_include_directories(6-msaa PRIVATE ${VULKAN_SDK_PATH}/include)
+    target_link_directories(6-msaa PRIVATE ${VULKAN_LIB_DIR})
+    target_link_libraries(6-msaa PRIVATE ${VULKAN_LIB_NAME})
+    
+    # Add platform-specific libraries
+    if(UNIX AND NOT APPLE)
+        if(DEFINED X11_LIBS)
+            target_link_libraries(6-msaa PRIVATE ${X11_LIBS})
+        endif()
+        if(DEFINED WAYLAND_LIBS)
+            target_link_libraries(6-msaa PRIVATE ${WAYLAND_LIBS})
+        endif()
+    endif()
+endif()
 
 # Configuration-specific settings
 target_compile_definitions(6-msaa

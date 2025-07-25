@@ -29,12 +29,15 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     if (ORHI_WINDOW_SYSTEM STREQUAL "xlib")
         message("+ Xlib window system selected")
         add_compile_definitions(ORHI_USE_XLIB)
+        find_package(X11 REQUIRED)
     elseif (ORHI_WINDOW_SYSTEM STREQUAL "xcb")
         message("+ XCB window system selected")
         add_compile_definitions(ORHI_USE_XCB)
+        find_package(X11 REQUIRED)
     elseif (ORHI_WINDOW_SYSTEM STREQUAL "wayland")
         message("+ Wayland window system selected")
         add_compile_definitions(ORHI_USE_WAYLAND)
+        find_package(Wayland REQUIRED)
     endif()
 endif()
 
@@ -77,12 +80,34 @@ target_include_directories(orhi
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-# Add Vulkan include directories if enabled
+# Add Vulkan include directories and libraries if enabled
 if (ORHI_COMPILE_VULKAN)
     target_include_directories(orhi
         PRIVATE
             ${VULKAN_SDK_PATH}/include
     )
+    
+    # Link against Vulkan library
+    if(WIN32)
+        target_link_directories(orhi PRIVATE ${VULKAN_SDK_PATH}/Lib)
+        target_link_libraries(orhi PRIVATE vulkan-1)
+    else()
+        target_link_directories(orhi PRIVATE ${VULKAN_SDK_PATH}/lib)
+        target_link_libraries(orhi PRIVATE vulkan)
+        
+        # Add X11 libraries for Linux
+        if(UNIX AND NOT APPLE)
+            find_package(X11 REQUIRED)
+            if(ORHI_WINDOW_SYSTEM STREQUAL "xlib")
+                target_link_libraries(orhi PRIVATE ${X11_LIBRARIES})
+            elseif(ORHI_WINDOW_SYSTEM STREQUAL "xcb")
+                target_link_libraries(orhi PRIVATE ${X11_LIBRARIES} ${X11_xcb_LIB} X11-xcb)
+            elseif(ORHI_WINDOW_SYSTEM STREQUAL "wayland")
+                find_package(Wayland REQUIRED)
+                target_link_libraries(orhi PRIVATE ${WAYLAND_LIBRARIES})
+            endif()
+        endif()
+    endif()
 endif()
 
 # Configuration-specific settings

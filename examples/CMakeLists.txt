@@ -22,10 +22,38 @@ elseif(ORHI_EXAMPLES_GFX_API STREQUAL "mock")
     add_compile_definitions(ORHI_SELECT_MOCK)
 endif()
 
-# Get Vulkan SDK path for shader compilation
+# Get Vulkan SDK path for shader compilation and linking
 if(DEFINED ENV{VULKAN_SDK})
     set(VULKAN_SDK_PATH $ENV{VULKAN_SDK})
     message("+ Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
+    
+    # Set up Vulkan for all examples
+    if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
+        # Make Vulkan include directory available to all examples
+        include_directories(${VULKAN_SDK_PATH}/include)
+        
+        # Set up platform-specific Vulkan libraries
+        if(WIN32)
+            set(VULKAN_LIB_DIR ${VULKAN_SDK_PATH}/Lib)
+            set(VULKAN_LIB_NAME vulkan-1)
+        else()
+            set(VULKAN_LIB_DIR ${VULKAN_SDK_PATH}/lib)
+            set(VULKAN_LIB_NAME vulkan)
+        endif()
+        
+        # Add X11 libraries for Linux if needed
+        if(UNIX AND NOT APPLE)
+            find_package(X11 REQUIRED)
+            if(ORHI_WINDOW_SYSTEM STREQUAL "xlib")
+                set(X11_LIBS ${X11_LIBRARIES})
+            elseif(ORHI_WINDOW_SYSTEM STREQUAL "xcb")
+                set(X11_LIBS ${X11_LIBRARIES} ${X11_xcb_LIB} X11-xcb)
+            elseif(ORHI_WINDOW_SYSTEM STREQUAL "wayland")
+                find_package(Wayland REQUIRED)
+                set(WAYLAND_LIBS ${WAYLAND_LIBRARIES})
+            endif()
+        endif()
+    endif()
 else()
     message(WARNING "VULKAN_SDK environment variable not set. Shader compilation may fail.")
     set(VULKAN_SDK_PATH "")
