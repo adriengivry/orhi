@@ -29,22 +29,51 @@ namespace orhi
 {
 	template<>
 	CommandBuffer::TCommandBuffer(
-		impl::common::NativeHandle p_handle
-	) : BackendObject{ p_handle }
+		Device& p_device,
+		CommandPool& p_commandPool
+	) : m_context({ p_device, p_commandPool, nullptr })
 	{
+		auto device = p_device.GetNativeHandle().As<ID3D12Device*>();
+		auto commandAllocator = p_commandPool.GetNativeHandle().As<ID3D12CommandAllocator*>();
+		ORHI_ASSERT(commandAllocator, "Command pool must have a valid command allocator");
+		ORHI_ASSERT(device, "Device must have a valid native handle");
+
+		HRESULT hr = device->CreateCommandList(
+			0, // Node mask
+			D3D12_COMMAND_LIST_TYPE_DIRECT, // Command list type
+			commandAllocator, // Command allocator
+			nullptr, // Initial pipeline state (null for no initial state)
+			IID_PPV_ARGS(&m_context.commandList)
+		);
+
+		ORHI_ASSERT(SUCCEEDED(hr), "Failed to create command list");
+
+		// Close command list first
+		hr = m_context.commandList->Close();
+		ORHI_ASSERT(SUCCEEDED(hr), "Failed to close command list");
+
+		// Set native handle to the command list
+		m_handle = m_context.commandList.Get();
 
 	}
 
 	template<>
 	CommandBuffer::~TCommandBuffer()
 	{
-
 	}
 
 	template<>
 	void CommandBuffer::Reset()
 	{
 		
+		ORHI_ASSERT(m_context.commandList, "Command list must have a valid native handle");
+
+		HRESULT hr = m_context.commandList->Reset(
+			m_context.commandPool.GetNativeHandle().As<ID3D12CommandAllocator*>(),
+			nullptr // Initial pipeline state (null for no initial state)
+		);
+		ORHI_ASSERT(SUCCEEDED(hr), "Failed to reset command list");
+
 	}
 
 	template<>
@@ -53,12 +82,17 @@ namespace orhi
 		// In DirectX 12, command lists are implicitly begun when reset
 		// The flags don't have direct equivalents in DX12
 		// Command recording starts immediately after Reset()
+		Reset();
+
 	}
 
 	template<>
 	void CommandBuffer::End()
 	{
-		
+		// Close the command list to finish recording commands
+		HRESULT hr = m_context.commandList->Close();
+		ORHI_ASSERT(SUCCEEDED(hr), "Failed to close command list");
+		// After closing, the command list is ready to be submitted for execution
 	}
 
 	template<>
@@ -69,7 +103,42 @@ namespace orhi
 		std::initializer_list<data::ClearValue> p_clearValues
 	)
 	{
-		
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+
+
+		std::vector<D3D12_CLEAR_VALUE> clearValues;
+		clearValues.reserve(p_clearValues.size());
+
+		for (const auto& clearValue : p_clearValues)
+		{
+			if (auto colorClearValue = std::get_if<data::ColorClearValue>(&clearValue); colorClearValue)
+			{
+				clearValues.push_back(D3D12_CLEAR_VALUE{
+					.Color = {
+						colorClearValue->x,
+						colorClearValue->y,
+						colorClearValue->z,
+						colorClearValue->w
+					}
+					});
+			}
+			else if (auto depthStencilClearValue = std::get_if<data::DepthStencilClearValue>(&clearValue); depthStencilClearValue)
+			{
+				clearValues.push_back(D3D12_CLEAR_VALUE{
+					.DepthStencil = {
+						.Depth = depthStencilClearValue->depth,
+						.Stencil = static_cast<uint8_t>(depthStencilClearValue->stencil)
+					}
+					});
+			}
+			else
+			{
+				ORHI_ASSERT(false, "Unsupported clear value type");
+			}
+		}
+
+		// commandList->OMSetRenderTargets();
+
 	}
 
 	template<>
@@ -124,6 +193,14 @@ namespace orhi
 		types::EIndexType p_indexType
 	)
 	{
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+		D3D12_INDEX_BUFFER_VIEW indexBufferView;
+		indexBufferView.BufferLocation = p_indexBuffer.GetNativeHandle().As<ID3D12Resource*>()->GetGPUVirtualAddress() + p_offset;
+		// indexBufferView.SizeInBytes = static_cast<UINT>(p_indexBuffer.GetSize() - p_offset);
+		indexBufferView.Format = orhi::utils::EnumToValue<DXGI_FORMAT>(p_indexType);
+
+		commandList->IASetIndexBuffer(&indexBufferView);
 	}
 
 	template<>
@@ -140,12 +217,40 @@ namespace orhi
 		// Maybe use a compute shader to do the blit?
 	}
 
+	// When using vertex buffers in dx12, you go through the vertex buffer view
 	template<>
 	void CommandBuffer::BindVertexBuffers(
 		std::span<const std::reference_wrapper<Buffer>> p_buffers,
 		std::span<const uint64_t> p_offsets
 	)
 	{
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+		// Ensure the number of buffers matches the number of offsets
+		ORHI_ASSERT(p_buffers.size() == p_offsets.size(), "Number of buffers must match number of offsets");
+		std::vector<ID3D12Resource*> dxBuffers;
+		dxBuffers.reserve(p_buffers.size());
+		for (const auto& buffer : p_buffers)
+		{
+			dxBuffers.push_back(buffer.get().GetNativeHandle().As<ID3D12Resource*>());
+		}
+		std::vector<D3D12_VERTEX_BUFFER_VIEW> vertexBufferViews;
+		vertexBufferViews.reserve(p_buffers.size());
+		for (size_t i = 0; i < p_buffers.size(); ++i)
+		{
+			const auto& buffer = p_buffers[i].get();
+			D3D12_VERTEX_BUFFER_VIEW vbv = {};
+			vbv.BufferLocation = buffer.GetNativeHandle().As<ID3D12Resource*>()->GetGPUVirtualAddress() + p_offsets[i];
+			//vbv.SizeInBytes = static_cast<UINT>(buffer.GetSize() - p_offsets[i]);
+			//vbv.StrideInBytes = buffer.GetStride();
+			vertexBufferViews.push_back(vbv);
+		}
+		commandList->IASetVertexBuffers(
+			0, // Start slot
+			static_cast<UINT>(vertexBufferViews.size()), // Number of buffers
+			vertexBufferViews.data() // Array of buffers
+		);
+
 	}
 
 	template<>

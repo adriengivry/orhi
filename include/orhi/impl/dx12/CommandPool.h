@@ -10,6 +10,7 @@
 #include <orhi/impl/dx12/BackendTraits.h>
 #include <orhi/impl/dx12/CommandBuffer.h>
 #include <orhi/impl/dx12/Device.h>
+#include "ComPtr.h"
 
 #include <deque>
 
@@ -20,7 +21,7 @@ namespace orhi::impl::dx12
 	struct CommandPoolContext
 	{
 		Device& device;
-		std::deque<CommandBuffer> commandBuffers;
+		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator;
 	};
 
 	using CommandPool = api::TCommandPool<BackendTraits>;

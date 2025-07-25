@@ -27,6 +27,15 @@ namespace orhi
 		.device = p_device
 	}
 	{
+		auto device = p_device.GetNativeHandle().As<ID3D12Device*>();
+		ORHI_ASSERT(device, "Device must have a valid native handle");
+
+		HRESULT hr = device->CreateCommandAllocator(
+			D3D12_COMMAND_LIST_TYPE_DIRECT, // Command list type
+			IID_PPV_ARGS(&m_context.commandAllocator)
+		);
+		ORHI_ASSERT(SUCCEEDED(hr), "Failed to create command allocator");
+		m_handle = m_context.commandAllocator.Get();
 
 	}
 

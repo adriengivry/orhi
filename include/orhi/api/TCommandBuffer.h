@@ -26,6 +26,7 @@
 
 namespace orhi::api
 {
+	template<typename BackendTraits> class TDevice;
 	template<typename BackendTraits> class TBuffer;
 	template<typename BackendTraits> class TDescriptorSet;
 	template<typename BackendTraits> class TFramebuffer;
@@ -33,6 +34,7 @@ namespace orhi::api
 	template<typename BackendTraits> class TPipelineLayout;
 	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TTexture;
+	template<typename BackendTraits> class TCommandPool;
 
 	/**
 	* @brief A command buffer for recording and submitting GPU commands
@@ -49,9 +51,12 @@ namespace orhi::api
 	public:
 		/**
 		* @brief Creates a command buffer from a native handle
-		* @param p_handle Native handle to the underlying command buffer object
+		* @param device Reference to the device that will own this command buffer
+		* @param commandPool Reference to the command pool that will manage this command buffer
+
 		*/
-		TCommandBuffer(impl::common::NativeHandle p_handle);
+		TCommandBuffer(TDevice<BackendTraits>& device,
+			TCommandPool<BackendTraits>& commandPool);
 
 		/**
 		* @brief Destroys the command buffer and releases associated resources
