@@ -9,7 +9,7 @@
 #include <orhi/api/TSwapChain.h>
 #include <orhi/data/SwapChainDesc.h>
 #include <orhi/impl/dx12/BackendTraits.h>
-#include <orhi/impl/dx12/ComPtr.h>
+#include <orhi/impl/dx12/detail/ComPtr.h>
 #include <orhi/impl/dx12/Descriptor.h>
 #include <orhi/impl/dx12/Device.h>
 #include <orhi/impl/dx12/Framebuffer.h>
