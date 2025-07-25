@@ -12,6 +12,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Define options
 option(ORHI_COMPILE_VULKAN "Compile Vulkan backend" OFF)
 option(ORHI_COMPILE_MOCK "Compile Mock backend" OFF)
+option(ORHI_GENERATE_EXAMPLES "Generate examples" OFF)
 
 # Window system selection
 set(ORHI_WINDOW_SYSTEM "xlib" CACHE STRING "Select window management system")
@@ -104,4 +105,11 @@ target_compile_options(orhi
 )
 
 message("OpenRHI project generation complete.")
+
+# Include examples if the option is enabled
+if(ORHI_GENERATE_EXAMPLES)
+    message("Generating examples...")
+    add_subdirectory(examples)
+endif()
+
 message("-------------------------------------------")

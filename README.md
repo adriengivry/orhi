@@ -12,7 +12,7 @@ Write hardware-agnostic graphics code once, and run it seamlessly across multipl
 - ⛓️‍💥 **Standalone:** Zero external dependencies
 - 📃 **Documented:** Comprehensive source code documentation
 - 🌈 **Cross-platform:** Native support for Windows, macOS, and Linux
-- ⚙️ **Build-ready:** Quick setup with [Premake5](https://premake.github.io/) or [CMake](https://cmake.org/)
+- ⚙️ **Build-ready:** Quick setup with [CMake](https://cmake.org/)
 
 **Goals:**
 - Provide a thin, explicit abstraction over modern graphics APIs
@@ -48,11 +48,12 @@ Write hardware-agnostic graphics code once, and run it seamlessly across multipl
 
 ## Configuration
 ### Build Options
-| Option | CMake Option | Premake5 Option | Allowed Values |
-| - | - | - | - |
-| Compile Vulkan backend | `DORHI_COMPILE_VULKAN` |  `--compile-vulkan` | - |
-| Compile Mock backend | `DORHI_COMPILE_MOCK` | `--compile-mock` | - |
-| Select the window system to use when compiling for linux or to use the headless mode | `ORHI_WINDOW_SYSTEM=STRING` | `--window-system=STRING` | `xlib`&nbsp;(linux)<br>`xcb`&nbsp;(linux)<br>`wayland`&nbsp;(linux)<br>`none`&nbsp;(headless) |
+| Option | CMake Option | Allowed Values |
+| - | - | - |
+| Compile Vulkan backend | `ORHI_COMPILE_VULKAN` | - |
+| Compile Mock backend | `ORHI_COMPILE_MOCK` | - |
+| Generate examples | `ORHI_GENERATE_EXAMPLES` | - |
+| Select the window system to use when compiling for linux or to use the headless mode | `ORHI_WINDOW_SYSTEM` | `xlib`&nbsp;(linux)<br>`xcb`&nbsp;(linux)<br>`wayland`&nbsp;(linux)<br>`none`&nbsp;(headless) |
 
 > [!NOTE]
 > **OpenRHI** currently builds only as a static library.
