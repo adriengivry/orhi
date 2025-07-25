@@ -64,7 +64,7 @@ else()
 endif()
 
 # Compile shaders
-compile_shaders(6-msaa)
+compile_shaders(6-msaa "${SHADERS}")
 
 # Copy assets if they exist
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/assets)

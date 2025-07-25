@@ -66,7 +66,7 @@ else()
 endif()
 
 # Compile shaders
-compile_shaders(5-mipmaps)
+compile_shaders(5-mipmaps "${SHADERS}")
 
 # Copy assets if they exist
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/assets)

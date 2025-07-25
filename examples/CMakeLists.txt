@@ -32,23 +32,13 @@ else()
 endif()
 
 # Function to compile shaders for a project
-function(compile_shaders TARGET_NAME)
-    # Get all shader files from the project directory
-    file(GLOB_RECURSE SHADER_FILES 
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.vert"
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.frag"
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.comp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.geom"
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.tesc"
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.tese"
-    )
-    
+function(compile_shaders TARGET_NAME SHADER_SOURCES)
     # Create output directory
     set(SHADER_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders")
     file(MAKE_DIRECTORY ${SHADER_OUTPUT_DIR})
     
-    # Add custom commands for each shader
-    foreach(SHADER ${SHADER_FILES})
+    # Set source file properties for shader files
+    foreach(SHADER ${SHADER_SOURCES})
         get_filename_component(SHADER_NAME ${SHADER} NAME)
         get_filename_component(SHADER_EXT ${SHADER} EXT)
         string(REPLACE "." "" SHADER_EXT ${SHADER_EXT})
@@ -61,6 +51,7 @@ function(compile_shaders TARGET_NAME)
                 COMMAND ${VULKAN_SDK_PATH}/bin/glslangValidator.exe -V ${SHADER} -o ${SHADER_OUT}
                 DEPENDS ${SHADER}
                 COMMENT "Compiling ${SHADER_EXT} shader: ${SHADER_NAME}"
+                VERBATIM
             )
         else()
             add_custom_command(
@@ -68,22 +59,18 @@ function(compile_shaders TARGET_NAME)
                 COMMAND ${VULKAN_SDK_PATH}/bin/glslangValidator -V ${SHADER} -o ${SHADER_OUT}
                 DEPENDS ${SHADER}
                 COMMENT "Compiling ${SHADER_EXT} shader: ${SHADER_NAME}"
+                VERBATIM
             )
         endif()
         
         list(APPEND SHADER_OUTPUTS ${SHADER_OUT})
+        # Add shader output to target sources
+        target_sources(${TARGET_NAME} PRIVATE ${SHADER_OUT})
     endforeach()
     
-    # Create a custom target for the shaders
-    if(SHADER_OUTPUTS)
-        add_custom_target(
-            ${TARGET_NAME}_shaders
-            DEPENDS ${SHADER_OUTPUTS}
-        )
-        
-        # Make the main target depend on the shaders
-        add_dependencies(${TARGET_NAME} ${TARGET_NAME}_shaders)
-    endif()
+    # Set a source group for shader files to organize them in IDEs
+    source_group("Shader Files" FILES ${SHADER_SOURCES})
+    source_group("Compiled Shaders" FILES ${SHADER_OUTPUTS})
 endfunction()
 
 # Function to copy assets
