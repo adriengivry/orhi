@@ -17,7 +17,7 @@ namespace orhi::types
 	* pipelines can be bound, determining how resources are accessed
 	* by different types of rendering operations.
 	*/
-	enum class EPipelineBindPoint
+	enum class EPipelineBindPoint : uint32_t
 	{
 		GRAPHICS = 0,
 		COMPUTE = 1,

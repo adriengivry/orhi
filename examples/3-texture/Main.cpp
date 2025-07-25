@@ -29,8 +29,10 @@
 #include <GLFW/glfw3.h>
 #if defined(_WIN32) || defined(_WIN64)
 #define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
+#elif defined(__linux__)
+#define GLFW_EXPOSE_NATIVE_X11
 #endif
+#include <GLFW/glfw3native.h>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -50,18 +52,25 @@
 
 namespace
 {
+	orhi::data::WindowDesc GetWindowDesc(GLFWwindow* window)
+	{
+#if defined(_WIN32) || defined(_WIN64)
+		return orhi::data::Win32WindowDesc{
+			.hwnd = glfwGetWin32Window(window)
+		};
+#elif defined(__linux__)
+		return orhi::data::X11WindowDesc{
+			.dpy = glfwGetX11Display(),
+			.window = glfwGetX11Window(window)
+		};
+#endif
+	}
+
 	orhi::math::Extent2D GetWindowSize(GLFWwindow* window)
 	{
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
-	}
-
-	std::vector<std::string> GetGlfwRequiredExtensions()
-	{
-		uint32_t count = 0;
-		const char** extensions = glfwGetRequiredInstanceExtensions(&count);
-		return { extensions, extensions + count };
 	}
 
 	std::vector<std::byte> ReadShaderFile(const std::filesystem::path& p_fileName)
@@ -161,9 +170,7 @@ int main()
 	// Create instance and device
 	orhi::Instance instance(orhi::data::InstanceDesc{
 		.debug = true,
-		.extensions = GetGlfwRequiredExtensions(),
-		.win32_windowHandle = glfwGetWin32Window(window),
-		.win32_instanceHandle = GetModuleHandle(nullptr)
+		.window = GetWindowDesc(window)
 	});
 
 	const auto& devices = instance.GetSuitableDevices();

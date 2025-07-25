@@ -6,7 +6,9 @@
 
 #pragma once
 
-#include <cstdint>
+#include <orhi/data/WindowDesc.h>
+
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -23,7 +25,6 @@ namespace orhi::data
 	{
 		bool debug;
 		std::vector<std::string> extensions;
-		void* win32_windowHandle; // is the Win32 HWND for the window to associate the surface with.
-		void* win32_instanceHandle; // is the Win32 HINSTANCE for the window to associate the surface with.
+		std::optional<WindowDesc> window;
 	};
 }

@@ -24,20 +24,18 @@ project "5-mipmaps"
 	includedirs {
 		depsdir .. "_glm/glm",
 		depsdir .. "_glfw/glfw/include",
-		depsdir .. "_stb/stb",
+		depsdir .. "_stb",
 		"%{wks.location}../../include",
 	}
 
 	links {
 		"glfw",
-		"glm",
-		"stb",
 		"orhi"
 	}
 
 	-- Copy assets folder to output directory
 	postbuildcommands {
-		"{COPYDIR} %{prj.location}assets %{cfg.targetdir}/assets"
+		"{COPYDIR} %{prj.location}/assets %{cfg.targetdir}/assets"
 	}
 
 	-- Add shader compilation rules

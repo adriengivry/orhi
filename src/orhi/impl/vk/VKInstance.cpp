@@ -6,8 +6,28 @@
 
 #if defined(ORHI_COMPILE_VULKAN)
 
-#if defined(_WIN32) || defined(_WIN64)
-#define VK_USE_PLATFORM_WIN32_KHR
+#if !defined(ORHI_HEADLESS)
+	#if defined(_WIN32) || defined(_WIN64)
+		#define VK_USE_PLATFORM_WIN32_KHR
+	#elif defined(__linux__)
+		#if defined(ORHI_USE_XLIB)
+			#define VK_USE_PLATFORM_XLIB_KHR
+			#include <X11/Xlib.h>
+		#elif defined(ORHI_USE_XCB)
+			#define VK_USE_PLATFORM_XCB_KHR
+			#include <X11/Xlib-xcb.h>
+		#elif defined(ORHI_USE_WAYLAND)
+			#define VK_USE_PLATFORM_WAYLAND_KHR
+			#include <wayland-client.h>
+		#else
+			#error "No window system defined for Linux platform. Please define ORHI_USE_X11, ORHI_USE_XCB, or ORHI_USE_WAYLAND."
+		#endif
+	#elif defined(__APPLE__)
+		#define VK_USE_PLATFORM_METAL_EXT
+		#include <Cocoa/Cocoa.h>
+	#endif
+#else
+	#error "Headless mode not supported for Vulkan backend (yet)"
 #endif
 
 #include <orhi/impl/vk/Instance.h>
@@ -25,7 +45,6 @@
 
 #include <vulkan/vulkan.h>
 
-#include <format>
 #include <list>
 #include <optional>
 #include <set>
@@ -55,6 +74,112 @@ namespace
 
 	// Actual logical devices
 	std::list<Device> g_createdDevices;
+
+	VkSurfaceKHR CreateSurface(VkInstance p_instance, const orhi::data::WindowDesc& p_windowDesc)
+	{
+		VkSurfaceKHR surface = VK_NULL_HANDLE;
+
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+		ORHI_ASSERT(std::get_if<orhi::data::Win32WindowDesc>(&p_windowDesc), "window desc is not a Win32WindowDesc");
+
+		const auto& desc = std::get<orhi::data::Win32WindowDesc>(p_windowDesc);
+
+		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+			.hwnd = static_cast<HWND>(desc.hwnd)
+		};
+
+		VkResult result = vkCreateWin32SurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Win32 surface");
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+		ORHI_ASSERT(std::get_if<orhi::data::X11WindowDesc>(&p_windowDesc), "window desc is not a X11WindowDesc");
+
+		const auto& desc = std::get<orhi::data::X11WindowDesc>(p_windowDesc);
+
+		VkXlibSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,
+			.dpy = static_cast<::Display*>(desc.dpy),
+			.window = static_cast<::Window>(desc.window)
+		};
+
+		VkResult result = vkCreateXlibSurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create X11 surface");
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+		ORHI_ASSERT(std::get_if<orhi::data::X11WindowDesc>(&p_windowDesc), "window desc is not a X11WindowDesc");
+
+		const auto& desc = std::get<orhi::data::X11WindowDesc>(p_windowDesc);
+
+		const auto xcbConnection = XGetXCBConnection(static_cast<::Display*>(desc.dpy));
+		ORHI_ASSERT(xcbConnection, "Failed to get XCB connection from X11 display");
+
+		VkXcbSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,
+			.connection = xcbConnection,
+			.window = static_cast<xcb_window_t>(desc.window)
+		};
+
+		VkResult result = vkCreateXcbSurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create XCB surface");
+#elif defined(VK_USE_PLATFORM_WAYLAND)
+		ORHI_ASSERT(std::get_if<orhi::data::WaylandWindowDesc>(&p_windowDesc), "window desc is not a WaylandWindowDesc");
+
+		const auto& desc = std::get<orhi::data::WaylandWindowDesc>(p_windowDesc);
+
+		VkWaylandSurfaceCreateInfoKHR surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
+			.display = static_cast<wl_display*>(desc.display),
+			.surface = static_cast<wl_surface*>(desc.surface)
+		};
+
+		VkResult result = vkCreateWaylandSurfaceKHR(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Wayland surface");
+#elif defined(VK_USE_PLATFORM_METAL_EXT)
+		ORHI_ASSERT(std::get_if<orhi::data::WaylandWindowDesc>(&p_windowDesc), "window desc is not a MetalWindowDesc");
+
+		const auto& desc = std::get<orhi::data::WaylandWindowDesc>(p_windowDesc);
+
+		VkMetalSurfaceCreateInfoEXT surfaceCreateInfo{
+			.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
+			.pNext = nullptr,
+			.pLayer = static_cast<CAMetalLayer*>(desc.caMetalLayer)
+		};
+
+		VkResult result = vkCreateMetalSurfaceEXT(
+			p_instance,
+			&surfaceCreateInfo,
+			nullptr,
+			&surface
+		);
+
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to create Metal surface");
+#endif
+
+		return surface;
+	}
 
 	bool IsSwapChainAdequate(const detail::SwapChainSupportDetails& p_swapChainSupportDetails)
 	{
@@ -93,7 +218,9 @@ namespace
 		}
 
 		// For example, we can require a physical device to be a discrete GPU 
-		return p_device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+		// return p_device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+
+		return true;
 	}
 
 	VkSampleCountFlags GetMaxSampleCount(VkPhysicalDeviceProperties p_deviceProperties)
@@ -159,6 +286,26 @@ namespace orhi
 			requestedExtensions.emplace_back(extension, true); // "true" to make it required
 		}
 
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
+		requestedExtensions.emplace_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME, true);
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
+		requestedExtensions.emplace_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME, true);
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
+		requestedExtensions.emplace_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME, true);
+#elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
+		requestedExtensions.emplace_back(VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME, true);
+#elif defined(VK_USE_PLATFORM_METAL_EXT)
+		requestedExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME, true);
+		requestedExtensions.emplace_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME, true);
+#else
+		// No selected window system, so no surface/swap chain support.
+		// This is useful for headless rendering or compute-only applications.
+#endif
+
 		std::vector<detail::RequestedValidationLayer> requestedValidationLayers;
 
 		if (useDebugUtilsExtension)
@@ -219,26 +366,18 @@ namespace orhi
 			g_debugMessenger = std::make_unique<detail::DebugMessenger>(m_handle.As<VkInstance>(), *debugUtilsMessengerCreateInfo);
 		}
 
-		ORHI_ASSERT(p_desc.win32_windowHandle && p_desc.win32_instanceHandle, "incomplete surface desc");
-
-#if defined(_WIN32) || defined(_WIN64)
-		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo{
-			.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-			.hinstance = static_cast<HINSTANCE>(p_desc.win32_instanceHandle),
-			.hwnd = static_cast<HWND>(p_desc.win32_windowHandle)
-		};
-
-		result = vkCreateWin32SurfaceKHR(
-			m_handle.As<VkInstance>(),
-			&surfaceCreateInfo,
-			nullptr,
-			&m_context.surface
-		);
-
-		ORHI_ASSERT(result == VK_SUCCESS, "failed to create window surface!");
-#else
-#error Other platforms than Windows aren't supported yet
-#endif
+		if (p_desc.window.has_value())
+		{
+			m_context.surface = CreateSurface(
+				m_handle.As<VkInstance>(),
+				p_desc.window.value()
+			);
+		}
+		else
+		{
+			ORHI_LOG_INFO("No window description provided, no surface will be created.");
+			m_context.surface = VK_NULL_HANDLE;
+		}
 
 		uint32_t deviceCount = 0;
 		vkEnumeratePhysicalDevices(m_handle.As<VkInstance>(), &deviceCount, nullptr);
@@ -284,8 +423,12 @@ namespace orhi
 		{
 			if (IsDeviceSuitable(device, m_context.surface))
 			{
-				ORHI_LOG_INFO(std::format("Suitable device found: {}", device.properties.deviceName));
+				ORHI_LOG_INFO("Suitable device found: " + std::string(device.properties.deviceName));
 				g_suitableDeviceInfos.emplace_back(device.info);
+			}
+			else
+			{
+				ORHI_LOG_INFO("Device not suitable: " + std::string(device.properties.deviceName));
 			}
 		}
 	}
@@ -295,6 +438,7 @@ namespace orhi
 	{
 		g_debugMessenger.reset();
 		g_createdDevices.clear();
+		vkDestroySurfaceKHR(m_handle.As<VkInstance>(), m_context.surface, nullptr);
 		vkDestroyInstance(m_handle.As<VkInstance>(), nullptr);
 	}
 

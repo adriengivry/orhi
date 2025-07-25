@@ -1,5 +1,5 @@
 project "stb"
-	kind "SharedItems"
+	kind "StaticLib"
 
 	files {
 		"stb/stb_image.h",

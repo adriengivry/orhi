@@ -17,6 +17,7 @@ using namespace orhi::impl::vk;
 
 namespace orhi
 {
+	template<>
 	Fence::TFence(Device& p_device, bool p_createSignaled) :
 		m_context{
 			.device = p_device
@@ -37,6 +38,7 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create fence");
 	}
 
+	template<>
 	Fence::~TFence()
 	{
 		vkDestroyFence(
@@ -54,7 +56,7 @@ namespace orhi
 			1UL,
 			&m_handle.ReinterpretAs<VkFence&>(),
 			VK_TRUE,
-			p_timeout.value_or(std::numeric_limits<decltype(p_timeout)::value_type>::max())
+			p_timeout.value_or(UINT64_MAX)
 		);
 	}
 

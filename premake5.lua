@@ -18,6 +18,38 @@ project "orhi"
 		description = "Compile Mock backend",
 	}
 
+	newoption {
+		trigger = "window-system",
+		value = "xlib|xcb|wayland|none",
+		default = "xlib",
+		description = "Select window management system",
+		allowed = {
+			{ "xlib", "X11 Xlib Client" },
+			{ "xcb", "X11 XCB Client" },
+			{ "wayland", "Wayland Client" },
+			{ "none", "Headless Mode" }
+		}
+	}
+
+	if _OPTIONS["window-system"] == "none" then
+		print("+ Headless mode selected")
+		defines { "ORHI_HEADLESS" }
+	end
+
+	filter { "system:linux" }
+		if _OPTIONS["window-system"] == "xlib" then
+			print("+ Xlib window system selected")
+			defines { "ORHI_USE_XLIB" }
+		elseif _OPTIONS["window-system"] == "xcb" then
+			print("+ XCB window system selected")
+			defines { "ORHI_USE_XCB" }
+		elseif _OPTIONS["window-system"] == "wayland" then
+			print("+ Wayland window system selected")
+			defines { "ORHI_USE_WAYLAND" }
+		end
+
+	filter {}
+
 	if _OPTIONS["compile-vulkan"] then
 		print("+ Vulkan backend selected for compilation")
 		defines { "ORHI_COMPILE_VULKAN" }
@@ -54,15 +86,6 @@ project "orhi"
 			"%{os.getenv('VULKAN_SDK')}/include"
 		}
 
-	-- Add Vulkan library if enabled
-	filter { "options:compile-vulkan" }
-		links {
-			"vulkan-1"
-		}
-		libdirs {
-			"%{os.getenv('VULKAN_SDK')}/lib"
-		}
-
 	filter { "configurations:Debug" }
 		defines { "DEBUG" }
 		symbols "On"
@@ -70,6 +93,8 @@ project "orhi"
 	filter { "configurations:Release" }
 		defines { "NDEBUG" }
 		optimize "On"
+
+	filter{}
 	
 	print("OpenRHI project generation complete.")
 	print("-------------------------------------------")

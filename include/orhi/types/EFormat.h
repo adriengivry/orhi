@@ -17,7 +17,7 @@ namespace orhi::types
 	* and render targets. Includes various combinations of component counts,
 	* bit depths, numeric representations, and color spaces.
 	*/
-	enum class EFormat
+	enum class EFormat : uint32_t
 	{
 		UNDEFINED = 0,
 		R4G4_UNORM_PACK8 = 1,

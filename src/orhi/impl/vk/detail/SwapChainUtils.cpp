@@ -61,7 +61,7 @@ namespace
 	// But we must specify the resolution in the correct unit.
 	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& p_capabilities, VkExtent2D p_windowExtent)
 	{
-		if (p_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+		if (p_capabilities.currentExtent.width != UINT32_MAX)
 		{
 			return p_capabilities.currentExtent;
 		}

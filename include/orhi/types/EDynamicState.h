@@ -8,6 +8,8 @@
 
 #include <orhi/utils/BitmaskOperators.h>
 
+#include <cstdint>
+
 namespace orhi::types
 {
 	/**

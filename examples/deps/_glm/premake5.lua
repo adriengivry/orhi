@@ -1,5 +1,5 @@
 project "glm"
-	kind "SharedItems"
+	kind "StaticLib"
 
 	files {
 		"glm/glm/**.h",

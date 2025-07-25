@@ -29,6 +29,22 @@ workspace "orhi-examples"
 	filter { "options:gfxapi=mock" }
 		defines { "ORHI_SELECT_MOCK" }
 
+	filter { "options:compile-vulkan" }
+		libdirs {
+			"%{os.getenv('VULKAN_SDK')}/lib"
+		}
+
+	filter { "options:compile-vulkan", "system:windows" }
+		links {
+			"vulkan-1"
+		}
+
+	filter { "options:compile-vulkan", "system:linux" }
+		links {
+			"vulkan",
+			"X11-xcb"
+		}
+
 outputdir = "%{wks.location}/../bin/"
 objoutdir = "%{wks.location}/../obj/"
 depsdir = "%{wks.location}/deps/"
@@ -41,9 +57,19 @@ function addShaderCompilation()
 	local function addShaderRule(extension, shaderType)
 		filter("files:**." .. extension)
 			buildmessage("Compiling " .. shaderType .. " shader %{file.name}")
+			
+		-- Platform-specific commands
+		filter { "files:**." .. extension, "system:windows" }
 			buildcommands {
 				"if not exist \"" .. shadersOutputDir .. "\" mkdir \"" .. shadersOutputDir .. "\"",
 				"\"" .. vulkanSDK .. "\\bin\\glslangValidator.exe\" -V \"%{file.relpath}\" -o \"" .. shadersOutputDir .. "%{file.basename}." .. extension .. ".spv\""
+			}
+			buildoutputs { shadersOutputDir .. "%{file.basename}." .. extension .. ".spv" }
+			
+		filter { "files:**." .. extension, "system:linux" }
+			buildcommands {
+				"mkdir -p \"" .. shadersOutputDir .. "\"",
+				"\"" .. vulkanSDK .. "/bin/glslangValidator\" -V \"%{file.relpath}\" -o \"" .. shadersOutputDir .. "%{file.basename}." .. extension .. ".spv\""
 			}
 			buildoutputs { shadersOutputDir .. "%{file.basename}." .. extension .. ".spv" }
 	end

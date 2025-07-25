@@ -15,6 +15,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include <cstring>
+
 using namespace orhi::impl::vk;
 
 namespace orhi
@@ -47,6 +49,28 @@ namespace orhi
 	}
 
 	template<>
+	bool Buffer::IsAllocated() const
+	{
+		return
+			m_context.memory != VK_NULL_HANDLE &&
+			m_context.allocatedBytes > 0;
+	}
+
+	template<>
+	void Buffer::Deallocate()
+	{
+		ORHI_ASSERT(IsAllocated(), "Cannot deallocate a buffer that isn't allocated");
+
+		vkFreeMemory(
+			m_context.device.GetNativeHandle().As<VkDevice>(),
+			m_context.memory,
+			nullptr
+		);
+
+		m_context.memory = VK_NULL_HANDLE;
+	}
+
+	template<>
 	Buffer::~TBuffer()
 	{
 		if (IsAllocated())
@@ -59,14 +83,6 @@ namespace orhi
 			m_handle.As<VkBuffer>(),
 			nullptr
 		);
-	}
-
-	template<>
-	bool Buffer::IsAllocated() const
-	{
-		return
-			m_context.memory != VK_NULL_HANDLE &&
-			m_context.allocatedBytes > 0;
 	}
 
 	template<>
@@ -110,20 +126,6 @@ namespace orhi
 		);
 
 		m_context.allocatedBytes = memRequirements.size;
-	}
-
-	template<>
-	void Buffer::Deallocate()
-	{
-		ORHI_ASSERT(IsAllocated(), "Cannot deallocate a buffer that isn't allocated");
-
-		vkFreeMemory(
-			m_context.device.GetNativeHandle().As<VkDevice>(),
-			m_context.memory,
-			nullptr
-		);
-
-		m_context.memory = VK_NULL_HANDLE;
 	}
 
 	template<>

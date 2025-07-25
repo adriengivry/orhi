@@ -1,39 +1,75 @@
 cmake_minimum_required(VERSION 3.16)
 project(orhi)
 
+message("-------------------------------------------")
+message("Generating orhi project...")
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Define options
 option(ORHI_COMPILE_VULKAN "Compile Vulkan backend" OFF)
 option(ORHI_COMPILE_MOCK "Compile Mock backend" OFF)
 
+# Window system selection
+set(ORHI_WINDOW_SYSTEM "xlib" CACHE STRING "Select window management system")
+set_property(CACHE ORHI_WINDOW_SYSTEM PROPERTY STRINGS "xlib" "xcb" "wayland" "none")
+
+# Window system configuration
+if (ORHI_WINDOW_SYSTEM STREQUAL "none")
+    message("+ Headless mode selected")
+    add_compile_definitions(ORHI_HEADLESS)
+endif()
+
+# Platform-specific window system handling
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    if (ORHI_WINDOW_SYSTEM STREQUAL "xlib")
+        message("+ Xlib window system selected")
+        add_compile_definitions(ORHI_USE_XLIB)
+    elseif (ORHI_WINDOW_SYSTEM STREQUAL "xcb")
+        message("+ XCB window system selected")
+        add_compile_definitions(ORHI_USE_XCB)
+    elseif (ORHI_WINDOW_SYSTEM STREQUAL "wayland")
+        message("+ Wayland window system selected")
+        add_compile_definitions(ORHI_USE_WAYLAND)
+    endif()
+endif()
+
+# Backend configuration
 if (ORHI_COMPILE_VULKAN)
+    message("+ Vulkan backend selected for compilation")
     add_compile_definitions(ORHI_COMPILE_VULKAN)
     
-    # Find Vulkan SDK
+    # Check for Vulkan SDK
     if(DEFINED ENV{VULKAN_SDK})
         set(VULKAN_SDK_PATH $ENV{VULKAN_SDK})
-        message(STATUS "Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
+        message("+ Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
     else()
         message(FATAL_ERROR "VULKAN_SDK environment variable not set. Please install Vulkan SDK and set VULKAN_SDK environment variable.")
     endif()
 endif()
 
 if (ORHI_COMPILE_MOCK)
+    message("+ Mock backend selected for compilation")
     add_compile_definitions(ORHI_COMPILE_MOCK)
 endif()
 
+# Set output directories to match premake5 structure
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
+
+# Create the library
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE HEADERS "src/*.h" "include/*.h")
-add_library(orhi ${SOURCES} ${HEADERS})
+add_library(orhi STATIC ${SOURCES} ${HEADERS})
 
 # Add include directory
 target_include_directories(orhi
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -45,3 +81,25 @@ if (ORHI_COMPILE_VULKAN)
             ${VULKAN_SDK_PATH}/include
     )
 endif()
+
+# Configuration-specific settings
+target_compile_definitions(orhi
+    PRIVATE
+        $<$<CONFIG:Debug>:DEBUG>
+        $<$<CONFIG:Release>:NDEBUG>
+)
+
+# Debug configuration
+set_target_properties(orhi PROPERTIES
+    DEBUG_POSTFIX ""
+)
+
+# Set compiler flags for different configurations
+target_compile_options(orhi
+    PRIVATE
+        $<$<CONFIG:Debug>:-g>
+        $<$<CONFIG:Release>:-O3>
+)
+
+message("OpenRHI project generation complete.")
+message("-------------------------------------------")
