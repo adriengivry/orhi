@@ -8,7 +8,7 @@
 
 #include <orhi/api/TTexture.h>
 #include <orhi/impl/dx12/BackendTraits.h>
-#include <orhi/impl/dx12/ComPtr.h>
+#include <orhi/impl/dx12/detail/ComPtr.h>
 #include <orhi/impl/dx12/Device.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>

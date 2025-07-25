@@ -8,7 +8,7 @@
 
 #include <orhi/api/TFence.h>
 #include <orhi/impl/dx12/BackendTraits.h>
-#include <orhi/impl/dx12/ComPtr.h>
+#include <orhi/impl/dx12/detail/ComPtr.h>
 #include <orhi/impl/dx12/Device.h>
 
 struct ID3D12Fence;

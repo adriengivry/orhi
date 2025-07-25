@@ -13,8 +13,6 @@
 
 #include <deque>
 
-struct ID3D12CommandAllocator;
-
 namespace orhi::impl::dx12
 {
 	struct CommandPoolContext
