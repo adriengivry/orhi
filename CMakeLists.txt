@@ -62,9 +62,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
 
 # Create the library
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
-file(GLOB_RECURSE HEADERS "src/*.h" "include/*.h")
-add_library(orhi STATIC ${SOURCES} ${HEADERS})
+file(GLOB_RECURSE PRIVATE_SRC "src/*.cpp" "src/*.c" "src/*.h")
+file(GLOB_RECURSE PUBLIC_SRC "include/*.h")
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "src" FILES ${PRIVATE_SRC})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include PREFIX "include" FILES ${PUBLIC_SRC})
+add_library(orhi STATIC ${PRIVATE_SRC} ${PUBLIC_SRC})
 
 # Add include directory
 target_include_directories(orhi
