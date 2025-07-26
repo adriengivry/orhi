@@ -12,24 +12,41 @@
 #include <orhi/types/EDescriptorType.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
+#include <orhi/types/EBufferViewType.h>
+
+struct ID3D12Resource;
 
 namespace orhi::impl::dx12
 {
-	enum class EDirectXDescriptorType
+	using CPUDescriptorAddress = size_t;
+	using GPUDescriptorAddress = uint64_t;
+
+	enum class EDescriptorHeapType : uint32_t
 	{
-		NONE = 0,
 		CBV_SRV_UAV,
 		SAMPLER,
+	};
 
-		BUFFER_VIEW = CBV_SRV_UAV,
-		IMAGE_VIEW = CBV_SRV_UAV,
+	struct DescriptorHandle
+	{
+		static constexpr uint64_t kHeapTypeBitCount = 2;
+		static constexpr uint64_t kHeapIndexBitCount = 16;
+		static constexpr uint64_t kHeapOffsetBitCount = 14;
+
+		EDescriptorHeapType heapType : kHeapTypeBitCount;
+		uint32_t heapIndex : kHeapIndexBitCount;
+		uint32_t heapOffset : kHeapIndexBitCount;
 	};
 
 	struct DescriptorContext
 	{
 		Device& device;
-		EDirectXDescriptorType type;
-		uint64_t handle;
+		ID3D12Resource* resource = nullptr;
+		CPUDescriptorAddress cpuAddress = 0;
+		GPUDescriptorAddress gpuAddress = 0;
+		types::EBufferViewType type;
+		DescriptorHandle handle;
+		bool isIntegerFormat = false;
 	};
 
 	using Descriptor = api::TDescriptor<BackendTraits>;

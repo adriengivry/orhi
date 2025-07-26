@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <orhi/data/BufferViewDesc.h>
 #include <orhi/data/MemoryRange.h>
 #include <orhi/data/SamplerDesc.h>
 #include <orhi/data/TextureViewDesc.h>
@@ -38,6 +39,16 @@ namespace orhi::api
 		TDescriptor(
 			TDevice<BackendTraits>& p_device,
 			const data::TextureViewDesc& p_desc
+		);
+
+		/**
+		* @brief Creates a descriptor for a buffer view
+		* @param p_device Reference to the device that will own this descriptor
+		* @param p_desc Buffer view descriptor specifying the buffer and view parameters
+		*/
+		TDescriptor(
+			TDevice<BackendTraits>& p_device,
+			const data::BufferViewDesc& p_desc
 		);
 
 		/**

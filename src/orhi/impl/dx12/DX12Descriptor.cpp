@@ -25,9 +25,25 @@ namespace orhi
 	Descriptor::TDescriptor(
 		Device& p_device,
 		const data::TextureViewDesc& p_desc
+	) : m_context {
+		.device = p_device,
+		.handle = {
+			.heapType = EDescriptorHeapType::CBV_SRV_UAV,
+		}
+	}
+	{
+
+	}
+
+	template<>
+	Descriptor::TDescriptor(
+		Device& p_device,
+		const data::BufferViewDesc& p_desc
 	) : m_context{
 		.device = p_device,
-		.type = EDirectXDescriptorType::IMAGE_VIEW
+		.handle = {
+			.heapType = EDescriptorHeapType::CBV_SRV_UAV,
+		}
 	}
 	{
 
@@ -39,7 +55,9 @@ namespace orhi
 		const data::SamplerDesc& p_desc
 	) : m_context{
 		.device = p_device,
-		.type = EDirectXDescriptorType::SAMPLER
+		.handle = {
+			.heapType = EDescriptorHeapType::SAMPLER,
+		}
 	}
 	{
 		
