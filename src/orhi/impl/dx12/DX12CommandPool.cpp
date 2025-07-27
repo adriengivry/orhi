@@ -14,7 +14,6 @@
 #include <orhi/impl/dx12/CommandBuffer.h>
 
 #include <d3d12.h>
-#include <dxgi1_6.h>
 
 using namespace orhi::impl::dx12;
 
@@ -45,6 +44,9 @@ namespace orhi
 		
 	}
 
+	// TODO: create way to return only one command buffer
+	// TODO: maybe should be the only way to allocate command buffers?
+
 	template<>
 	std::vector<std::reference_wrapper<CommandBuffer>> CommandPool::AllocateCommandBuffers(
 		uint32_t p_count,
@@ -52,6 +54,14 @@ namespace orhi
 	)
 	{
 		std::vector<std::reference_wrapper<CommandBuffer>> output;
+
+		for (uint32_t i = 0; i < p_count; ++i)
+		{
+			CommandBuffer commandBuffer(m_context.device, *this);
+
+		}
+
+
 		return output;
 	}
 }

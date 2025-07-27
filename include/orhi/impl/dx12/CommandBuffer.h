@@ -1,6 +1,6 @@
 /**
 * @project: orhi (OpenRHI)
-* @author: Adrien Givry, Jian Bang Xu
+* @author: Adrien Givry, Jian Bang Xu, Robert Osborne
 * @licence: MIT
 */
 
@@ -12,7 +12,7 @@
 #include <orhi/impl/dx12/Device.h>
 #include <orhi/impl/dx12/CommandPool.h>
 
-#include "ComPtr.h"
+#include <orhi/impl/dx12/detail/ComPtr.h>
 
 struct ID3D12GraphicsCommandList;
 

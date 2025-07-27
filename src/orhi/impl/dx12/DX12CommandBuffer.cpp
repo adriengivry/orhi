@@ -21,7 +21,6 @@
 #include <orhi/impl/dx12/detail/Types.h>
 
 #include <d3d12.h>
-#include <dxgi1_6.h>
 
 using namespace orhi::impl::dx12;
 
@@ -68,6 +67,8 @@ namespace orhi
 		
 		ORHI_ASSERT(m_context.commandList, "Command list must have a valid native handle");
 
+		// Command allocators must be reset before resetting the command list as well
+
 		HRESULT hr = m_context.commandList->Reset(
 			m_context.commandPool.GetNativeHandle().As<ID3D12CommandAllocator*>(),
 			nullptr // Initial pipeline state (null for no initial state)
@@ -104,41 +105,62 @@ namespace orhi
 	)
 	{
 		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
 
+		// Get render target and depth stencil views from framebuffer
+		
+		// The set render targets function needs to have access to the CPU descriptor handles
+		// The heap holding these descriptors needs to be stored somewhere
+		
+		// TODO: Get actual render target views and depth stencil view from framebuffer
+		std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = {};
+		bool hasDSV = false;
 
-		std::vector<D3D12_CLEAR_VALUE> clearValues;
-		clearValues.reserve(p_clearValues.size());
+		// Set render targets (placeholder - needs actual framebuffer implementation)
+		if (!rtvHandles.empty() || hasDSV)
+		{
+			commandList->OMSetRenderTargets(
+				static_cast<UINT>(rtvHandles.size()),
+				rtvHandles.empty() ? nullptr : rtvHandles.data(),
+				FALSE,
+				hasDSV ? &dsvHandle : nullptr
+			);
+		}
 
+		// Clear render targets and depth stencil
+		size_t clearIndex = 0;
 		for (const auto& clearValue : p_clearValues)
 		{
 			if (auto colorClearValue = std::get_if<data::ColorClearValue>(&clearValue); colorClearValue)
 			{
-				clearValues.push_back(D3D12_CLEAR_VALUE{
-					.Color = {
+				if (clearIndex < rtvHandles.size())
+				{
+					FLOAT clearColor[4] = {
 						colorClearValue->x,
 						colorClearValue->y,
 						colorClearValue->z,
 						colorClearValue->w
-					}
-					});
+					};
+					commandList->ClearRenderTargetView(rtvHandles[clearIndex], clearColor, 0, nullptr);
+				}
 			}
 			else if (auto depthStencilClearValue = std::get_if<data::DepthStencilClearValue>(&clearValue); depthStencilClearValue)
 			{
-				clearValues.push_back(D3D12_CLEAR_VALUE{
-					.DepthStencil = {
-						.Depth = depthStencilClearValue->depth,
-						.Stencil = static_cast<uint8_t>(depthStencilClearValue->stencil)
-					}
-					});
+				if (hasDSV)
+				{
+					commandList->ClearDepthStencilView(
+						dsvHandle,
+						D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
+						depthStencilClearValue->depth,
+						static_cast<UINT8>(depthStencilClearValue->stencil),
+						0,
+						nullptr
+					);
+				}
 			}
-			else
-			{
-				ORHI_ASSERT(false, "Unsupported clear value type");
-			}
+			clearIndex++;
 		}
-
-		// commandList->OMSetRenderTargets();
-
 	}
 
 	template<>
@@ -155,6 +177,25 @@ namespace orhi
 		std::span<const data::BufferCopyDesc> p_regions
 	)
 	{
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+
+		auto srcResource = p_src.GetNativeHandle().As<ID3D12Resource*>();
+		auto destResource = p_dest.GetNativeHandle().As<ID3D12Resource*>();
+		ORHI_ASSERT(srcResource, "Source buffer must have a valid native handle");
+		ORHI_ASSERT(destResource, "Destination buffer must have a valid native handle");
+
+		for (const auto& region : p_regions)
+		{
+			//commandList->CopyBufferRegion(
+			//	destResource,
+			//	// TODO: Need to handle offset properly
+			//	region.destOffset,
+			//	srcResource,
+			//	region.srcOffset,
+			//	region.size
+			//);
+		}
 	}
 
 	template<>
@@ -165,6 +206,49 @@ namespace orhi
 		std::span<const data::BufferTextureCopyDesc> p_regions
 	)
 	{
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+
+		auto srcResource = p_src.GetNativeHandle().As<ID3D12Resource*>();
+		auto destResource = p_dest.GetNativeHandle().As<ID3D12Resource*>();
+		ORHI_ASSERT(srcResource, "Source buffer must have a valid native handle");
+		ORHI_ASSERT(destResource, "Destination texture must have a valid native handle");
+		// TODO: Need to add members, doesn't currently compile
+		for (const auto& region : p_regions)
+		{
+			//D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
+			//srcLocation.pResource = srcResource;
+			//srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+			//srcLocation.PlacedFootprint.Offset = region.bufferOffset;
+			//srcLocation.PlacedFootprint.Footprint.Format = destResource->GetDesc().Format;
+			//srcLocation.PlacedFootprint.Footprint.Width = region.textureExtent.width;
+			//srcLocation.PlacedFootprint.Footprint.Height = region.textureExtent.height;
+			//srcLocation.PlacedFootprint.Footprint.Depth = region.textureExtent.depth;
+			//srcLocation.PlacedFootprint.Footprint.RowPitch = region.bufferRowLength * 4; // Assuming 4 bytes per pixel, this should be calculated properly
+
+			//D3D12_TEXTURE_COPY_LOCATION destLocation = {};
+			//destLocation.pResource = destResource;
+			//destLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+			//destLocation.SubresourceIndex = region.textureSubresource.mipLevel + 
+			//	(region.textureSubresource.arrayLayer * destResource->GetDesc().MipLevels);
+
+			//D3D12_BOX srcBox = {};
+			//srcBox.left = 0;
+			//srcBox.top = 0;
+			//srcBox.front = 0;
+			//srcBox.right = region.textureExtent.width;
+			//srcBox.bottom = region.textureExtent.height;
+			//srcBox.back = region.textureExtent.depth;
+
+			//commandList->CopyTextureRegion(
+			//	&destLocation,
+			//	region.textureOffset.x,
+			//	region.textureOffset.y,
+			//	region.textureOffset.z,
+			//	&srcLocation,
+			//	&srcBox
+			//);
+		}
 	}
 
 	template<>
@@ -176,6 +260,75 @@ namespace orhi
 		uint32_t p_mipLevelCount
 	)
 	{
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+
+		auto resource = p_texture.GetNativeHandle().As<ID3D12Resource*>();
+		ORHI_ASSERT(resource, "Texture must have a valid native handle");
+
+		// Convert ORHI texture layouts to D3D12 resource states
+		// TODO: Extract out into a free function later
+		auto convertLayout = [](types::ETextureLayout layout) -> D3D12_RESOURCE_STATES {
+			switch (layout)
+			{
+			case types::ETextureLayout::UNDEFINED:
+			case types::ETextureLayout::PREINITIALIZED:
+				return D3D12_RESOURCE_STATE_COMMON;
+			case types::ETextureLayout::GENERAL:
+				return D3D12_RESOURCE_STATE_COMMON;
+			case types::ETextureLayout::COLOR_ATTACHMENT_OPTIMAL:
+			case types::ETextureLayout::ATTACHMENT_OPTIMAL:
+				return D3D12_RESOURCE_STATE_RENDER_TARGET;
+			case types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+			case types::ETextureLayout::DEPTH_ATTACHMENT_OPTIMAL:
+			case types::ETextureLayout::STENCIL_ATTACHMENT_OPTIMAL:
+				return D3D12_RESOURCE_STATE_DEPTH_WRITE;
+			case types::ETextureLayout::DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+			case types::ETextureLayout::DEPTH_READ_ONLY_OPTIMAL:
+			case types::ETextureLayout::STENCIL_READ_ONLY_OPTIMAL:
+			case types::ETextureLayout::READ_ONLY_OPTIMAL:
+				return D3D12_RESOURCE_STATE_DEPTH_READ;
+			case types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL:
+				return D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
+			case types::ETextureLayout::TRANSFER_SRC_OPTIMAL:
+				return D3D12_RESOURCE_STATE_COPY_SOURCE;
+			case types::ETextureLayout::TRANSFER_DST_OPTIMAL:
+				return D3D12_RESOURCE_STATE_COPY_DEST;
+			case types::ETextureLayout::PRESENT_SRC_KHR:
+				return D3D12_RESOURCE_STATE_PRESENT;
+			default:
+				return D3D12_RESOURCE_STATE_COMMON;
+			}
+		};
+
+		D3D12_RESOURCE_STATES beforeState = convertLayout(p_oldLayout);
+		D3D12_RESOURCE_STATES afterState = convertLayout(p_newLayout);
+
+		// Only create barrier if states are different
+		if (beforeState != afterState)
+		{
+			D3D12_RESOURCE_BARRIER barrier = {};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = resource;
+			barrier.Transition.StateBefore = beforeState;
+			barrier.Transition.StateAfter = afterState;
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+			// If specific mip levels are specified, handle them individually
+			if (p_mipLevelCount != UINT32_MAX && p_mipLevelCount > 0)
+			{
+				for (uint32_t mip = p_baseMipLevel; mip < p_baseMipLevel + p_mipLevelCount; ++mip)
+				{
+					barrier.Transition.Subresource = mip;
+					commandList->ResourceBarrier(1, &barrier);
+				}
+			}
+			else
+			{
+				commandList->ResourceBarrier(1, &barrier);
+			}
+		}
 	}
 
 	template<>
@@ -184,6 +337,16 @@ namespace orhi
 		Pipeline& p_pipeline
 	)
 	{
+		// TODO: This is only a placeholder implementation
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+
+		auto pipelineState = p_pipeline.GetNativeHandle().As<ID3D12PipelineState*>();
+		ORHI_ASSERT(pipelineState, "Pipeline must have a valid pipeline state");
+
+		// Set the pipeline state
+		commandList->SetPipelineState(pipelineState);
+
 	}
 
 	template<>
@@ -197,6 +360,7 @@ namespace orhi
 		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
 		indexBufferView.BufferLocation = p_indexBuffer.GetNativeHandle().As<ID3D12Resource*>()->GetGPUVirtualAddress() + p_offset;
+		// TODO: Need a way to get the size of the buffer from the buffer itself
 		// indexBufferView.SizeInBytes = static_cast<UINT>(p_indexBuffer.GetSize() - p_offset);
 		indexBufferView.Format = orhi::utils::EnumToValue<DXGI_FORMAT>(p_indexType);
 
@@ -238,9 +402,12 @@ namespace orhi
 		vertexBufferViews.reserve(p_buffers.size());
 		for (size_t i = 0; i < p_buffers.size(); ++i)
 		{
+			
 			const auto& buffer = p_buffers[i].get();
 			D3D12_VERTEX_BUFFER_VIEW vbv = {};
 			vbv.BufferLocation = buffer.GetNativeHandle().As<ID3D12Resource*>()->GetGPUVirtualAddress() + p_offsets[i];
+
+			// TODO: Need a way to get the size and stride of the buffer from the buffer itself
 			//vbv.SizeInBytes = static_cast<UINT>(buffer.GetSize() - p_offsets[i]);
 			//vbv.StrideInBytes = buffer.GetStride();
 			vertexBufferViews.push_back(vbv);
@@ -260,6 +427,56 @@ namespace orhi
 		types::EPipelineBindPoint p_bindPoint
 	)
 	{
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+
+		auto rootSignature = p_pipelineLayout.GetNativeHandle().As<ID3D12RootSignature*>();
+		ORHI_ASSERT(rootSignature, "Pipeline layout must have a valid root signature");
+
+		// Set the root signature based on bind point
+		if (p_bindPoint == types::EPipelineBindPoint::GRAPHICS)
+		{
+			commandList->SetGraphicsRootSignature(rootSignature);
+		}
+		else if (p_bindPoint == types::EPipelineBindPoint::COMPUTE)
+		{
+			commandList->SetComputeRootSignature(rootSignature);
+		}
+
+		// Set descriptor heaps
+		std::vector<ID3D12DescriptorHeap*> descriptorHeaps;
+		descriptorHeaps.reserve(p_descriptorSets.size());
+		
+		for (const auto& descriptorSet : p_descriptorSets)
+		{
+			auto heap = descriptorSet.get().GetNativeHandle().As<ID3D12DescriptorHeap*>();
+			if (heap)
+			{
+				descriptorHeaps.push_back(heap);
+			}
+		}
+
+		if (!descriptorHeaps.empty())
+		{
+			commandList->SetDescriptorHeaps(static_cast<UINT>(descriptorHeaps.size()), descriptorHeaps.data());
+
+			// Bind descriptor tables to root signature
+			// TODO: Need to handle heap indices properly
+			for (size_t i = 0; i < p_descriptorSets.size(); ++i)
+			{
+				auto heap = descriptorHeaps[i];
+				D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = heap->GetGPUDescriptorHandleForHeapStart();
+
+				if (p_bindPoint == types::EPipelineBindPoint::GRAPHICS)
+				{
+					commandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(i), gpuHandle);
+				}
+				else if (p_bindPoint == types::EPipelineBindPoint::COMPUTE)
+				{
+					commandList->SetComputeRootDescriptorTable(static_cast<UINT>(i), gpuHandle);
+				}
+			}
+		}
 	}
 
 	template<>
@@ -270,8 +487,51 @@ namespace orhi
 		const void* p_data
 	)
 	{
-		// DirectX 12 does not have a direct equivalent to Vulkan's push constants
-		// Maybe something similar can be achieved by calling SetGraphicsRoot32BitConstants
+		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+
+		// DirectX 12 doesn't have push constants like Vulkan, but we can use root constants
+		// This is a simplified implementation that assumes the push constants are mapped to root parameter 0
+		// In a real implementation, you would need to know which root parameter index corresponds to the push constants
+		
+		ORHI_ASSERT(p_range.size % 4 == 0, "Push constant size must be a multiple of 4 bytes");
+		ORHI_ASSERT(p_range.offset % 4 == 0, "Push constant offset must be a multiple of 4 bytes");
+		
+		uint32_t num32BitValues = static_cast<uint32_t>(p_range.size / 4);
+		uint32_t destOffsetIn32BitValues = static_cast<uint32_t>(p_range.offset / 4);
+		
+		// Determine if this is for graphics or compute pipeline based on stage flags
+		bool isGraphics = (p_stageFlags & (types::EShaderStageFlags::VERTEX_BIT | 
+										   types::EShaderStageFlags::FRAGMENT_BIT | 
+										   types::EShaderStageFlags::GEOMETRY_BIT | 
+										   types::EShaderStageFlags::TESSELLATION_CONTROL_BIT | 
+										   types::EShaderStageFlags::TESSELLATION_EVALUATION_BIT)) != types::EShaderStageFlags::NONE;
+		
+		bool isCompute = (p_stageFlags & types::EShaderStageFlags::COMPUTE_BIT) != types::EShaderStageFlags::NONE;
+		
+		// Note: Root parameter index 0 is assumed here - in a real implementation,
+		// this would need to be determined from the pipeline layout
+		const UINT rootParameterIndex = 0;
+		
+		if (isGraphics)
+		{
+			commandList->SetGraphicsRoot32BitConstants(
+				rootParameterIndex,
+				num32BitValues,
+				p_data,
+				destOffsetIn32BitValues
+			);
+		}
+		
+		if (isCompute)
+		{
+			commandList->SetComputeRoot32BitConstants(
+				rootParameterIndex,
+				num32BitValues,
+				p_data,
+				destOffsetIn32BitValues
+			);
+		}
 	}
 
 	template<>

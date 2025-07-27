@@ -1,6 +1,6 @@
 /**
 * @project: orhi (OpenRHI)
-* @author: Adrien Givry, Jian Bang Xu
+* @author: Adrien Givry, Jian Bang Xu, Robert Osborne
 * @licence: MIT
 */
 
@@ -8,11 +8,8 @@
 
 #include <orhi/api/TCommandPool.h>
 #include <orhi/impl/dx12/BackendTraits.h>
-#include <orhi/impl/dx12/CommandBuffer.h>
 #include <orhi/impl/dx12/Device.h>
-#include "ComPtr.h"
-
-#include <deque>
+#include <orhi/impl/dx12/detail/ComPtr.h>
 
 struct ID3D12CommandAllocator;
 
