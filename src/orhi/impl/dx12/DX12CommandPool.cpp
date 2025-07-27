@@ -1,6 +1,6 @@
 /**
 * @project: orhi (OpenRHI)
-* @author: Adrien Givry, Jian Bang Xu
+* @author: Adrien Givry, Jian Bang Xu, Robert Osborne
 * @licence: MIT
 */
 
