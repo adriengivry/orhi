@@ -62,7 +62,7 @@ endif()
 # Function to compile shaders for a project
 function(compile_shaders TARGET_NAME SHADER_SOURCES)
     # Create output directory
-    set(SHADER_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/assets/shaders")
+    set(SHADER_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders")
     file(MAKE_DIRECTORY ${SHADER_OUTPUT_DIR})
     
     # Set source file properties for shader files
@@ -106,7 +106,7 @@ function(copy_assets TARGET_NAME)
     add_custom_command(
         TARGET ${TARGET_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${CMAKE_CURRENT_BINARY_DIR}/assets
+            ${CMAKE_CURRENT_SOURCE_DIR}/assets
             $<TARGET_FILE_DIR:${TARGET_NAME}>/assets
         COMMENT "Copying assets for ${TARGET_NAME}"
     )
