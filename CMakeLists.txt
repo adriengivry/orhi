@@ -122,13 +122,6 @@ set_target_properties(orhi PROPERTIES
     DEBUG_POSTFIX ""
 )
 
-# Set compiler flags for different configurations
-target_compile_options(orhi
-    PRIVATE
-        $<$<CONFIG:Debug>:-g>
-        $<$<CONFIG:Release>:-O3>
-)
-
 message("OpenRHI project generation complete.")
 
 # Include examples if the option is enabled
