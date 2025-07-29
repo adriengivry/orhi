@@ -27,15 +27,6 @@ set_target_properties(2-cube PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/2-cube"
 )
 
-# Add include directories
-target_include_directories(2-cube
-    PRIVATE
-        ${CMAKE_SOURCE_DIR}/deps/_glm
-        ${CMAKE_SOURCE_DIR}/deps/_glfw/glfw/include
-        ${CMAKE_SOURCE_DIR}/deps/_stb
-        ${CMAKE_SOURCE_DIR}/../../include
-)
-
 # Link libraries
 target_link_libraries(2-cube
     PRIVATE

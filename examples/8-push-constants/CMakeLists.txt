@@ -27,15 +27,6 @@ set_target_properties(8-push-constants PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/8-push-constants"
 )
 
-# Add include directories
-target_include_directories(8-push-constants
-    PRIVATE
-        ${CMAKE_SOURCE_DIR}/deps/_glm
-        ${CMAKE_SOURCE_DIR}/deps/_glfw/glfw/include
-        ${CMAKE_SOURCE_DIR}/deps/_stb
-        ${CMAKE_SOURCE_DIR}/../../include
-)
-
 # Link libraries
 target_link_libraries(8-push-constants
     PRIVATE

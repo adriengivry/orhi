@@ -27,15 +27,6 @@ set_target_properties(3-texture PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/3-texture"
 )
 
-# Add include directories
-target_include_directories(3-texture
-    PRIVATE
-        ${CMAKE_SOURCE_DIR}/deps/_glm
-        ${CMAKE_SOURCE_DIR}/deps/_glfw/glfw/include
-        ${CMAKE_SOURCE_DIR}/deps/_stb
-        ${CMAKE_SOURCE_DIR}/../../include
-)
-
 # Link libraries
 target_link_libraries(3-texture
     PRIVATE
