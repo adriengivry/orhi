@@ -25,6 +25,7 @@ set_target_properties(5-mipmaps PROPERTIES
     CXX_EXTENSIONS OFF
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/5-mipmaps"
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/5-mipmaps"
+    FOLDER "examples"
 )
 
 # Link libraries

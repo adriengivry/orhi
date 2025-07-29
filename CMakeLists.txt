@@ -128,6 +128,7 @@ message("OpenRHI project generation complete.")
 if(ORHI_GENERATE_EXAMPLES)
     message("Generating examples...")
     add_subdirectory(examples)
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT 1-triangle)
 endif()
 
 message("-------------------------------------------")

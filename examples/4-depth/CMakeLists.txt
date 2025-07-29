@@ -25,6 +25,7 @@ set_target_properties(4-depth PROPERTIES
     CXX_EXTENSIONS OFF
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/4-depth"
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/4-depth"
+    FOLDER "examples"
 )
 
 # Link libraries

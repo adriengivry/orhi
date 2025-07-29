@@ -25,6 +25,7 @@ set_target_properties(6-msaa PROPERTIES
     CXX_EXTENSIONS OFF
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/6-msaa"
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/6-msaa"
+    FOLDER "examples"
 )
 
 # Link libraries
