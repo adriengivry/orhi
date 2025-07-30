@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(orhi)
 
-message("-------------------------------------------")
-message("Generating orhi project...")
-
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,22 +17,22 @@ set_property(CACHE ORHI_WINDOW_SYSTEM PROPERTY STRINGS "xlib" "xcb" "wayland" "n
 
 # Window system configuration
 if (ORHI_WINDOW_SYSTEM STREQUAL "none")
-    message("+ Headless mode selected")
+    message(STATUS "Headless mode selected")
     add_compile_definitions(ORHI_HEADLESS)
 endif()
 
 # Platform-specific window system handling
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     if (ORHI_WINDOW_SYSTEM STREQUAL "xlib")
-        message("+ Xlib window system selected")
+        message(STATUS "Xlib window system selected")
         add_compile_definitions(ORHI_USE_XLIB)
         find_package(X11 REQUIRED)
     elseif (ORHI_WINDOW_SYSTEM STREQUAL "xcb")
-        message("+ XCB window system selected")
+        message(STATUS "XCB window system selected")
         add_compile_definitions(ORHI_USE_XCB)
         find_package(X11 REQUIRED)
     elseif (ORHI_WINDOW_SYSTEM STREQUAL "wayland")
-        message("+ Wayland window system selected")
+        message(STATUS "Wayland window system selected")
         add_compile_definitions(ORHI_USE_WAYLAND)
         find_package(Wayland REQUIRED)
     endif()
@@ -43,20 +40,20 @@ endif()
 
 # Backend configuration
 if (ORHI_COMPILE_VULKAN)
-    message("+ Vulkan backend selected for compilation")
+    message(STATUS "Vulkan backend selected for compilation")
     add_compile_definitions(ORHI_COMPILE_VULKAN)
     
     # Check for Vulkan SDK
     if(DEFINED ENV{VULKAN_SDK})
         set(VULKAN_SDK_PATH $ENV{VULKAN_SDK})
-        message("+ Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
+        message(STATUS "Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
     else()
         message(FATAL_ERROR "VULKAN_SDK environment variable not set. Please install Vulkan SDK and set VULKAN_SDK environment variable.")
     endif()
 endif()
 
 if (ORHI_COMPILE_MOCK)
-    message("+ Mock backend selected for compilation")
+    message(STATUS "Mock backend selected for compilation")
     add_compile_definitions(ORHI_COMPILE_MOCK)
 endif()
 
@@ -122,13 +119,9 @@ set_target_properties(orhi PROPERTIES
     DEBUG_POSTFIX ""
 )
 
-message("OpenRHI project generation complete.")
-
 # Include examples if the option is enabled
 if(ORHI_GENERATE_EXAMPLES)
-    message("Generating examples...")
+    message(STATUS "Generating OpenRHI examples...")
     add_subdirectory(examples)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT 1-triangle)
 endif()
-
-message("-------------------------------------------")

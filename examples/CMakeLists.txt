@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 
-message("Configuring orhi-examples...")
-
 # Set output directories to match the previous premake structure
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>)
@@ -17,18 +15,18 @@ endif()
 
 # Configure based on selected API
 if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
-    message("+ Using Vulkan as the graphics API for examples")
+    message(STATUS "Using Vulkan as the graphics API for examples")
     add_compile_definitions(ORHI_SELECT_VULKAN)
 elseif(ORHI_EXAMPLES_GFX_API STREQUAL "mock")
-    message("+ Using Mock as the graphics API for examples")
+    message(STATUS "Using Mock as the graphics API for examples")
     add_compile_definitions(ORHI_SELECT_MOCK)
 endif()
 
 # Get Vulkan SDK path for shader compilation and linking
 if(DEFINED ENV{VULKAN_SDK})
     set(VULKAN_SDK_PATH $ENV{VULKAN_SDK})
-    message("+ Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
-    
+    message(STATUS "Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
+
     # Set up Vulkan for all examples
     if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
         # Make Vulkan include directory available to all examples
