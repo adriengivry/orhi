@@ -57,7 +57,7 @@ if (ORHI_COMPILE_MOCK)
     add_compile_definitions(ORHI_COMPILE_MOCK)
 endif()
 
-# Set output directories to match premake5 structure
+# Set output directories
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>/orhi)
