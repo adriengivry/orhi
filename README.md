@@ -12,7 +12,7 @@ Write hardware-agnostic graphics code once, and run it seamlessly across multipl
 - ⛓️‍💥 **Standalone:** Zero external dependencies
 - 📃 **Documented:** Comprehensive source code documentation
 - 🌈 **Cross-platform:** Native support for Windows, macOS, and Linux
-- ⚙️ **Build-ready:** Quick setup with [Premake5](https://premake.github.io/) or [CMake](https://cmake.org/)
+- ⚙️ **Build-ready:** Quick setup with [CMake](https://cmake.org/)
 
 **Goals:**
 - Provide a thin, explicit abstraction over modern graphics APIs
@@ -46,22 +46,17 @@ Write hardware-agnostic graphics code once, and run it seamlessly across multipl
 > [!WARNING]
 > **OpenRHI** is actively evolving as support for additional graphics backends is added. The [API](include/orhi/api/) may change to accommodate the unique requirements and design philosophies of each backend. Implementation details are also subject to refinement as the project works toward production-quality standards.
 
-## Configuration
-### Build Options
-| Option | CMake Option | Premake5 Option | Allowed Values |
-| - | - | - | - |
-| Compile Vulkan backend | `DORHI_COMPILE_VULKAN` |  `--compile-vulkan` | - |
-| Compile Mock backend | `DORHI_COMPILE_MOCK` | `--compile-mock` | - |
-| Select the window system to use when compiling for linux or to use the headless mode | `ORHI_WINDOW_SYSTEM=STRING` | `--window-system=STRING` | `xlib`&nbsp;(linux)<br>`xcb`&nbsp;(linux)<br>`wayland`&nbsp;(linux)<br>`none`&nbsp;(headless) |
+## CMake Configuration
+| Option | Allowed Values | Description |
+| - | - | - |
+| `ORHI_COMPILE_VULKAN` | - | Compile Vulkan backend |
+| `ORHI_COMPILE_MOCK` | - | Compile Mock backend |
+| `ORHI_DEFAULT_GFX_API` |  `vulkan`, `mock` | Select the default graphics API to use when including backend-agnostic headers |
+| `ORHI_WINDOW_SYSTEM` | `xlib`&nbsp;(linux)<br>`xcb`&nbsp;(linux)<br>`wayland`&nbsp;(linux)<br>`none`&nbsp;(headless) | Select the window system to use when compiling for linux or to use the headless mode |
+| `ORHI_GENERATE_EXAMPLES` |  - | Generate example projects (require [glfw](https://github.com/glfw/glfw), [glm](https://github.com/g-truc/glm), and [stb](https://github.com/nothings/stb) submodules to be initialized) |
 
 > [!NOTE]
 > **OpenRHI** currently builds only as a static library.
-
-### Defines
-| Option | C++ Define | Notes |
-| - | - | - |
-| Set Vulkan as the default backend | `ORHI_SELECT_VULKAN` | Must be defined before including any backend-agnostic header, e.g. `<orhi/device.h>` |
-| Set Mock as the default backend | `ORHI_SELECT_MOCK` | Must be defined before including any backend-agnostic header, e.g. `<orhi/device.h>` |
 
 ## Multi-Backend Architecture
 **OpenRHI** supports compiling with multiple graphics APIs simultaneously.
@@ -70,23 +65,14 @@ You can also choose which graphics API serves as the default backend for API-agn
 
 ### Using the Default Graphics API
 ```cpp
-// Include the API-agnostic header
-// Requires ORHI_SELECT_{API} to be defined
 #include <orhi/Buffer.h>
 
-// Create a buffer using your selected graphics API
-// (e.g., Vulkan when ORHI_SELECT_VULKAN is defined)
 orhi::Buffer buffer{};
 ```
 
 ### Using Specific Graphics APIs
 ```cpp
-// Include Vulkan-specific headers
-// Requires ORHI_COMPILE_VULKAN to be defined
 #include <orhi/impl/vk/Buffer.h>
-
-// Include Mock backend headers
-// Requires ORHI_COMPILE_MOCK to be defined
 #include <orhi/impl/mock/Buffer.h>
 
 orhi::impl::vk::Buffer vulkanBuffer{};
@@ -95,6 +81,24 @@ orhi::impl::mock::Buffer mockBuffer{};
 
 ## Examples
 **OpenRHI** comes with a set of [examples](examples/) for you to try.
+
+> [!IMPORTANT]
+> Example projects depend on [glfw](https://github.com/glfw/glfw), [glm](https://github.com/g-truc/glm), and [stb](https://github.com/nothings/stb), which are included as Git submodules. Make sure to initialize submodules before generating projects.
+
+**Windows:**
+```powershell
+git clone https://github.com/adriengivry/orhi --recurse-submodules
+cd .\orhi
+.\gen_proj_win32.bat
+.\build\orhi.sln # (optional) open solution in Visual Studio
+```
+
+**Linux:**
+```powershell
+git clone https://github.com/adriengivry/orhi --recurse-submodules
+cd ./orhi
+./gen_proj_linux.sh
+```
 
 ## API Equivalence
 | OpenRHI | Vulkan | DirectX 12 |
@@ -127,7 +131,6 @@ Feel free to open issues or submit pull requests for review. Every contribution 
 For more information on contributing, check out [CONTRIBUTING.md](CONTRIBUTING.md).
 
 *By contributing, you agree that your contributions will be licensed under the [MIT License](LICENSE).*
-
 
 ## License
 **OpenRHI** is licensed under the [MIT License](LICENSE).
