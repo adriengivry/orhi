@@ -1,5 +1,6 @@
 set(GLM_BUILD_TESTS OFF CACHE BOOL "GLM lib only")
-set(GLM_ENABLE_CXX_20 OFF CACHE BOOL "GLM lib only")
+set(GLM_BUILD_INSTALL OFF CACHE BOOL "GLM lib only")
+set(GLM_ENABLE_CXX_20 ON CACHE BOOL "GLM lib only")
 
 add_subdirectory(glm)
 
