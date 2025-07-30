@@ -38,7 +38,7 @@ target_link_libraries(5-mipmaps
 )
 
 # Add Vulkan libraries if using Vulkan API
-if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
+if(ORHI_COMPILE_VULKAN)
     target_include_directories(5-mipmaps PRIVATE ${VULKAN_SDK_PATH}/include)
     target_link_directories(5-mipmaps PRIVATE ${VULKAN_LIB_DIR})
     target_link_libraries(5-mipmaps PRIVATE ${VULKAN_LIB_NAME})

@@ -8,7 +8,7 @@ if(DEFINED ENV{VULKAN_SDK})
     message(STATUS "Found Vulkan SDK at: ${VULKAN_SDK_PATH}")
 
     # Set up Vulkan for all examples
-    if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
+    if(ORHI_COMPILE_VULKAN)
         # Make Vulkan include directory available to all examples
         include_directories(${VULKAN_SDK_PATH}/include)
         

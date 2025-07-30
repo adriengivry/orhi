@@ -38,7 +38,7 @@ target_link_libraries(7-particles
 )
 
 # Add Vulkan libraries if using Vulkan API
-if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
+if(ORHI_COMPILE_VULKAN)
     target_include_directories(7-particles PRIVATE ${VULKAN_SDK_PATH}/include)
     target_link_directories(7-particles PRIVATE ${VULKAN_LIB_DIR})
     target_link_libraries(7-particles PRIVATE ${VULKAN_LIB_NAME})
