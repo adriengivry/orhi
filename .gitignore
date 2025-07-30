@@ -2,7 +2,7 @@
 .vscode/
 /bin/
 /obj/
-/Build/
+/build/
 imgui.ini
 *.aps
 *.vcxproj*
