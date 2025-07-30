@@ -10,6 +10,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(ORHI_COMPILE_VULKAN "Compile Vulkan backend" OFF)
 option(ORHI_COMPILE_MOCK "Compile Mock backend" OFF)
 option(ORHI_GENERATE_EXAMPLES "Generate examples" OFF)
+option(ORHI_DEFAULT_GFX_API "Define the default graphics API to use when including backend-agnostic headers (e.g., vulkan, mock)" "vulkan")
+
+# Configure based on selected API
+if(ORHI_DEFAULT_GFX_API STREQUAL "vulkan")
+    message(STATUS "Vulkan selected as the default graphics API")
+    add_compile_definitions(ORHI_SELECT_VULKAN)
+elseif(ORHI_DEFAULT_GFX_API STREQUAL "mock")
+    message(STATUS "Mock selected as the default graphics API")
+    add_compile_definitions(ORHI_SELECT_MOCK)
+endif()
 
 # Window system selection
 set(ORHI_WINDOW_SYSTEM "xlib" CACHE STRING "Select window management system")

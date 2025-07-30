@@ -2,21 +2,6 @@ cmake_minimum_required(VERSION 3.16)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Options for backend selection
-if(NOT DEFINED ORHI_EXAMPLES_GFX_API)
-    set(ORHI_EXAMPLES_GFX_API "vulkan" CACHE STRING "Define the graphics API to use (e.g., vulkan, mock)")
-    set_property(CACHE ORHI_EXAMPLES_GFX_API PROPERTY STRINGS "vulkan" "mock")
-endif()
-
-# Configure based on selected API
-if(ORHI_EXAMPLES_GFX_API STREQUAL "vulkan")
-    message(STATUS "Using Vulkan as the graphics API for examples")
-    add_compile_definitions(ORHI_SELECT_VULKAN)
-elseif(ORHI_EXAMPLES_GFX_API STREQUAL "mock")
-    message(STATUS "Using Mock as the graphics API for examples")
-    add_compile_definitions(ORHI_SELECT_MOCK)
-endif()
-
 # Get Vulkan SDK path for shader compilation and linking
 if(DEFINED ENV{VULKAN_SDK})
     set(VULKAN_SDK_PATH $ENV{VULKAN_SDK})
