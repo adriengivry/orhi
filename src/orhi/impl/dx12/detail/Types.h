@@ -622,4 +622,38 @@ constexpr D3D12_FILTER GetDX12Filter(
 //     // No DirectX 12 equivalent - aspects are handled implicitly
 // };
 
+D3D12_RESOURCE_STATES ConvertTextureLayoutToResourceState(orhi::types::ETextureLayout layout)
+{
+	switch (layout)
+	{
+	case orhi::types::ETextureLayout::UNDEFINED:
+	case orhi::types::ETextureLayout::PREINITIALIZED:
+		return D3D12_RESOURCE_STATE_COMMON;
+	case orhi::types::ETextureLayout::GENERAL:
+		return D3D12_RESOURCE_STATE_COMMON;
+	case orhi::types::ETextureLayout::COLOR_ATTACHMENT_OPTIMAL:
+	case orhi::types::ETextureLayout::ATTACHMENT_OPTIMAL:
+		return D3D12_RESOURCE_STATE_RENDER_TARGET;
+	case orhi::types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+	case orhi::types::ETextureLayout::DEPTH_ATTACHMENT_OPTIMAL:
+	case orhi::types::ETextureLayout::STENCIL_ATTACHMENT_OPTIMAL:
+		return D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	case orhi::types::ETextureLayout::DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+	case orhi::types::ETextureLayout::DEPTH_READ_ONLY_OPTIMAL:
+	case orhi::types::ETextureLayout::STENCIL_READ_ONLY_OPTIMAL:
+	case orhi::types::ETextureLayout::READ_ONLY_OPTIMAL:
+		return D3D12_RESOURCE_STATE_DEPTH_READ;
+	case orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL:
+		return D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
+	case orhi::types::ETextureLayout::TRANSFER_SRC_OPTIMAL:
+		return D3D12_RESOURCE_STATE_COPY_SOURCE;
+	case orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL:
+		return D3D12_RESOURCE_STATE_COPY_DEST;
+	case orhi::types::ETextureLayout::PRESENT_SRC_KHR:
+		return D3D12_RESOURCE_STATE_PRESENT;
+	default:
+		return D3D12_RESOURCE_STATE_COMMON;
+	}
+}
+
 #endif // #if defined(ORHI_COMPILE_DX12)

@@ -96,6 +96,75 @@ namespace orhi
 		// After closing, the command list is ready to be submitted for execution
 	}
 
+	template <>
+	void CommandBuffer::BeginRendering(const RenderingInfo<BackendTraits>& p_info)
+	{
+		auto commandList = m_context.commandList.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[8] = {};
+
+		for (uint32_t i = 0; i < p_info.numRenderTargets; ++i)
+		{
+			auto framebuffer = p_info.framebuffer[i];
+			ORHI_ASSERT(framebuffer, "Framebuffer must not be null");
+
+			// Set render targets and clear values
+			// TODO: Need to get native render target views from framebuffer
+			Framebuffer& fb = p_info.framebuffer[i]->GetNativeHandle().As<Framebuffer&>();
+			float clearColor[4] = { p_info.clearColor[i].x,
+								 p_info.clearColor[i].y,
+								 p_info.clearColor[i].z,
+								 p_info.clearColor[i].w };
+			rtvHandles[i] = fb->GetNativeHandle().As<D3D12_CPU_DESCRIPTOR_HANDLE>()->GetRenderTargetView();
+			commandList->ClearRenderTargetView(rtvHandles[i], clearColor, 0, nullptr);
+		}
+
+		// TODO: Handle depth attachments if present 
+
+		commandList->OMSetRenderTargets(
+			p_info.numRenderTargets,
+			rtvHandles,
+			FALSE, // No need to preserve old render targets
+			nullptr // No depth stencil view for now
+		);
+
+		D3D12_VIEWPORT viewport = {};
+		viewport.TopLeftX = p_info.viewport.x;
+		viewport.TopLeftY = p_info.viewport.y;
+		viewport.Width = p_info.viewport.width;
+		viewport.Height = p_info.viewport.height;
+		viewport.MinDepth = p_info.viewport.minDepth;
+		viewport.MaxDepth = p_info.viewport.maxDepth;
+		commandList->RSSetViewports(1, &viewport);
+
+		D3D12_RECT scissorRect = {};
+		scissorRect.left = p_info.viewport.x;
+		scissorRect.top = p_info.viewport.y;
+		scissorRect.right = p_info.viewport.x + p_info.viewport.width;
+		scissorRect.bottom = p_info.viewport.y + p_info.viewport.height;
+		commandList->RSSetScissorRects(1, &scissorRect);
+	}
+
+	template <>
+	void CommandBuffer::EndRendering()
+	{
+		auto commandList = m_context.commandList.As<ID3D12GraphicsCommandList*>();
+		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+		// In DirectX 12, there's no explicit "end rendering" - 
+		// rendering is implicit based on resource transitions
+		// No action needed here
+
+		// Reset render targets to null
+		commandList->OMSetRenderTargets(
+			0, // No render targets
+			nullptr, // No render target views
+			FALSE,
+			nullptr // No depth stencil view
+		);
+
+	}
+
 	template<>
 	void CommandBuffer::BeginRenderPass(
 		RenderPass& p_renderPass,
@@ -104,63 +173,64 @@ namespace orhi
 		std::initializer_list<data::ClearValue> p_clearValues
 	)
 	{
-		auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
-		ORHI_ASSERT(commandList, "Command list must have a valid native handle");
+		// TODO: subject for removal
+		// auto commandList = m_handle.As<ID3D12GraphicsCommandList*>();
+		// ORHI_ASSERT(commandList, "Command list must have a valid native handle");
 
-		// Get render target and depth stencil views from framebuffer
+		// // Get render target and depth stencil views from framebuffer
 		
-		// The set render targets function needs to have access to the CPU descriptor handles
-		// The heap holding these descriptors needs to be stored somewhere
+		// // The set render targets function needs to have access to the CPU descriptor handles
+		// // The heap holding these descriptors needs to be stored somewhere
 		
-		// TODO: Get actual render target views and depth stencil view from framebuffer
-		std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = {};
-		bool hasDSV = false;
+		// // TODO: Get actual render target views and depth stencil view from framebuffer
+		// std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
+		// D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = {};
+		// bool hasDSV = false;
 
-		// Set render targets (placeholder - needs actual framebuffer implementation)
-		if (!rtvHandles.empty() || hasDSV)
-		{
-			commandList->OMSetRenderTargets(
-				static_cast<UINT>(rtvHandles.size()),
-				rtvHandles.empty() ? nullptr : rtvHandles.data(),
-				FALSE,
-				hasDSV ? &dsvHandle : nullptr
-			);
-		}
+		// // Set render targets (placeholder - needs actual framebuffer implementation)
+		// if (!rtvHandles.empty() || hasDSV)
+		// {
+		// 	commandList->OMSetRenderTargets(
+		// 		static_cast<UINT>(rtvHandles.size()),
+		// 		rtvHandles.empty() ? nullptr : rtvHandles.data(),
+		// 		FALSE,
+		// 		hasDSV ? &dsvHandle : nullptr
+		// 	);
+		// }
 
-		// Clear render targets and depth stencil
-		size_t clearIndex = 0;
-		for (const auto& clearValue : p_clearValues)
-		{
-			if (auto colorClearValue = std::get_if<data::ColorClearValue>(&clearValue); colorClearValue)
-			{
-				if (clearIndex < rtvHandles.size())
-				{
-					FLOAT clearColor[4] = {
-						colorClearValue->x,
-						colorClearValue->y,
-						colorClearValue->z,
-						colorClearValue->w
-					};
-					commandList->ClearRenderTargetView(rtvHandles[clearIndex], clearColor, 0, nullptr);
-				}
-			}
-			else if (auto depthStencilClearValue = std::get_if<data::DepthStencilClearValue>(&clearValue); depthStencilClearValue)
-			{
-				if (hasDSV)
-				{
-					commandList->ClearDepthStencilView(
-						dsvHandle,
-						D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
-						depthStencilClearValue->depth,
-						static_cast<UINT8>(depthStencilClearValue->stencil),
-						0,
-						nullptr
-					);
-				}
-			}
-			clearIndex++;
-		}
+		// // Clear render targets and depth stencil
+		// size_t clearIndex = 0;
+		// for (const auto& clearValue : p_clearValues)
+		// {
+		// 	if (auto colorClearValue = std::get_if<data::ColorClearValue>(&clearValue); colorClearValue)
+		// 	{
+		// 		if (clearIndex < rtvHandles.size())
+		// 		{
+		// 			FLOAT clearColor[4] = {
+		// 				colorClearValue->x,
+		// 				colorClearValue->y,
+		// 				colorClearValue->z,
+		// 				colorClearValue->w
+		// 			};
+		// 			commandList->ClearRenderTargetView(rtvHandles[clearIndex], clearColor, 0, nullptr);
+		// 		}
+		// 	}
+		// 	else if (auto depthStencilClearValue = std::get_if<data::DepthStencilClearValue>(&clearValue); depthStencilClearValue)
+		// 	{
+		// 		if (hasDSV)
+		// 		{
+		// 			commandList->ClearDepthStencilView(
+		// 				dsvHandle,
+		// 				D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,
+		// 				depthStencilClearValue->depth,
+		// 				static_cast<UINT8>(depthStencilClearValue->stencil),
+		// 				0,
+		// 				nullptr
+		// 			);
+		// 		}
+		// 	}
+		// 	clearIndex++;
+		// }
 	}
 
 	template<>
@@ -268,41 +338,10 @@ namespace orhi
 
 		// Convert ORHI texture layouts to D3D12 resource states
 		// TODO: Extract out into a free function later
-		auto convertLayout = [](types::ETextureLayout layout) -> D3D12_RESOURCE_STATES {
-			switch (layout)
-			{
-			case types::ETextureLayout::UNDEFINED:
-			case types::ETextureLayout::PREINITIALIZED:
-				return D3D12_RESOURCE_STATE_COMMON;
-			case types::ETextureLayout::GENERAL:
-				return D3D12_RESOURCE_STATE_COMMON;
-			case types::ETextureLayout::COLOR_ATTACHMENT_OPTIMAL:
-			case types::ETextureLayout::ATTACHMENT_OPTIMAL:
-				return D3D12_RESOURCE_STATE_RENDER_TARGET;
-			case types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
-			case types::ETextureLayout::DEPTH_ATTACHMENT_OPTIMAL:
-			case types::ETextureLayout::STENCIL_ATTACHMENT_OPTIMAL:
-				return D3D12_RESOURCE_STATE_DEPTH_WRITE;
-			case types::ETextureLayout::DEPTH_STENCIL_READ_ONLY_OPTIMAL:
-			case types::ETextureLayout::DEPTH_READ_ONLY_OPTIMAL:
-			case types::ETextureLayout::STENCIL_READ_ONLY_OPTIMAL:
-			case types::ETextureLayout::READ_ONLY_OPTIMAL:
-				return D3D12_RESOURCE_STATE_DEPTH_READ;
-			case types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL:
-				return D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-			case types::ETextureLayout::TRANSFER_SRC_OPTIMAL:
-				return D3D12_RESOURCE_STATE_COPY_SOURCE;
-			case types::ETextureLayout::TRANSFER_DST_OPTIMAL:
-				return D3D12_RESOURCE_STATE_COPY_DEST;
-			case types::ETextureLayout::PRESENT_SRC_KHR:
-				return D3D12_RESOURCE_STATE_PRESENT;
-			default:
-				return D3D12_RESOURCE_STATE_COMMON;
-			}
-		};
 
-		D3D12_RESOURCE_STATES beforeState = convertLayout(p_oldLayout);
-		D3D12_RESOURCE_STATES afterState = convertLayout(p_newLayout);
+
+		D3D12_RESOURCE_STATES beforeState = ConvertTextureLayoutToResourceState(p_oldLayout);
+		D3D12_RESOURCE_STATES afterState = ConvertTextureLayoutToResourceState(p_newLayout);
 
 		// Only create barrier if states are different
 		if (beforeState != afterState)
@@ -492,7 +531,6 @@ namespace orhi
 
 		// DirectX 12 doesn't have push constants like Vulkan, but we can use root constants
 		// This is a simplified implementation that assumes the push constants are mapped to root parameter 0
-		// In a real implementation, you would need to know which root parameter index corresponds to the push constants
 		
 		ORHI_ASSERT(p_range.size % 4 == 0, "Push constant size must be a multiple of 4 bytes");
 		ORHI_ASSERT(p_range.offset % 4 == 0, "Push constant offset must be a multiple of 4 bytes");
@@ -509,7 +547,6 @@ namespace orhi
 		
 		bool isCompute = (p_stageFlags & types::EShaderStageFlags::COMPUTE_BIT) != types::EShaderStageFlags::NONE;
 		
-		// Note: Root parameter index 0 is assumed here - in a real implementation,
 		// this would need to be determined from the pipeline layout
 		const UINT rootParameterIndex = 0;
 		

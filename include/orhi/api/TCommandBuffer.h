@@ -9,6 +9,7 @@
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
 #include <orhi/data/ClearValue.h>
+#include <orhi/data/RenderingInfo.h>
 #include <orhi/data/MemoryRange.h>
 #include <orhi/data/TextureRegion.h>
 #include <orhi/data/ViewportDesc.h>
@@ -94,6 +95,18 @@ namespace orhi::api
 			math::Extent2D p_extent,
 			std::initializer_list<data::ClearValue> p_clearValues = {}
 		);
+
+		/**
+		* @brief Begins a rendering operation with more flexible parameters
+		* @param p_info Rendering information including render pass, framebuffer, extent, and clear values
+		*/
+		void BeginRendering(const RenderingInfo<BackendTraits>& p_info);
+
+		/**
+		* @brief Ends the current rendering operation
+		* @note Must be called after BeginRendering() and all rendering commands
+		*/
+		void EndRendering();
 
 		/**
 		* @brief Ends the current render pass
