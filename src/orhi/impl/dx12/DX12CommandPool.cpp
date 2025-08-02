@@ -1,6 +1,6 @@
 /**
 * @project: orhi (OpenRHI)
-* @author: Adrien Givry, Jian Bang Xu
+* @author: Adrien Givry, Jian Bang Xu, Robert Osborne
 * @licence: MIT
 */
 
@@ -14,7 +14,6 @@
 #include <orhi/impl/dx12/CommandBuffer.h>
 
 #include <d3d12.h>
-#include <dxgi1_6.h>
 
 using namespace orhi::impl::dx12;
 
@@ -27,6 +26,15 @@ namespace orhi
 		.device = p_device
 	}
 	{
+		auto device = p_device.GetNativeHandle().As<ID3D12Device*>();
+		ORHI_ASSERT(device, "Device must have a valid native handle");
+
+		HRESULT hr = device->CreateCommandAllocator(
+			D3D12_COMMAND_LIST_TYPE_DIRECT, // Command list type
+			IID_PPV_ARGS(&m_context.commandAllocator)
+		);
+		ORHI_ASSERT(SUCCEEDED(hr), "Failed to create command allocator");
+		m_handle = m_context.commandAllocator.Get();
 
 	}
 
@@ -36,6 +44,9 @@ namespace orhi
 		
 	}
 
+	// TODO: create way to return only one command buffer
+	// TODO: maybe should be the only way to allocate command buffers?
+
 	template<>
 	std::vector<std::reference_wrapper<CommandBuffer>> CommandPool::AllocateCommandBuffers(
 		uint32_t p_count,
@@ -43,6 +54,14 @@ namespace orhi
 	)
 	{
 		std::vector<std::reference_wrapper<CommandBuffer>> output;
+
+		for (uint32_t i = 0; i < p_count; ++i)
+		{
+			CommandBuffer commandBuffer(m_context.device, *this);
+
+		}
+
+
 		return output;
 	}
 }

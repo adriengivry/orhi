@@ -26,6 +26,7 @@ using namespace orhi::impl::vk;
 
 namespace orhi
 {
+	// TODO: Update vulkan side of command buffer to use the CommandPool
 	template<>
 	CommandBuffer::TCommandBuffer(
 		impl::common::NativeHandle p_handle
