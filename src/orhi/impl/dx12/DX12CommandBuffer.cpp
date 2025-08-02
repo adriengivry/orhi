@@ -15,7 +15,6 @@
 #include <orhi/impl/dx12/Framebuffer.h>
 #include <orhi/impl/dx12/Pipeline.h>
 #include <orhi/impl/dx12/PipelineLayout.h>
-#include <orhi/impl/dx12/RenderPass.h>
 #include <orhi/impl/dx12/Texture.h>
 #include <orhi/impl/dx12/detail/MemoryUtils.h>
 #include <orhi/impl/dx12/detail/Types.h>
