@@ -29,7 +29,5 @@ namespace orhi::api
 		// TODO: Add data for depth/stencil attachment
 		ColorClearValue clearColor[8]; // Up to 8 color attachments
 		DepthStencilClearValue clearDepthStencil; // Single depth/stencil attachment
-
-
 	};
 }
