@@ -12,6 +12,7 @@
 #include <orhi/debug/Log.h>
 #include <orhi/impl/dx12/detail/Types.h>
 #include <orhi/impl/dx12/Device.h>
+#include <orhi/impl/dx12/detail/DescriptorTypes.h>
 #include <orhi/impl/dx12/Texture.h>
 
 #include <d3d12.h>

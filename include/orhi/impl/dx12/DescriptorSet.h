@@ -8,18 +8,19 @@
 
 #include <orhi/api/TDescriptorSet.h>
 #include <orhi/impl/dx12/BackendTraits.h>
+#include <orhi/impl/dx12/DescriptorPool.h>
+#include <orhi/impl/dx12/detail/DescriptorTypes.h>
 #include <orhi/impl/dx12/Device.h>
 
 #include <orhi/impl/dx12/detail/ComPtr.h>
-
-struct ID3D12DescriptorHeap;
 
 namespace orhi::impl::dx12
 {
 	struct DescriptorSetContext
 	{
 		Device& device;
-		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorSet;
+		DescriptorPool& pool;
+		std::array<uint32_t, kDescriptorHeapTypeCount> heapOffsets;
 	};
 
 	using DescriptorSet = api::TDescriptorSet<BackendTraits>;

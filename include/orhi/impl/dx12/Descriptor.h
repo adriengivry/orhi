@@ -9,6 +9,7 @@
 #include <orhi/api/TDescriptor.h>
 #include <orhi/impl/dx12/BackendTraits.h>
 #include <orhi/impl/dx12/Device.h>
+#include <orhi/impl/dx12/detail/DescriptorTypes.h>
 #include <orhi/types/EDescriptorType.h>
 #include <orhi/types/EFormat.h>
 #include <orhi/types/ETextureLayout.h>
@@ -18,15 +19,6 @@ struct ID3D12Resource;
 
 namespace orhi::impl::dx12
 {
-	using CPUDescriptorAddress = size_t;
-	using GPUDescriptorAddress = uint64_t;
-
-	enum class EDescriptorHeapType : uint32_t
-	{
-		CBV_SRV_UAV,
-		SAMPLER,
-	};
-
 	struct DescriptorHandle
 	{
 		static constexpr uint64_t kHeapTypeBitCount = 2;
