@@ -8,13 +8,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Define options
 option(ORHI_COMPILE_VULKAN "Compile Vulkan backend" OFF)
+option(ORHI_COMPILE_DX12 "Compile DX12 backend" OFF)
 option(ORHI_COMPILE_MOCK "Compile Mock backend" OFF)
 option(ORHI_GENERATE_EXAMPLES "Generate examples" OFF)
-option(ORHI_DEFAULT_GFX_API "Define the default graphics API to use when including backend-agnostic headers (e.g., vulkan, mock)" "vulkan")
+option(ORHI_DEFAULT_GFX_API "Define the default graphics API to use when including backend-agnostic headers (e.g., vulkan, dx12, mock)" "vulkan")
 
 # Configure based on selected API
 if(ORHI_DEFAULT_GFX_API STREQUAL "vulkan")
     message(STATUS "Vulkan selected as the default graphics API")
+    add_compile_definitions(ORHI_SELECT_VULKAN)
+elseif(ORHI_DEFAULT_GFX_API STREQUAL "dx12")
+    message(STATUS "DirectX 12 selected as the default graphics API")
     add_compile_definitions(ORHI_SELECT_VULKAN)
 elseif(ORHI_DEFAULT_GFX_API STREQUAL "mock")
     message(STATUS "Mock selected as the default graphics API")
@@ -60,6 +64,9 @@ if (ORHI_COMPILE_VULKAN)
     else()
         message(FATAL_ERROR "VULKAN_SDK environment variable not set. Please install Vulkan SDK and set VULKAN_SDK environment variable.")
     endif()
+elseif (ORHI_COMPILE_DX12)
+    message(STATUS "DirectX 12 backend selected for compilation")
+    add_compile_definitions(ORHI_COMPILE_DX12)
 endif()
 
 if (ORHI_COMPILE_MOCK)
