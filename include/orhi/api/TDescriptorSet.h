@@ -16,6 +16,7 @@
 namespace orhi::api
 {
 	template<typename BackendTraits> class TBuffer;
+	template<typename BackendTraits> class TDescriptorPool;
 	template<typename BackendTraits> class TDevice;
 
 	/**
@@ -38,6 +39,7 @@ namespace orhi::api
 		*/
 		TDescriptorSet(
 			TDevice<BackendTraits>& p_device,
+			TDescriptorPool<BackendTraits>& p_descriptorPool,
 			impl::common::NativeHandle p_handle
 		);
 

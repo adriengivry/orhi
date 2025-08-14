@@ -64,13 +64,13 @@ namespace orhi
 		}
 
 		m_context.descriptorSets.resize(p_desc.maxSets);
-		m_context.rootConstants.resize(p_desc.maxSets);
+		m_context.rootConstants.resize(p_desc.maxConstants);
 	}
 
 	template<>
 	DescriptorPool::~TDescriptorPool()
 	{
-		
+		// TODO: Clear this up
 	}
 
 	template<>
@@ -85,7 +85,15 @@ namespace orhi
 
 		for (uint32_t i = 0; i < p_count; ++i)
 		{
-
+			if (const RootConstantMapping& rootConstantMapping = p_layout.m_context.rootConstantMapping;
+				rootConstantMapping.rootConstantCount > 0)
+			{
+				ORHI_ASSERT(m_context.rootConstantCount + rootConstantMapping.rootConstantCount < m_context.rootConstants.size(),
+					"Failed to allocate root constants for descriptor set");
+				m_context.rootConstants[m_context.rootConstantCount] = GPUDescriptorAddress{ 0 };
+				m_context.rootConstantCount += rootConstantMapping.rootConstantCount;
+			}
+			//m_context.descriptorSets[m_context.descriptorSetCount] = DescriptorSet(m_context.device, m_context.descriptorSets[m_context.descriptorSetCount].GetNativeHandle());
 		}
 
 		return output;

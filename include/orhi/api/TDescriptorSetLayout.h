@@ -45,6 +45,8 @@ namespace orhi::api
 		~TDescriptorSetLayout();
 
 	private:
+		friend class TDescriptorPool<BackendTraits>;
+
 		BackendTraits::DescriptorSetLayoutContext m_context;
 	};
 }

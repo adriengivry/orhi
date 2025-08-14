@@ -22,11 +22,13 @@ namespace orhi
 	template<>
 	DescriptorSet::TDescriptorSet(
 		Device& p_device,
-		impl::common::NativeHandle p_handle
+		DescriptorPool& pool,
+	impl::common::NativeHandle p_handle
 	) :
 		BackendObject(p_handle),
 		m_context {
-			.device = p_device
+			.device = p_device,
+			.pool = pool
 		}
 	{
 		

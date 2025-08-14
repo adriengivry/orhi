@@ -9,6 +9,7 @@
 #include <orhi/api/TDescriptorPool.h>
 #include <orhi/impl/dx12/BackendTraits.h>
 #include <orhi/impl/dx12/DescriptorSet.h>
+#include <orhi/impl/dx12/detail/DescriptorTypes.h>
 #include <orhi/impl/dx12/Device.h>
 
 #include <orhi/impl/dx12/detail/ComPtr.h>
