@@ -1,9 +1,9 @@
 [submodule "examples/deps/_glfw/glfw"]
 	path = examples/deps/_glfw/glfw
-	url = git@github.com:glfw/glfw.git
+	url = https://github.com/glfw/glfw.git
 [submodule "examples/deps/_glm/glm"]
 	path = examples/deps/_glm/glm
-	url = git@github.com:g-truc/glm.git
+	url = https://github.com/g-truc/glm.git
 [submodule "examples/deps/_stb/stb"]
 	path = examples/deps/_stb/stb
-	url = git@github.com:nothings/stb.git
+	url = https://github.com/nothings/stb.git
