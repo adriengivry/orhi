@@ -2,9 +2,12 @@
 
 # OpenRHI
 
-**OpenRHI** — *orhi* — is a lightweight, permissive, cross-platform **Render Hardware Interface** for modern graphics APIs, built with C++20.
+**OpenRHI** — *orhi* — is a lightweight, permissive, and cross-platform **Render Hardware Interface** for modern graphics APIs, built with C++20.
 
 Write hardware-agnostic graphics code once, and run it seamlessly across multiple platforms and graphics APIs.
+
+> [!important]
+> _OpenRHI_ is a collaborative, open-source project, and we’re **actively looking for contributors**! The Vulkan backend is partially implemented, and the DirectX 12 backend is in progress (see this [pull request](https://github.com/adriengivry/orhi/pull/24) for more info). Whether you’re experienced in graphics programming or just eager to learn, your contributions can help _OpenRHI_ become a modern open-source reference for rendering. Join us and make an impact!
 
 **OpenRHI** is...
 - 🧩 **Simple:** Easy to understand and extend
