@@ -16,6 +16,8 @@
 // Selection logic
 #if defined(ORHI_SELECT_VULKAN)
 #define ORHI_SELECTED_BACKEND vk
+#elif defined(ORHI_SELECT_DX12)
+#define ORHI_SELECTED_BACKEND dx12
 #elif defined(ORHI_SELECT_MOCK)
 #define ORHI_SELECTED_BACKEND mock
 #else
