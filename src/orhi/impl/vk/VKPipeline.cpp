@@ -21,7 +21,6 @@
 #include <orhi/debug/Log.h>
 #include <orhi/impl/vk/DescriptorSetLayout.h>
 #include <orhi/impl/vk/PipelineLayout.h>
-#include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/ShaderModule.h>
 #include <orhi/impl/vk/detail/Types.h>
 
@@ -328,12 +327,54 @@ namespace orhi
 			p_desc.stages.contains(orhi::types::EShaderStageFlags::TESSELLATION_CONTROL_BIT) || 
 			p_desc.stages.contains(orhi::types::EShaderStageFlags::TESSELLATION_EVALUATION_BIT);
 
+		std::vector<VkFormat> colorAttachmentFormats;
+		VkFormat depthAttachmentFormat = VK_FORMAT_UNDEFINED;
+		VkFormat stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
+		for (const auto& attachment : p_desc.attachments)
+		{
+			const VkFormat format = utils::EnumToValue<VkFormat>(attachment.format);
+			switch (attachment.type)
+			{
+			case types::EAttachmentType::COLOR:
+				colorAttachmentFormats.push_back(format);
+				break;
+			case types::EAttachmentType::DEPTH_STENCIL:
+				if (attachment.format == types::EFormat::S8_UINT)
+				{
+					stencilAttachmentFormat = format;
+				}
+				else
+				{
+					depthAttachmentFormat = format;
+					if (
+						attachment.format == types::EFormat::D16_UNORM_S8_UINT ||
+						attachment.format == types::EFormat::D24_UNORM_S8_UINT ||
+						attachment.format == types::EFormat::D32_SFLOAT_S8_UINT
+					)
+					{
+						stencilAttachmentFormat = format;
+					}
+				}
+				break;
+			case types::EAttachmentType::RESOLVE:
+				break;
+			}
+		}
+
+		VkPipelineRenderingCreateInfoKHR renderingInfo{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR,
+			.colorAttachmentCount = static_cast<uint32_t>(colorAttachmentFormats.size()),
+			.pColorAttachmentFormats = colorAttachmentFormats.data(),
+			.depthAttachmentFormat = depthAttachmentFormat,
+			.stencilAttachmentFormat = stencilAttachmentFormat
+		};
 		const bool hasDepthOrStencil =
-			p_desc.depthStencilState.depthTestEnable ||
-			p_desc.depthStencilState.stencilTestEnable;
-		
+			depthAttachmentFormat != VK_FORMAT_UNDEFINED ||
+			stencilAttachmentFormat != VK_FORMAT_UNDEFINED;
+
 		VkGraphicsPipelineCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+			.pNext = &renderingInfo,
 			.stageCount = static_cast<uint32_t>(stages.size()),
 			.pStages = stages.data(),
 			.pVertexInputState = &vertexInputState,
@@ -346,7 +387,7 @@ namespace orhi
 			.pColorBlendState = &colorBlendState,
 			.pDynamicState = dynamicStatesArray.empty() ? nullptr : &dynamicState,
 			.layout = p_desc.pipelineLayout.GetNativeHandle().As<VkPipelineLayout>(),
-			.renderPass = p_desc.renderPass.GetNativeHandle().As<VkRenderPass>(),
+			.renderPass = VK_NULL_HANDLE,
 		};
 
 		VkResult pipelineCreationResult = vkCreateGraphicsPipelines(

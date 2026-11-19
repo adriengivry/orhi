@@ -19,7 +19,6 @@
 #include <orhi/PipelineLayout.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
-#include <orhi/RenderPass.h>
 #include <orhi/Semaphore.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/SwapChain.h>
@@ -307,22 +306,7 @@ int main()
 		}
 	};
 
-	// Create render pass and pipeline
-	orhi::RenderPass renderPass{
-		device,
-		{
-			orhi::data::AttachmentDesc{
-				.type = orhi::types::EAttachmentType::COLOR,
-				.format = optimalSwapChainDesc.format,
-				.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR,
-			},
-			orhi::data::AttachmentDesc{
-				.type = orhi::types::EAttachmentType::DEPTH_STENCIL,
-				.format = orhi::types::EFormat::D32_SFLOAT,
-				.finalLayout = orhi::types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL
-			}
-		}
-	};
+	// Create graphics pipeline
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
 
@@ -333,7 +317,13 @@ int main()
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
-			.renderPass = renderPass,
+			.attachments = {
+				{ .format = optimalSwapChainDesc.format },
+				{
+					.type = orhi::types::EAttachmentType::DEPTH_STENCIL,
+					.format = orhi::types::EFormat::D32_SFLOAT
+				}
+			},
 			.pipelineLayout = pipelineLayout,
 			.vertexInputState{
 				.vertexBindings = VertexInputDescription<Vertex>::GetBindingDescription(),
@@ -401,7 +391,7 @@ int main()
 				}
 			);
 			depthTexture.Allocate(orhi::types::EMemoryPropertyFlags::DEVICE_LOCAL_BIT);
-			
+
 			auto& depthDescriptor = depthDescriptors.emplace_back(
 				device,
 				orhi::data::TextureViewDesc{
@@ -415,10 +405,20 @@ int main()
 				device,
 				orhi::data::FramebufferDesc<orhi::BackendTraits>{
 					.attachments = {
-						swapChain->GetImageDescriptor(i),
-						depthDescriptor
+						{
+							.descriptor = swapChain->GetImageDescriptor(i),
+							.type = orhi::types::EAttachmentType::COLOR,
+							.format = optimalSwapChainDesc.format,
+							.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR
+						},
+						{
+							.descriptor = depthDescriptor,
+							.type = orhi::types::EAttachmentType::DEPTH_STENCIL,
+							.format = orhi::types::EFormat::D32_SFLOAT,
+							.finalLayout = orhi::types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+							.aspectFlags = orhi::types::ETextureAspectFlags::DEPTH
+						}
 					},
-					.renderPass = renderPass,
 					.extent = windowSize
 				}
 			);
@@ -542,15 +542,14 @@ int main()
 		auto& commandBuffer = frameResources.commandBuffer;
 		commandBuffer.Reset();
 		commandBuffer.Begin();
-		commandBuffer.BeginRenderPass(
-			renderPass,
-			swapImageResources.framebuffer,
-			windowSize,
-			{
+		commandBuffer.BeginRendering({
+			.framebuffer = swapImageResources.framebuffer,
+			.extent = windowSize,
+			.clearValues = {
 				orhi::data::ColorClearValue{ 0.0f, 0.0f, 0.0f, 1.0f },
 				orhi::data::DepthStencilClearValue{ 1.0f, 0 }
 			}
-		);
+		});
 
 		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline);
 
@@ -620,8 +619,8 @@ int main()
 
 			commandBuffer.DrawIndexed(static_cast<uint32_t>(k_indices.size()));
 		}
-		
-		commandBuffer.EndRenderPass();
+
+		commandBuffer.EndRendering();
 		commandBuffer.End();
 
 		device.GetGraphicsAndComputeQueue().Submit(

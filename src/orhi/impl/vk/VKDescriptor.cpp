@@ -29,6 +29,8 @@ namespace orhi
 		.type = EVulkanDescriptorType::IMAGE_VIEW
 	}
 	{
+		m_resourceHandle = p_desc.texture;
+
 		VkImageViewCreateInfo viewInfo{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 			.image = p_desc.texture.As<VkImage>(),

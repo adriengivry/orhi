@@ -8,23 +8,18 @@
 
 #include <orhi/types/EAttachmentType.h>
 #include <orhi/types/EFormat.h>
-#include <orhi/types/ETextureLayout.h>
-#include <orhi/types/ESampleCountFlags.h>
 
 namespace orhi::data
 {
 	/**
-	* @brief Descriptor for an attachment in a render pass
+	* @brief Format and type of a graphics pipeline attachment
 	* 
-	* Describes the properties of an attachment used in a render pass.
-	* Can be used to specify color, depth, or stencil attachments.
+	* Describes the attachment formats used when creating a graphics pipeline
+	* with dynamic rendering.
 	*/
 	struct AttachmentDesc
 	{
 		types::EAttachmentType type = types::EAttachmentType::COLOR; // Default to color attachment
 		types::EFormat format;
-		types::ETextureLayout initialLayout = types::ETextureLayout::UNDEFINED;
-		types::ETextureLayout finalLayout = types::ETextureLayout::UNDEFINED;
-		types::ESampleCountFlags samples = types::ESampleCountFlags::COUNT_1_BIT;
 	};
 }

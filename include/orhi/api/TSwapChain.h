@@ -21,7 +21,6 @@ namespace orhi::api
 	template<typename BackendTraits> class TDevice;
 	template<typename BackendTraits> class TFence;
 	template<typename BackendTraits> class TFramebuffer;
-	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TSemaphore;
 
 	/**

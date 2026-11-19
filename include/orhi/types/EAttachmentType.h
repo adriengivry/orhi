@@ -11,7 +11,7 @@
 namespace orhi::types
 {
 	/**
-	* @brief Enum representing different types of attachments in a render pass
+	* @brief Enum representing different types of rendering attachments
 	*/
 	enum class EAttachmentType : uint8_t
 	{

@@ -8,8 +8,8 @@
 
 #include <orhi/data/BufferCopyDesc.h>
 #include <orhi/data/BufferTextureCopyDesc.h>
-#include <orhi/data/ClearValue.h>
 #include <orhi/data/MemoryRange.h>
+#include <orhi/data/RenderingInfo.h>
 #include <orhi/data/TextureRegion.h>
 #include <orhi/data/ViewportDesc.h>
 #include <orhi/impl/common/BackendObject.h>
@@ -21,17 +21,14 @@
 #include <orhi/types/EShaderStageFlags.h>
 #include <orhi/types/ETextureLayout.h>
 
-#include <initializer_list>
 #include <span>
 
 namespace orhi::api
 {
 	template<typename BackendTraits> class TBuffer;
 	template<typename BackendTraits> class TDescriptorSet;
-	template<typename BackendTraits> class TFramebuffer;
 	template<typename BackendTraits> class TPipeline;
 	template<typename BackendTraits> class TPipelineLayout;
-	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TTexture;
 
 	/**
@@ -39,7 +36,7 @@ namespace orhi::api
 	* 
 	* TCommandBuffer provides a cross-platform abstraction for recording graphics and compute commands
 	* that will be executed on the GPU. Commands are recorded between Begin() and End() calls, and
-	* can include render passes, resource bindings, draw calls, and memory operations.
+	* can include dynamic rendering, resource bindings, draw calls, and memory operations.
 	* 
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
@@ -50,8 +47,14 @@ namespace orhi::api
 		/**
 		* @brief Creates a command buffer from a native handle
 		* @param p_handle Native handle to the underlying command buffer object
+		* @note Use a command buffer allocated by a command pool for dynamic rendering
 		*/
 		TCommandBuffer(impl::common::NativeHandle p_handle);
+
+		TCommandBuffer(
+			impl::common::NativeHandle p_handle,
+			BackendTraits::CommandBufferContext p_context
+		);
 
 		/**
 		* @brief Destroys the command buffer and releases associated resources
@@ -77,24 +80,16 @@ namespace orhi::api
 		void End();
 
 		/**
-		* @brief Begins a render pass for rendering operations
-		* @param p_renderPass The render pass to begin
-		* @param p_framebuffer The framebuffer to render to
-		* @param p_extent The rendering extent as a pair of width and height
-		* @param p_clearValues Optional array of clear values for attachments; if empty, no clearing is performed
+		* @brief Begins dynamic rendering with the specified attachments and clear values
+		* @param p_info Rendering information including framebuffer, extent, and clear values
 		*/
-		void BeginRenderPass(
-			TRenderPass<BackendTraits>& p_renderPass,
-			TFramebuffer<BackendTraits>& p_framebuffer,
-			math::Extent2D p_extent,
-			std::initializer_list<data::ClearValue> p_clearValues = {}
-		);
+		void BeginRendering(const RenderingInfo<BackendTraits>& p_info);
 
 		/**
-		* @brief Ends the current render pass
-		* @note Must be called after BeginRenderPass() and all rendering commands
+		* @brief Ends the current rendering operation
+		* @note Must be called after BeginRendering() and all rendering commands
 		*/
-		void EndRenderPass();
+		void EndRendering();
 
 		/**
 		* @brief Copies data between two buffers

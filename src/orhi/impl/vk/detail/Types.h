@@ -145,7 +145,6 @@ struct orhi::utils::MappingFor<orhi::types::ECommandBufferUsageFlags, VkCommandB
 	using type = std::tuple<
 		EnumValuePair<EnumType::NONE, 0>,
 		EnumValuePair<EnumType::ONE_TIME_SUBMIT_BIT, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT>,
-		EnumValuePair<EnumType::RENDER_PASS_CONTINUE_BIT, VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT>,
 		EnumValuePair<EnumType::SIMULTANEOUS_USE_BIT, VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT>,
 		EnumValuePair<EnumType::ALL, VK_COMMAND_BUFFER_USAGE_FLAG_BITS_MAX_ENUM>
 	>;

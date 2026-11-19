@@ -15,14 +15,190 @@
 #include <orhi/impl/vk/Framebuffer.h>
 #include <orhi/impl/vk/Pipeline.h>
 #include <orhi/impl/vk/PipelineLayout.h>
-#include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Texture.h>
 #include <orhi/impl/vk/detail/MemoryUtils.h>
 #include <orhi/impl/vk/detail/Types.h>
 
 #include <vulkan/vulkan.h>
 
+#include <algorithm>
+#include <stdexcept>
+
 using namespace orhi::impl::vk;
+
+namespace
+{
+	struct LayoutAccess
+	{
+		VkPipelineStageFlags stage;
+		VkAccessFlags access;
+	};
+
+	LayoutAccess GetLayoutAccess(orhi::types::ETextureLayout p_layout)
+	{
+		switch (p_layout)
+		{
+		case orhi::types::ETextureLayout::UNDEFINED:
+			return { VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0 };
+		case orhi::types::ETextureLayout::COLOR_ATTACHMENT_OPTIMAL:
+			return {
+				VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+				VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+			};
+		case orhi::types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+			return {
+				VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+				VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT
+			};
+		case orhi::types::ETextureLayout::DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+		case orhi::types::ETextureLayout::DEPTH_READ_ONLY_OPTIMAL:
+		case orhi::types::ETextureLayout::STENCIL_READ_ONLY_OPTIMAL:
+		case orhi::types::ETextureLayout::SHADER_READ_ONLY_OPTIMAL:
+			return { VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_ACCESS_MEMORY_READ_BIT };
+		case orhi::types::ETextureLayout::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL:
+		case orhi::types::ETextureLayout::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL:
+		case orhi::types::ETextureLayout::DEPTH_ATTACHMENT_OPTIMAL:
+		case orhi::types::ETextureLayout::STENCIL_ATTACHMENT_OPTIMAL:
+			return {
+				VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+				VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT
+			};
+		case orhi::types::ETextureLayout::ATTACHMENT_OPTIMAL:
+			return {
+				VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
+					VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT |
+					VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+				VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+					VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
+					VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+					VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT
+			};
+		case orhi::types::ETextureLayout::READ_ONLY_OPTIMAL:
+			return { VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_ACCESS_MEMORY_READ_BIT };
+		case orhi::types::ETextureLayout::GENERAL:
+			return {
+				VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+				VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT
+			};
+		case orhi::types::ETextureLayout::TRANSFER_SRC_OPTIMAL:
+			return { VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_READ_BIT };
+		case orhi::types::ETextureLayout::TRANSFER_DST_OPTIMAL:
+			return { VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_WRITE_BIT };
+		case orhi::types::ETextureLayout::PREINITIALIZED:
+			return { VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_WRITE_BIT };
+		case orhi::types::ETextureLayout::PRESENT_SRC_KHR:
+			return { VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0 };
+		default:
+			throw std::invalid_argument("unsupported rendering attachment layout");
+		}
+	}
+
+	VkResolveModeFlagBits GetColorResolveMode(orhi::types::EFormat p_format)
+	{
+		switch (p_format)
+		{
+		case orhi::types::EFormat::R8_UINT:
+		case orhi::types::EFormat::R8_SINT:
+		case orhi::types::EFormat::R8G8_UINT:
+		case orhi::types::EFormat::R8G8_SINT:
+		case orhi::types::EFormat::R8G8B8_UINT:
+		case orhi::types::EFormat::R8G8B8_SINT:
+		case orhi::types::EFormat::B8G8R8_UINT:
+		case orhi::types::EFormat::B8G8R8_SINT:
+		case orhi::types::EFormat::R8G8B8A8_UINT:
+		case orhi::types::EFormat::R8G8B8A8_SINT:
+		case orhi::types::EFormat::B8G8R8A8_UINT:
+		case orhi::types::EFormat::B8G8R8A8_SINT:
+		case orhi::types::EFormat::A8B8G8R8_UINT_PACK32:
+		case orhi::types::EFormat::A8B8G8R8_SINT_PACK32:
+		case orhi::types::EFormat::A2R10G10B10_UINT_PACK32:
+		case orhi::types::EFormat::A2R10G10B10_SINT_PACK32:
+		case orhi::types::EFormat::A2B10G10R10_UINT_PACK32:
+		case orhi::types::EFormat::A2B10G10R10_SINT_PACK32:
+		case orhi::types::EFormat::R16_UINT:
+		case orhi::types::EFormat::R16_SINT:
+		case orhi::types::EFormat::R16G16_UINT:
+		case orhi::types::EFormat::R16G16_SINT:
+		case orhi::types::EFormat::R16G16B16_UINT:
+		case orhi::types::EFormat::R16G16B16_SINT:
+		case orhi::types::EFormat::R16G16B16A16_UINT:
+		case orhi::types::EFormat::R16G16B16A16_SINT:
+		case orhi::types::EFormat::R32_UINT:
+		case orhi::types::EFormat::R32_SINT:
+		case orhi::types::EFormat::R32G32_UINT:
+		case orhi::types::EFormat::R32G32_SINT:
+		case orhi::types::EFormat::R32G32B32_UINT:
+		case orhi::types::EFormat::R32G32B32_SINT:
+		case orhi::types::EFormat::R32G32B32A32_UINT:
+		case orhi::types::EFormat::R32G32B32A32_SINT:
+		case orhi::types::EFormat::R64_UINT:
+		case orhi::types::EFormat::R64_SINT:
+		case orhi::types::EFormat::R64G64_UINT:
+		case orhi::types::EFormat::R64G64_SINT:
+		case orhi::types::EFormat::R64G64B64_UINT:
+		case orhi::types::EFormat::R64G64B64_SINT:
+		case orhi::types::EFormat::R64G64B64A64_UINT:
+		case orhi::types::EFormat::R64G64B64A64_SINT:
+			return VK_RESOLVE_MODE_SAMPLE_ZERO_BIT;
+		default:
+			return VK_RESOLVE_MODE_AVERAGE_BIT;
+		}
+	}
+
+	orhi::types::ETextureLayout GetAttachmentLayout(orhi::types::EAttachmentType p_type)
+	{
+		return p_type == orhi::types::EAttachmentType::DEPTH_STENCIL
+			? orhi::types::ETextureLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+			: orhi::types::ETextureLayout::COLOR_ATTACHMENT_OPTIMAL;
+	}
+
+	void TransitionAttachment(
+		VkCommandBuffer p_commandBuffer,
+		const orhi::impl::vk::FramebufferAttachment& p_attachment,
+		orhi::types::ETextureLayout p_oldLayout,
+		orhi::types::ETextureLayout p_newLayout
+	)
+	{
+		auto source = GetLayoutAccess(p_oldLayout);
+		const auto destination = GetLayoutAccess(p_newLayout);
+		// Order discard transitions after prior attachment writes and swapchain acquisition waits.
+		if (p_oldLayout == orhi::types::ETextureLayout::UNDEFINED)
+		{
+			source = destination;
+		}
+		else if (p_oldLayout == orhi::types::ETextureLayout::PRESENT_SRC_KHR)
+		{
+			source.stage = destination.stage;
+		}
+		VkImageMemoryBarrier barrier{
+			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			.srcAccessMask = source.access,
+			.dstAccessMask = destination.access,
+			.oldLayout = orhi::utils::EnumToValue<VkImageLayout>(p_oldLayout),
+			.newLayout = orhi::utils::EnumToValue<VkImageLayout>(p_newLayout),
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.image = p_attachment.image.As<VkImage>(),
+			.subresourceRange = {
+				.aspectMask = orhi::utils::EnumToValue<VkImageAspectFlags>(p_attachment.aspectFlags),
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
+
+		vkCmdPipelineBarrier(
+			p_commandBuffer,
+			source.stage,
+			destination.stage,
+			0,
+			0, nullptr,
+			0, nullptr,
+			1, &barrier
+		);
+	}
+}
 
 namespace orhi
 {
@@ -30,6 +206,17 @@ namespace orhi
 	CommandBuffer::TCommandBuffer(
 		impl::common::NativeHandle p_handle
 	) : BackendObject{ p_handle }
+	{
+
+	}
+
+	template<>
+	CommandBuffer::TCommandBuffer(
+		impl::common::NativeHandle p_handle,
+		BackendTraits::CommandBufferContext p_context
+	) :
+		BackendObject{ p_handle },
+		m_context{ p_context }
 	{
 
 	}
@@ -43,15 +230,19 @@ namespace orhi
 	template<>
 	void CommandBuffer::Reset()
 	{
-		vkResetCommandBuffer(
+		const VkResult result = vkResetCommandBuffer(
 			m_handle.As<VkCommandBuffer>(),
 			0
 		);
+		ORHI_ASSERT(result == VK_SUCCESS, "failed to reset command buffer!");
+		m_context.activeFramebuffer = nullptr;
 	}
 
 	template<>
 	void CommandBuffer::Begin(types::ECommandBufferUsageFlags p_flags)
 	{
+		ORHI_ASSERT(m_context.activeFramebuffer == nullptr, "Cannot begin a command buffer while rendering is active");
+
 		VkCommandBufferBeginInfo beginInfo{
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 			.flags = utils::EnumToValue<VkCommandBufferUsageFlags>(p_flags),
@@ -69,72 +260,146 @@ namespace orhi
 	template<>
 	void CommandBuffer::End()
 	{
+		ORHI_ASSERT(m_context.activeFramebuffer == nullptr, "EndRendering must be called before ending the command buffer");
 		VkResult result = vkEndCommandBuffer(m_handle.As<VkCommandBuffer>());
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to record command buffer!");
 	}
 
 	template<>
-	void CommandBuffer::BeginRenderPass(
-		RenderPass& p_renderPass,
-		Framebuffer& p_framebuffer,
-		math::Extent2D p_extent,
-		std::initializer_list<data::ClearValue> p_clearValues
-	)
+	void CommandBuffer::BeginRendering(const RenderingInfo<BackendTraits>& p_info)
 	{
-		std::vector<VkClearValue> clearValues;
-		clearValues.reserve(p_clearValues.size());
+		ORHI_ASSERT(m_context.activeFramebuffer == nullptr, "Rendering is already active");
+		ORHI_ASSERT(p_info.extent.width > 0 && p_info.extent.height > 0, "Rendering extent must be non-zero");
 
-		for (const auto& clearValue : p_clearValues)
+		const auto* framebuffer = p_info.framebuffer.GetNativeHandle().As<const FramebufferContext*>();
+		ORHI_ASSERT(framebuffer != nullptr, "Framebuffer must have a valid native handle");
+		ORHI_ASSERT(
+			p_info.extent.width <= framebuffer->extent.width &&
+			p_info.extent.height <= framebuffer->extent.height,
+			"Rendering extent must fit within the framebuffer"
+		);
+		ORHI_ASSERT(!framebuffer->attachments.empty(), "Framebuffer must contain at least one attachment");
+		ORHI_ASSERT(
+			p_info.clearValues.size() <= framebuffer->attachments.size(),
+			"Clear values must not exceed the number of framebuffer attachments"
+		);
+
+		const auto commandBuffer = m_handle.As<VkCommandBuffer>();
+		std::vector<VkRenderingAttachmentInfoKHR> colorAttachments;
+		std::vector<const FramebufferAttachment*> resolveAttachments;
+		bool hasDepthAspect = false;
+		bool hasStencilAspect = false;
+		VkRenderingAttachmentInfoKHR depthStencilInfo{
+			.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR
+		};
+
+		for (size_t attachmentIndex = 0; attachmentIndex < framebuffer->attachments.size(); ++attachmentIndex)
 		{
-			if (auto colorClearValue = std::get_if<data::ColorClearValue>(&clearValue); colorClearValue)
+			const auto& attachment = framebuffer->attachments[attachmentIndex];
+			const auto attachmentLayout = GetAttachmentLayout(attachment.type);
+			const VkImageLayout layout = utils::EnumToValue<VkImageLayout>(attachmentLayout);
+			TransitionAttachment(commandBuffer, attachment, attachment.initialLayout, attachmentLayout);
+
+			if (attachment.type == types::EAttachmentType::COLOR)
 			{
-				clearValues.push_back(VkClearValue{
-					.color = {
-						colorClearValue->x,
-						colorClearValue->y,
-						colorClearValue->z,
-						colorClearValue->w
-					}
-				});
+				VkRenderingAttachmentInfoKHR colorInfo{
+					.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+					.imageView = attachment.imageView.As<VkImageView>(),
+					.imageLayout = layout,
+					.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+					.storeOp = VK_ATTACHMENT_STORE_OP_STORE
+				};
+
+				if (attachmentIndex < p_info.clearValues.size())
+				{
+					const auto& clear = std::get<data::ColorClearValue>(p_info.clearValues.begin()[attachmentIndex]);
+					colorInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+					colorInfo.clearValue.color = { { clear.x, clear.y, clear.z, clear.w } };
+				}
+
+				colorAttachments.push_back(colorInfo);
 			}
-			else if (auto depthStencilClearValue = std::get_if<data::DepthStencilClearValue>(&clearValue); depthStencilClearValue)
+			else if (attachment.type == types::EAttachmentType::RESOLVE)
 			{
-				clearValues.push_back(VkClearValue{
-					.depthStencil = {
-						.depth = depthStencilClearValue->depth,
-						.stencil = depthStencilClearValue->stencil
-					}
-				});
+				resolveAttachments.push_back(&attachment);
 			}
 			else
 			{
-				ORHI_ASSERT(false, "Unsupported clear value type");
+				ORHI_ASSERT(depthStencilInfo.imageView == VK_NULL_HANDLE, "Only one depth/stencil attachment is supported");
+				const auto aspects = utils::EnumToValue<VkImageAspectFlags>(attachment.aspectFlags);
+				hasDepthAspect = (aspects & VK_IMAGE_ASPECT_DEPTH_BIT) != 0;
+				hasStencilAspect = (aspects & VK_IMAGE_ASPECT_STENCIL_BIT) != 0;
+
+				depthStencilInfo.imageView = attachment.imageView.As<VkImageView>();
+				depthStencilInfo.imageLayout = layout;
+				depthStencilInfo.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+				depthStencilInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				if (attachmentIndex < p_info.clearValues.size())
+				{
+					const auto& clear = std::get<data::DepthStencilClearValue>(p_info.clearValues.begin()[attachmentIndex]);
+					depthStencilInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+					depthStencilInfo.clearValue.depthStencil = { clear.depth, clear.stencil };
+				}
 			}
 		}
 
-		VkRenderPassBeginInfo renderPassInfo{
-			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-			.renderPass = p_renderPass.GetNativeHandle().As<VkRenderPass>(),
-			.framebuffer = p_framebuffer.GetNativeHandle().As<VkFramebuffer>(),
+		ORHI_ASSERT(!colorAttachments.empty() || hasDepthAspect || hasStencilAspect, "At least one rendering attachment is required");
+		ORHI_ASSERT(
+			resolveAttachments.empty() || resolveAttachments.size() == colorAttachments.size(),
+			"Resolve attachments must match the color attachment count"
+		);
+
+		for (size_t i = 0; i < std::min(colorAttachments.size(), resolveAttachments.size()); ++i)
+		{
+			colorAttachments[i].resolveMode = GetColorResolveMode(resolveAttachments[i]->format);
+			colorAttachments[i].resolveImageView = resolveAttachments[i]->imageView.As<VkImageView>();
+			colorAttachments[i].resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		}
+
+		VkRenderingInfoKHR renderingInfo{
+			.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
 			.renderArea = {
 				.offset = { 0, 0 },
-				.extent = reinterpret_cast<VkExtent2D&>(p_extent)
+				.extent = { p_info.extent.width, p_info.extent.height }
 			},
-			.clearValueCount = static_cast<uint32_t>(clearValues.size()),
-			.pClearValues = clearValues.data()
+			.layerCount = 1,
+			.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size()),
+			.pColorAttachments = colorAttachments.data(),
+			.pDepthAttachment = hasDepthAspect ? &depthStencilInfo : nullptr,
+			.pStencilAttachment = hasStencilAspect ? &depthStencilInfo : nullptr
 		};
 
-		vkCmdBeginRenderPass(
-			m_handle.As<VkCommandBuffer>(),
-			&renderPassInfo,
-			VK_SUBPASS_CONTENTS_INLINE
-		);
+		ORHI_ASSERT(m_context.beginRendering != nullptr, "Dynamic rendering entry point is not loaded");
+		m_context.beginRendering(commandBuffer, &renderingInfo);
+		m_context.activeFramebuffer = framebuffer;
 	}
 
 	template<>
-	void CommandBuffer::EndRenderPass()
+	void CommandBuffer::EndRendering()
 	{
-		vkCmdEndRenderPass(m_handle.As<VkCommandBuffer>());
+		ORHI_ASSERT(m_context.activeFramebuffer != nullptr, "No rendering operation is active");
+
+		const auto commandBuffer = m_handle.As<VkCommandBuffer>();
+		ORHI_ASSERT(m_context.endRendering != nullptr, "Dynamic rendering entry point is not loaded");
+		m_context.endRendering(commandBuffer);
+
+		for (const auto& attachment : m_context.activeFramebuffer->attachments)
+		{
+			const auto attachmentLayout = GetAttachmentLayout(attachment.type);
+			if (attachment.finalLayout == types::ETextureLayout::UNDEFINED || attachment.finalLayout == attachmentLayout)
+			{
+				continue;
+			}
+
+			TransitionAttachment(
+				commandBuffer,
+				attachment,
+				attachmentLayout,
+				attachment.finalLayout
+			);
+		}
+
+		m_context.activeFramebuffer = nullptr;
 	}
 
 	template<>
