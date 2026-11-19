@@ -34,7 +34,6 @@ namespace orhi::api
 		typename TPipelineContext,
 		typename TPipelineLayoutContext,
 		typename TQueueContext,
-		typename TRenderPassContext,
 		typename TSemaphoreContext,
 		typename TShaderModuleContext,
 		typename TSwapChainContext,
@@ -57,7 +56,6 @@ namespace orhi::api
 		using PipelineContext = TPipelineContext;
 		using PipelineLayoutContext = TPipelineLayoutContext;
 		using QueueContext = TQueueContext;
-		using RenderPassContext = TRenderPassContext;
 		using SemaphoreContext = TSemaphoreContext;
 		using ShaderModuleContext = TShaderModuleContext;
 		using SwapChainContext = TSwapChainContext;

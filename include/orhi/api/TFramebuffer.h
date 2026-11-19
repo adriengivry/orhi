@@ -18,8 +18,7 @@ namespace orhi::api
 	* @brief A framebuffer object containing render targets
 	* 
 	* TFramebuffer represents a collection of attachments (color, depth, stencil)
-	* that serve as render targets during rendering operations. Framebuffers must
-	* be compatible with the render pass they are used with.
+	* that serve as render targets during a dynamic-rendering operation.
 	* 
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
@@ -30,7 +29,7 @@ namespace orhi::api
 		/**
 		* @brief Creates a framebuffer with the specified attachments
 		* @param p_device Reference to the device that will own this framebuffer
-		* @param p_desc Framebuffer descriptor specifying attachments, render pass, and dimensions
+		* @param p_desc Framebuffer descriptor specifying attachments and dimensions
 		*/
 		TFramebuffer(
 			TDevice<BackendTraits>& p_device,

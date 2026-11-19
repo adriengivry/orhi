@@ -79,11 +79,34 @@ namespace orhi
 
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to allocate command buffer!");
 
+		const VkDevice device = m_context.device.GetNativeHandle().As<VkDevice>();
+		auto beginRendering = vkGetDeviceProcAddr(device, "vkCmdBeginRenderingKHR");
+		if (!beginRendering)
+		{
+			beginRendering = vkGetDeviceProcAddr(device, "vkCmdBeginRendering");
+		}
+		auto endRendering = vkGetDeviceProcAddr(device, "vkCmdEndRenderingKHR");
+		if (!endRendering)
+		{
+			endRendering = vkGetDeviceProcAddr(device, "vkCmdEndRendering");
+		}
+
+		CommandBufferContext commandBufferContext{
+			.beginRendering = reinterpret_cast<PFN_vkCmdBeginRenderingKHR>(beginRendering),
+			.endRendering = reinterpret_cast<PFN_vkCmdEndRenderingKHR>(endRendering)
+		};
+		ORHI_ASSERT(
+			commandBufferContext.beginRendering != nullptr &&
+			commandBufferContext.endRendering != nullptr,
+			"Failed to load dynamic rendering entry points"
+		);
+
 		for (auto allocatedCommandBuffer : allocatedCommandBuffers)
 		{
 			output.emplace_back(
 				m_context.commandBuffers.emplace_back(
-					allocatedCommandBuffer
+					allocatedCommandBuffer,
+					commandBufferContext
 				)
 			);
 		}

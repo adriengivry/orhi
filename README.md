@@ -37,6 +37,8 @@ Write hardware-agnostic graphics code once, and run it seamlessly across multipl
 
 **Target platforms:** Windows (🪟), Linux (🐧), and macOS (🍎)
 
+**Vulkan requirement:** Vulkan 1.2 or newer with dynamic rendering support; Vulkan 1.3 core functionality is used when available, otherwise `VK_KHR_dynamic_rendering` is required.
+
 ### Implementation Status
 | Graphics API | Platforms | Status |
 |-|-|-|
@@ -109,14 +111,13 @@ cd ./orhi
 | `Instance` | `VkInstance` | - |
 | `Device` | `VkDevice` | - |
 | `SwapChain` | `VkSwapChain` | - |
-| `Framebuffer` | `VkFramebuffer` | - |
+| `Framebuffer` | Dynamic rendering attachments | Render targets |
 | `Buffer` | `VkBuffer` | - |
 | `Texture` | `VkImage` | - |
 | `DescriptorPool` | `VkDescriptorPool` | - |
 | `DescriptorSetLayout` | `VkDescriptorSetLayout` | - |
 | `DescriptorSet` | `VkDescriptorSet` | - |
 | `Descriptor` | `VkImageView`, `VkSampler` | - |
-| `RenderPass` | `VkRenderPass` | - |
 | `ShaderModule` | `VkShaderModule` | - |
 | `PipelineLayout` | `VkPipelineLayout` | - |
 | `Pipeline` | `VkPipeline` | - |

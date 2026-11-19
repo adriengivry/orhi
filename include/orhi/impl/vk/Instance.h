@@ -9,6 +9,7 @@
 #include <orhi/api/TInstance.h>
 #include <orhi/impl/vk/BackendTraits.h>
 
+#include <cstdint>
 #include <memory>
 
 struct VkDevice_T;
@@ -24,6 +25,7 @@ namespace orhi::impl::vk
 {
 	struct InstanceContext 
 	{
+		uint32_t apiVersion = 0;
 		VkDevice device;
 		VkSurfaceKHR surface;
 		VkQueue graphicsAndComputeQueue;

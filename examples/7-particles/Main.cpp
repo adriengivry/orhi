@@ -19,7 +19,6 @@
 #include <orhi/PipelineLayout.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
-#include <orhi/RenderPass.h>
 #include <orhi/Semaphore.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/SwapChain.h>
@@ -166,22 +165,12 @@ int main()
 
 	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(GetWindowSize(window));
 
-	// Create render pass and pipeline
-	orhi::RenderPass renderPass{
-		device,
-		{
-			orhi::data::AttachmentDesc{
-				.type = orhi::types::EAttachmentType::COLOR,
-				.format = optimalSwapChainDesc.format,
-				.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR,
-			}
-		}
-	};
+	// Create graphics pipeline
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
 
 	orhi::PipelineLayout graphicsPipelineLayout(device);
-	
+
 	orhi::Pipeline graphicsPipeline{
 		device,
 		orhi::data::GraphicsPipelineDesc<orhi::BackendTraits>{
@@ -189,7 +178,7 @@ int main()
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
-			.renderPass = renderPass,
+			.attachments = { { .format = optimalSwapChainDesc.format } },
 			.pipelineLayout = graphicsPipelineLayout,
 			.vertexInputState = {
 				.vertexBindings = VertexInputDescription<Particle>::GetBindingDescription(),
@@ -254,8 +243,14 @@ int main()
 			auto& framebuffer = framebuffers.emplace_back(
 				device,
 				orhi::data::FramebufferDesc<orhi::BackendTraits>{
-					.attachments = { swapChain->GetImageDescriptor(i) },
-					.renderPass = renderPass,
+					.attachments = {
+						{
+							.descriptor = swapChain->GetImageDescriptor(i),
+							.type = orhi::types::EAttachmentType::COLOR,
+							.format = optimalSwapChainDesc.format,
+							.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR
+						}
+					},
 					.extent = windowSize
 				}
 			);
@@ -501,12 +496,11 @@ int main()
 		auto& graphicsCommandBuffer = frameResources.graphicsCommandBuffer;
 		graphicsCommandBuffer.Reset();
 		graphicsCommandBuffer.Begin();
-		graphicsCommandBuffer.BeginRenderPass(
-			renderPass,
-			swapImageResources.framebuffer,
-			windowSize,
-			{ orhi::data::ColorClearValue{0.0f, 0.0f, 0.0f, 1.0f} }
-		);
+		graphicsCommandBuffer.BeginRendering({
+			.framebuffer = swapImageResources.framebuffer,
+			.extent = windowSize,
+			.clearValues = { orhi::data::ColorClearValue{ 0.0f, 0.0f, 0.0f, 1.0f } }
+		});
 
 		graphicsCommandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, graphicsPipeline);
 
@@ -528,12 +522,12 @@ int main()
 		);
 
 		graphicsCommandBuffer.Draw(k_particleCount);
-		graphicsCommandBuffer.EndRenderPass();
+		graphicsCommandBuffer.EndRendering();
 		graphicsCommandBuffer.End();
 
 		device.GetGraphicsAndComputeQueue().Submit(
 			{ graphicsCommandBuffer },
-			{	
+			{
 				*frameResources.computeFinishedSemaphore,
 				*frameResources.imageAvailableSemaphore
 			},

@@ -55,7 +55,14 @@ namespace orhi::api
 		*/
 		~TDescriptor();
 
+		/**
+		* @brief Gets the native image referenced by this descriptor
+		* @return The underlying image handle, or an empty handle
+		*/
+		inline const impl::common::NativeHandle GetResourceNativeHandle() const { return m_resourceHandle; }
+
 	private:
 		BackendTraits::DescriptorContext m_context;
+		impl::common::NativeHandle m_resourceHandle;
 	};
 }

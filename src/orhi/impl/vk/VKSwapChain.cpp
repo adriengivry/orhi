@@ -14,7 +14,6 @@
 #include <orhi/except/OutOfDateSwapChain.h>
 #include <orhi/impl/vk/Descriptor.h>
 #include <orhi/impl/vk/Fence.h>
-#include <orhi/impl/vk/RenderPass.h>
 #include <orhi/impl/vk/Semaphore.h>
 #include <orhi/impl/vk/detail/Types.h>
 

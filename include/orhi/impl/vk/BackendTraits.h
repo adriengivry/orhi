@@ -24,7 +24,6 @@ namespace orhi::impl::vk
 	struct PipelineContext;
 	struct PipelineLayoutContext;
 	struct QueueContext;
-	struct RenderPassContext;
 	struct SemaphoreContext;
 	struct ShaderModuleContext;
 	struct SwapChainContext;
@@ -46,7 +45,6 @@ namespace orhi::impl::vk
 		PipelineContext,
 		PipelineLayoutContext,
 		QueueContext,
-		RenderPassContext,
 		SemaphoreContext,
 		ShaderModuleContext,
 		SwapChainContext,

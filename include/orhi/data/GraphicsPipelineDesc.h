@@ -8,6 +8,7 @@
 
 #include <orhi/types/EGraphicsBackend.h>
 #include <orhi/types/EShaderStageFlags.h>
+#include <orhi/data/AttachmentDesc.h>
 #include <orhi/data/ColorBlendStateDesc.h>
 #include <orhi/data/DepthStencilStateDesc.h>
 #include <orhi/data/DynamicStateDesc.h>
@@ -21,6 +22,7 @@
 #include <orhi/data/ViewportStateDesc.h>
 
 #include <cstdint>
+#include <initializer_list>
 #include <span>
 #include <unordered_map>
 
@@ -28,7 +30,6 @@ namespace orhi::api
 {
 	template<typename BackendTraits> class TDescriptorSetLayout;
 	template<typename BackendTraits> class TPipelineLayout;
-	template<typename BackendTraits> class TRenderPass;
 	template<typename BackendTraits> class TShaderModule;
 }
 
@@ -39,7 +40,8 @@ namespace orhi::data
 	* 
 	* Defines the complete configuration for creating a graphics pipeline,
 	* including all shader stages, fixed-function state, descriptor set layouts,
-	* and the target render pass. Graphics pipelines are immutable once created.
+	* and the attachment formats used by dynamic rendering. Graphics pipelines
+	* are immutable once created.
 	* 
 	* @tparam BackendTraits Backend-specific traits defining implementation types
 	*/
@@ -47,7 +49,7 @@ namespace orhi::data
 	struct GraphicsPipelineDesc
 	{
 		std::unordered_map<types::EShaderStageFlags, std::reference_wrapper<api::TShaderModule<BackendTraits>>> stages;
-		api::TRenderPass<BackendTraits>& renderPass;
+		std::initializer_list<AttachmentDesc> attachments;
 		api::TPipelineLayout<BackendTraits>& pipelineLayout;
 		
 		// State descriptors

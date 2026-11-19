@@ -14,7 +14,6 @@
 #include <orhi/PipelineLayout.h>
 #include <orhi/Instance.h>
 #include <orhi/Queue.h>
-#include <orhi/RenderPass.h>
 #include <orhi/Semaphore.h>
 #include <orhi/ShaderModule.h>
 #include <orhi/SwapChain.h>
@@ -109,21 +108,11 @@ int main()
 
 	auto optimalSwapChainDesc = device.GetOptimalSwapChainDesc(GetWindowSize(window));
 
-	// Create render pass and pipeline
-	orhi::RenderPass renderPass{
-		device,
-		{
-			orhi::data::AttachmentDesc{
-				.type = orhi::types::EAttachmentType::COLOR,
-				.format = optimalSwapChainDesc.format,
-				.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR,
-			}
-		}
-	};
+	// Create graphics pipeline
 	orhi::ShaderModule vertexShader{ device, ReadShaderFile("assets/shaders/main.vert.spv") };
 	orhi::ShaderModule fragmentShader{ device, ReadShaderFile("assets/shaders/main.frag.spv") };
-	
-	// Create pipeline layout (empty for this example)
+
+	// Create the pipeline layout with a vertex push constant range
 	orhi::PipelineLayout pipelineLayout(
 		device,
 		{
@@ -136,7 +125,7 @@ int main()
 			},
 		}
 	);
-	
+
 	orhi::Pipeline pipeline{
 		device,
 		orhi::data::GraphicsPipelineDesc{
@@ -144,7 +133,7 @@ int main()
 				{ orhi::types::EShaderStageFlags::VERTEX_BIT, vertexShader },
 				{ orhi::types::EShaderStageFlags::FRAGMENT_BIT, fragmentShader },
 			},
-			.renderPass = renderPass,
+			.attachments = { { .format = optimalSwapChainDesc.format } },
 			.pipelineLayout = pipelineLayout,
 			.colorBlendState = {
 				.attachments = std::array<orhi::data::ColorBlendAttachmentStateDesc, 1>()
@@ -193,8 +182,14 @@ int main()
 			auto& framebuffer = framebuffers.emplace_back(
 				device,
 				orhi::data::FramebufferDesc<orhi::BackendTraits>{
-					.attachments = { swapChain->GetImageDescriptor(i) },
-					.renderPass = renderPass,
+					.attachments = {
+						{
+							.descriptor = swapChain->GetImageDescriptor(i),
+							.type = orhi::types::EAttachmentType::COLOR,
+							.format = optimalSwapChainDesc.format,
+							.finalLayout = orhi::types::ETextureLayout::PRESENT_SRC_KHR
+						}
+					},
 					.extent = windowSize
 				}
 			);
@@ -244,12 +239,11 @@ int main()
 		auto& commandBuffer = frameResources.commandBuffer;
 		commandBuffer.Reset();
 		commandBuffer.Begin();
-		commandBuffer.BeginRenderPass(
-			renderPass,
-			swapImageResources.framebuffer,
-			windowSize,
-			{ orhi::data::ColorClearValue{0.0f, 0.0f, 0.0f, 1.0f} }
-		);
+		commandBuffer.BeginRendering({
+			.framebuffer = swapImageResources.framebuffer,
+			.extent = windowSize,
+			.clearValues = { orhi::data::ColorClearValue{ 0.0f, 0.0f, 0.0f, 1.0f } }
+		});
 
 		commandBuffer.BindPipeline(orhi::types::EPipelineBindPoint::GRAPHICS, pipeline);
 
@@ -277,7 +271,7 @@ int main()
 		);
 
 		commandBuffer.Draw(3);
-		commandBuffer.EndRenderPass();
+		commandBuffer.EndRendering();
 		commandBuffer.End();
 
 		device.GetGraphicsAndComputeQueue().Submit(

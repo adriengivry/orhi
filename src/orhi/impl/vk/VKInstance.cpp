@@ -48,16 +48,21 @@
 #include <list>
 #include <optional>
 #include <set>
+#include <stdexcept>
 
 using namespace orhi::impl::vk;
 
 namespace
 {
+	constexpr uint32_t kMinimumVulkanApiVersion = VK_API_VERSION_1_2;
+	constexpr uint32_t kMaximumVulkanApiVersion = VK_API_VERSION_1_3;
+
 	struct PhysicalDevice
 	{
 		VkPhysicalDevice physicalDevice;
 		VkPhysicalDeviceProperties properties;
 		VkPhysicalDeviceFeatures features;
+		VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeatures;
 		detail::ExtensionManager extensionManager;
 		detail::QueueFamilyIndices queueFamilyIndices;
 		orhi::data::DeviceInfo info;
@@ -74,6 +79,31 @@ namespace
 
 	// Actual logical devices
 	std::list<Device> g_createdDevices;
+
+	uint32_t GetApplicationApiVersion()
+	{
+		const auto enumerateInstanceVersion = reinterpret_cast<PFN_vkEnumerateInstanceVersion>(
+			vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceVersion")
+		);
+		if (!enumerateInstanceVersion)
+		{
+			throw std::runtime_error("Vulkan 1.2 or newer is required");
+		}
+
+		uint32_t loaderApiVersion = VK_API_VERSION_1_0;
+		if (enumerateInstanceVersion(&loaderApiVersion) != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to query the Vulkan loader API version");
+		}
+		if (loaderApiVersion < kMinimumVulkanApiVersion)
+		{
+			throw std::runtime_error("Vulkan 1.2 or newer is required");
+		}
+
+		return loaderApiVersion < kMaximumVulkanApiVersion
+			? loaderApiVersion
+			: kMaximumVulkanApiVersion;
+	}
 
 	VkSurfaceKHR CreateSurface(VkInstance p_instance, const orhi::data::WindowDesc& p_windowDesc)
 	{
@@ -188,14 +218,33 @@ namespace
 			!p_swapChainSupportDetails.presentModes.empty();
 	}
 
-	bool IsDeviceSuitable(PhysicalDevice& p_device, VkSurfaceKHR p_surface)
+	bool IsDeviceSuitable(PhysicalDevice& p_device, VkSurfaceKHR p_surface, uint32_t p_apiVersion)
 	{
+		if (p_device.properties.apiVersion < kMinimumVulkanApiVersion)
+		{
+			return false;
+		}
+
 		if (!p_device.queueFamilyIndices.IsComplete())
 		{
 			return false;
 		}
 
 		if (!p_device.features.samplerAnisotropy)
+		{
+			return false;
+		}
+
+		const bool usesCoreDynamicRendering =
+			p_apiVersion >= VK_API_VERSION_1_3 &&
+			p_device.properties.apiVersion >= VK_API_VERSION_1_3;
+		if (!usesCoreDynamicRendering &&
+			!p_device.extensionManager.IsExtensionSupported(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME))
+		{
+			return false;
+		}
+
+		if (!p_device.dynamicRenderingFeatures.dynamicRendering)
 		{
 			return false;
 		}
@@ -261,6 +310,9 @@ namespace orhi
 	template<>
 	Instance::TInstance(const data::InstanceDesc& p_desc)
 	{
+		const uint32_t apiVersion = GetApplicationApiVersion();
+		m_context.apiVersion = apiVersion;
+
 		detail::ExtensionManager extensionManager;
 		detail::ValidationLayerManager validationLayerManager;
 
@@ -324,7 +376,7 @@ namespace orhi
 			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
 			.pEngineName = "No Engine",
 			.engineVersion = VK_MAKE_VERSION(1, 0, 0),
-			.apiVersion = VK_API_VERSION_1_0
+			.apiVersion = apiVersion
 		};
 
 		VkInstanceCreateInfo createInfo{
@@ -359,6 +411,14 @@ namespace orhi
 		ORHI_ASSERT(result == VK_SUCCESS, "failed to create instance!");
 
 		ORHI_LOG_INFO("Vulkan instance created successfully!");
+
+		auto getPhysicalDeviceFeatures2 = reinterpret_cast<PFN_vkGetPhysicalDeviceFeatures2>(
+			vkGetInstanceProcAddr(m_handle.As<VkInstance>(), "vkGetPhysicalDeviceFeatures2")
+		);
+		ORHI_ASSERT(
+			getPhysicalDeviceFeatures2 != nullptr,
+			"Failed to load physical device feature query entry point"
+		);
 
 		// If the debug utils extension is being used, setup the debug messenger
 		if (useDebugUtilsExtension)
@@ -399,6 +459,9 @@ namespace orhi
 				.physicalDevice = physicalDevice,
 				.properties = deviceProperties,
 				.features = deviceFeatures,
+				.dynamicRenderingFeatures = {
+					.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR
+				},
 				.extensionManager = {},
 				.queueFamilyIndices = detail::QueueFamilyIndices::Create(physicalDevice, m_context.surface),
 				.info = GenerateDeviceInfo(
@@ -411,6 +474,23 @@ namespace orhi
 			});
 
 			device.extensionManager.FetchExtensions<detail::EExtensionHandler::PhysicalDevice>(device.physicalDevice);
+
+			const bool usesCoreDynamicRendering =
+				apiVersion >= VK_API_VERSION_1_3 &&
+				device.properties.apiVersion >= VK_API_VERSION_1_3;
+			if (usesCoreDynamicRendering ||
+				device.extensionManager.IsExtensionSupported(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME))
+			{
+				VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeatures{
+					.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR
+				};
+				VkPhysicalDeviceFeatures2 deviceFeatures2{
+					.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+					.pNext = &dynamicRenderingFeatures
+				};
+				getPhysicalDeviceFeatures2(physicalDevice, &deviceFeatures2);
+				device.dynamicRenderingFeatures = dynamicRenderingFeatures;
+			}
 		}
 
 		g_suitableDeviceInfos.reserve(g_physicalDevices.size());
@@ -421,7 +501,7 @@ namespace orhi
 
 		for (PhysicalDevice& device : g_physicalDevices)
 		{
-			if (IsDeviceSuitable(device, m_context.surface))
+			if (IsDeviceSuitable(device, m_context.surface, apiVersion))
 			{
 				ORHI_LOG_INFO("Suitable device found: " + std::string(device.properties.deviceName));
 				g_suitableDeviceInfos.emplace_back(device.info);
@@ -465,6 +545,13 @@ namespace orhi
 		}();
 
 		std::vector<const char*> extensions = selectedDevice.extensionManager.FilterExtensions(g_deviceRequestedExtensions);
+		const bool usesCoreDynamicRendering =
+			m_context.apiVersion >= VK_API_VERSION_1_3 &&
+			selectedDevice.properties.apiVersion >= VK_API_VERSION_1_3;
+		if (!usesCoreDynamicRendering)
+		{
+			extensions.push_back(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
+		}
 
 		const auto deviceCreationInfo = detail::DeviceCreationInfo{
 			.physicalDevice = selectedDevice.physicalDevice,
